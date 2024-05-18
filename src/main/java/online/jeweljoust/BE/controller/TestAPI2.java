@@ -12,7 +12,7 @@ public class TestAPI2 {
     public ResponseEntity API2(){
         return ResponseEntity.ok("TestAPI211");
     }
-    @PostMapping("PostTestAPI")
+        @PostMapping("PostTestAPI")
     public ResponseEntity PostTestAPI(){
                 return ResponseEntity.ok("oke");
     }
