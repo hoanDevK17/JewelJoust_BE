@@ -10,7 +10,7 @@ public class TestAPI {
 
     @GetMapping("test")
     public ResponseEntity test(){
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok("ok nha");
     }
 
 }
