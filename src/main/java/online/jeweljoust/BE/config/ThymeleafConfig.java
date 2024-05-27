@@ -1,4 +1,4 @@
-package mail.config;
+package online.jeweljoust.BE.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,4 +23,5 @@ public class ThymeleafConfig {
         templateEngine.setTemplateResolver(templateResolver());
         return templateEngine;
     }
+
 }

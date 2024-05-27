@@ -35,9 +35,9 @@ public class Filter extends OncePerRequestFilter {
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-resources/**",
-
-            "/login",
-            "/register"
+            "/api/login",
+            "/api/register",
+            "/api/test"
     );
     private boolean isPermitted(String uri){
         AntPathMatcher pathMatcher= new AntPathMatcher();
@@ -47,7 +47,7 @@ public class Filter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String uri = request.getRequestURI();
-        System.out.println(uri);
+//        System.out.println(uri);
         if (isPermitted(uri)) {
             // yêu cầu truy cập 1 api => ai cũng truy cập đc
             filterChain.doFilter(request, response); // cho phép truy cập vô controller

@@ -18,6 +18,7 @@ public class EmailService {
 
     @Autowired
     private JavaMailSender javaMailSender;
+
     public void sendMailTemplate(EmailDetail emailDetail){
         try{
             Context context = new Context();

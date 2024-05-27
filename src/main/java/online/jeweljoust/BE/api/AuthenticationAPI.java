@@ -16,21 +16,32 @@ import java.util.List;
 @RestController
 @RequestMapping("api")
 @SecurityRequirement(name = "api")
+
 public class AuthenticationAPI {
-    //Nhan request tu FE
+    // Nhan request tu FE
     @Autowired
     AuthenticationService authenticationService;
 
     @Autowired
     EmailService emailService;
 
-    @GetMapping("test")
-    public ResponseEntity test(){
-        return ResponseEntity.ok("Hello world");
-    }
+    // @GetMapping("/product/{id}")
+    // public ResponseEntity test(@PathVariable String id){
+    // return ResponseEntity.ok("Hello world");
+    // http://localhost:8080/api/product/123312312
+    // }
+    // @GetMapping("/product")
+    // public ResponseEntity test(@RequestParam("ID") String id ){
+    // return ResponseEntity.ok("Hello world");
+    // }
+    // http://localhost:8080/api/product?id=1233123
+    // @PostMapping("/product")
+    // public ResponseEntity test321(){
+    // return ResponseEntity.ok("Hello world");
+    // }
+    @PostMapping("/register")
+    public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
 
-    @PostMapping("register")
-    public ResponseEntity register(@RequestBody RegisterRequest registerRequest){
         Account account = authenticationService.register(registerRequest);
         return ResponseEntity.ok(account);
     }
@@ -40,14 +51,15 @@ public class AuthenticationAPI {
         List<Account> accounts = authenticationService.getAllAccount();
         return ResponseEntity.ok(accounts);
     }
+
     @PostMapping("login")
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
         Account account = authenticationService.login(loginRequest);
         return ResponseEntity.ok(account);
     }
 
     @GetMapping("send-mail")
-    public void sendMail(){
+    public void sendMail() {
         EmailDetail emailDetail = new EmailDetail();
         emailDetail.setRecipient("phatttse170312@fpt.edu.vn");
         emailDetail.setSubject("test123");
