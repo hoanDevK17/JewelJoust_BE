@@ -41,14 +41,14 @@ public class Account implements UserDetails {
     @Column(unique = true)
     String email;
 
-    @Column(unique = true)
+    //@Column(unique = true)
     String phone;
 
     String role;
 
     int credibility;
 
-    //hết code
+    //hết code thêm
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -17,9 +17,22 @@ public class APIHandleException {
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<Object> handleDuplicatePhone(SQLIntegrityConstraintViolationException ex) {
-        return new ResponseEntity<>("Duplicate phone number!!!", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> handleSQLIntegrityConstraintViolation(SQLIntegrityConstraintViolationException ex) {
+        String message = ex.getMessage();
+        System.out.print(message);
+        if (message.contains("account.UK_gex1lmaqpg0ir5g1f5eftyaa1")){
+            return new ResponseEntity<>("Duplicate username!!!", HttpStatus.BAD_REQUEST);
+        } else if (message.contains("account.UK_q0uja26qgu1atulenwup9rxyr")){
+            return new ResponseEntity<>("Duplicate email!!!", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>("Database error!!!", HttpStatus.BAD_REQUEST);
+        }
     }
+
+//    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+//    public ResponseEntity<Object> handleDuplicatePhone(SQLIntegrityConstraintViolationException ex) {
+//        return new ResponseEntity<>("Duplicate phone number!!!", HttpStatus.BAD_REQUEST);
+//    }
 
 //    @ExceptionHandler(AuthException.class)
 //    public ResponseEntity<Object> handleDuplicatePhone(AuthException ex) {

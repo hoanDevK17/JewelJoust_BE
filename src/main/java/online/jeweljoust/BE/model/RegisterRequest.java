@@ -1,10 +1,15 @@
 package online.jeweljoust.BE.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
 @Data
+@Getter
+@Setter
+
 public class RegisterRequest {
     String username;
     String password;
@@ -13,35 +18,7 @@ public class RegisterRequest {
     Date birthday;
     String email;
     String phone;
-    final String role = "Member";
-    final int credibility = 0;
-
-    public String getUsername(){
-        return this.username;
-    }
-
-    public String getPassword(){
-        return this.password;
-    }
-
-    public String getFullname(){
-        return this.fullname;
-    }
-
-    public String getAddress(){
-        return this.address;
-    }
-
-    public Date getBirthday(){
-        return this.birthday;
-    }
-
-    public String getEmail(){
-        return this.email;
-    }
-
-    public String getPhone(){
-        return this.phone;
-    }
+    String role;
+    int credibility;
 
 }
