@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -21,28 +22,48 @@ import java.util.List;
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    long userid;
+
+    // bắt đầu thêm code
+    @Column(unique = true)
+    String username;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    String password;
+
+    String fullname;
+
+    String address;
+
+    @Temporal(TemporalType.DATE)
+    Date birthday;
+
+    @Column(unique = true)
+    String email;
 
     @Column(unique = true)
     String phone;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    String password;
+    String role;
+
+    int credibility;
+
+    //hết code
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
 
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.phone;
-    }
+//    @Override
+//    public String getPassword() {
+//        return this.password;
+//    }
+//
+//    @Override
+//    public String getUsername() {
+//        return this.username;
+//    }
 
     @Override
     public boolean isAccountNonExpired() {

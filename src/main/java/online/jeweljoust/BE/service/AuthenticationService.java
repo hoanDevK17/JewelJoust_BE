@@ -34,7 +34,14 @@ public class AuthenticationService implements UserDetailsService {
     public Account register(RegisterRequest registerRequest){
         //xu ly logic register
         Account account = new Account();
+        account.setUsername(registerRequest.getUsername());
+        account.setFullname(registerRequest.getFullname());
+        account.setAddress(registerRequest.getAddress());
+        account.setBirthday(registerRequest.getBirthday());
+        account.setEmail(registerRequest.getEmail());
         account.setPhone(registerRequest.getPhone());
+        account.setRole("Member");
+        account.setCredibility(0);
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         //nh REPO ==> SAVE xun db
         return authenticationRepository.save(account);
