@@ -1,13 +1,19 @@
 package online.jeweljoust.BE.service;
 
+import online.jeweljoust.BE.config.SecurityConfig;
 import online.jeweljoust.BE.entity.Account;
+import online.jeweljoust.BE.exception.APIHandleException;
 import online.jeweljoust.BE.model.AccountReponse;
 import online.jeweljoust.BE.model.LoginRequest;
 import online.jeweljoust.BE.model.RegisterRequest;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +25,7 @@ import java.util.List;
 @Service
 public class AuthenticationService implements UserDetailsService {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -30,6 +37,10 @@ public class AuthenticationService implements UserDetailsService {
 
     @Autowired
     AuthenticationRepository authenticationRepository;
+
+    @Autowired
+    SecurityConfig securityConfig;
+
     //xu ly logic
     public Account register(RegisterRequest registerRequest){
         //xu ly logic register
@@ -47,24 +58,54 @@ public class AuthenticationService implements UserDetailsService {
         return authenticationRepository.save(account);
     }
     public AccountReponse login(LoginRequest loginRequest){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getPhone(),
-                loginRequest.getPassword()
-        ));
-        //===> chuẩn
-        Account account = authenticationRepository.findAccountByPhone(loginRequest.getPhone());
-        String token = tokenService.generateToken(account);
-        AccountReponse accountReponse = new AccountReponse();
-        accountReponse.setPhone(account.getPhone());
-        accountReponse.setToken(token);
-        return accountReponse;
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginRequest.getUsername(),
+                    loginRequest.getPassword()
+            ));
+            Account account = authenticationRepository.findAccountByUsername(loginRequest.getUsername());
+            if (account == null || !securityConfig.passwordEncoder().matches(loginRequest.getPassword(), account.getPassword())) {
+                throw new BadCredentialsException("Incorrect username or password");
+            }
+                AccountReponse accountReponse = new AccountReponse();
+                String token = tokenService.generateToken(account);
+                accountReponse.setUsername(account.getUsername());
+                accountReponse.setUserid(account.getUserid());
+                accountReponse.setFullname(account.getFullname());
+                accountReponse.setAddress(account.getAddress());
+                accountReponse.setBirthday(account.getBirthday());
+                accountReponse.setEmail(account.getEmail());
+                accountReponse.setPhone(account.getPhone());
+                accountReponse.setRole(account.getRole());
+                accountReponse.setCredibility(account.getCredibility());
+                accountReponse.setToken(token);
+                return accountReponse;
+        } catch (AuthenticationException e){
+            throw new BadCredentialsException("Incorrect username or password");
+        }
+    }
+
+    public AccountReponse registerManagement(RegisterRequest registerRequest){
+        if (true){
+            Account account = new Account();
+            account.setUsername(registerRequest.getUsername());
+            account.setFullname(registerRequest.getFullname());
+            account.setAddress(registerRequest.getAddress());
+            account.setBirthday(registerRequest.getBirthday());
+            account.setEmail(registerRequest.getEmail());
+            account.setPhone(registerRequest.getPhone());
+            account.setRole("Management");
+            account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+            return (AccountReponse) authenticationRepository.save(account);
+        }
+        return null;
     }
 
     public List<Account> getAllAccount(){
         return authenticationRepository.findAll();
     }
     @Override
-    public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
-        return authenticationRepository.findAccountByPhone(phone);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return authenticationRepository.findAccountByUsername(username);
     }
 }

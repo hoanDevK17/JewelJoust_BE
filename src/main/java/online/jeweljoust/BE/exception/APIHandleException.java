@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestControllerAdvice
+
 public class APIHandleException {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleInvalidUserNamePassword(BadCredentialsException ex) {
-        return new ResponseEntity<>("Phone or password not correct!!!", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>("Username or password not correct!!!", HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Object> handleSQLIntegrityConstraintViolation(SQLIntegrityConstraintViolationException ex) {
         String message = ex.getMessage();
-        System.out.print(message);
         if (message.contains("account.UK_gex1lmaqpg0ir5g1f5eftyaa1")){
             return new ResponseEntity<>("Duplicate username!!!", HttpStatus.BAD_REQUEST);
         } else if (message.contains("account.UK_q0uja26qgu1atulenwup9rxyr")){

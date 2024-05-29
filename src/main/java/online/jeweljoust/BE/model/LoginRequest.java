@@ -1,17 +1,14 @@
 package online.jeweljoust.BE.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
+@Getter
+@Setter
+
 public class LoginRequest {
-    String phone;
+    String username;
     String password;
-
-    public String getPhone(){
-        return this.phone;
-    }
-
-    public String getPassword(){
-        return this.password;
-    }
 }
