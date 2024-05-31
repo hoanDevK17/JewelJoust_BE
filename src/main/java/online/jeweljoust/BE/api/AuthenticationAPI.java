@@ -8,7 +8,10 @@ import online.jeweljoust.BE.model.RegisterRequest;
 import online.jeweljoust.BE.service.AuthenticationService;
 import online.jeweljoust.BE.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,9 +44,20 @@ public class AuthenticationAPI {
     // }
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
-
         Account account = authenticationService.register(registerRequest);
         return ResponseEntity.ok(account);
+    }
+
+    @PostMapping("/registerManager")
+    public ResponseEntity registerManagement(@RequestBody RegisterRequest registerRequest) {
+        try {
+            Account account = authenticationService.registerManager(registerRequest);
+            return ResponseEntity.ok(account);
+        } catch (AuthenticationServiceException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+        }
     }
 
     @GetMapping("/accounts")

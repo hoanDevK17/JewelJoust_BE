@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.exception.AuthException;
+import online.jeweljoust.BE.model.AccountReponse;
 import online.jeweljoust.BE.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +27,9 @@ import java.util.List;
 public class Filter extends OncePerRequestFilter {
     @Autowired
     TokenService tokenService;
+
+    @Autowired
+    AccountReponse accountReponse;
 
     @Autowired
     @Qualifier("handlerExceptionResolver")
@@ -77,6 +81,7 @@ public class Filter extends OncePerRequestFilter {
             authenToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenToken);
             // token ok, cho vao`
+            accountReponse.setToken(token);
             filterChain.doFilter(request, response);
         }
     }

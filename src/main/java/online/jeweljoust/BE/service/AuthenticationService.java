@@ -11,9 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,6 +44,9 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     SecurityConfig securityConfig;
 
+    @Autowired
+    AccountReponse accountReponse;
+
     //xu ly logic
     public Account register(RegisterRequest registerRequest){
         //xu ly logic register
@@ -54,7 +60,6 @@ public class AuthenticationService implements UserDetailsService {
         account.setRole("Member");
         account.setCredibility(0);
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        //nh REPO ==> SAVE xun db
         return authenticationRepository.save(account);
     }
     public AccountReponse login(LoginRequest loginRequest){
@@ -85,20 +90,27 @@ public class AuthenticationService implements UserDetailsService {
         }
     }
 
-    public AccountReponse registerManagement(RegisterRequest registerRequest){
-        if (true){
-            Account account = new Account();
-            account.setUsername(registerRequest.getUsername());
-            account.setFullname(registerRequest.getFullname());
-            account.setAddress(registerRequest.getAddress());
-            account.setBirthday(registerRequest.getBirthday());
-            account.setEmail(registerRequest.getEmail());
-            account.setPhone(registerRequest.getPhone());
-            account.setRole("Management");
-            account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-            return (AccountReponse) authenticationRepository.save(account);
+    public Account registerManager(RegisterRequest registerRequest) throws AuthenticationServiceException{
+        String token = accountReponse.getToken();
+        try {
+            if ("Admin".equals(tokenService.extractAccount(token).getRole())){
+                Account account = new Account();
+                account.setUsername(registerRequest.getUsername());
+                account.setFullname(registerRequest.getFullname());
+                account.setAddress(registerRequest.getAddress());
+                account.setBirthday(registerRequest.getBirthday());
+                account.setEmail(registerRequest.getEmail());
+                account.setPhone(registerRequest.getPhone());
+                account.setRole("Manager");
+                account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+                return authenticationRepository.save(account);
+            } else {
+                throw new AuthenticationServiceException("Your role can't register manager!!!");
+            }
+        } catch (Exception e){
+            throw new AuthenticationServiceException("Error at register manager");
         }
-        return null;
+
     }
 
     public List<Account> getAllAccount(){

@@ -18,7 +18,4 @@ public class RegisterRequest {
     Date birthday;
     String email;
     String phone;
-    String role;
-    int credibility;
-
 }

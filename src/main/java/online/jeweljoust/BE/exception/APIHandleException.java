@@ -6,6 +6,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.naming.AuthenticationException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestControllerAdvice
@@ -15,6 +16,11 @@ public class APIHandleException {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleInvalidUserNamePassword(BadCredentialsException ex) {
         return new ResponseEntity<>("Username or password not correct!!!", HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<String> handleAuthenticationException(AuthenticationException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
