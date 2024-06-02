@@ -2,11 +2,13 @@ package online.jeweljoust.BE.service;
 
 import online.jeweljoust.BE.config.SecurityConfig;
 import online.jeweljoust.BE.entity.Account;
+//import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.exception.APIHandleException;
 import online.jeweljoust.BE.model.AccountReponse;
 import online.jeweljoust.BE.model.LoginRequest;
 import online.jeweljoust.BE.model.RegisterRequest;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
+//import online.jeweljoust.BE.respository.WalletRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,6 +45,8 @@ public class AuthenticationService implements UserDetailsService {
 
     @Autowired
     AuthenticationRepository authenticationRepository;
+//    @Autowired
+//    WalletRepository walletRepository;
 
     @Autowired
     SecurityConfig securityConfig;
@@ -62,6 +69,7 @@ public class AuthenticationService implements UserDetailsService {
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         return authenticationRepository.save(account);
     }
+
     public AccountReponse login(LoginRequest loginRequest){
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(

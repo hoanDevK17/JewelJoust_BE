@@ -2,11 +2,15 @@ package online.jeweljoust.BE.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.Account;
+//import online.jeweljoust.BE.entity.Wallet;
+import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.model.EmailDetail;
 import online.jeweljoust.BE.model.LoginRequest;
 import online.jeweljoust.BE.model.RegisterRequest;
 import online.jeweljoust.BE.service.AuthenticationService;
 import online.jeweljoust.BE.service.EmailService;
+//import online.jeweljoust.BE.service.WalletService;
+import online.jeweljoust.BE.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +28,8 @@ public class AuthenticationAPI {
     // Nhan request tu FE
     @Autowired
     AuthenticationService authenticationService;
-
+    @Autowired
+    WalletService walletService;
     @Autowired
     EmailService emailService;
 
@@ -45,6 +50,10 @@ public class AuthenticationAPI {
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
         Account account = authenticationService.register(registerRequest);
+        if(account.getUserid()>0){
+            Wallet wallet = walletService.registerWallet(account);
+            System.out.println(wallet);
+        }
         return ResponseEntity.ok(account);
     }
 
