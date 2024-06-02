@@ -11,6 +11,7 @@ import online.jeweljoust.BE.service.AuthenticationService;
 import online.jeweljoust.BE.service.EmailService;
 //import online.jeweljoust.BE.service.WalletService;
 import online.jeweljoust.BE.service.WalletService;
+import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,25 +29,16 @@ public class AuthenticationAPI {
     // Nhan request tu FE
     @Autowired
     AuthenticationService authenticationService;
+
     @Autowired
     WalletService walletService;
+
     @Autowired
     EmailService emailService;
 
-    // @GetMapping("/product/{id}")
-    // public ResponseEntity test(@PathVariable String id){
-    // return ResponseEntity.ok("Hello world");
-    // http://localhost:8080/api/product/123312312
-    // }
-    // @GetMapping("/product")
-    // public ResponseEntity test(@RequestParam("ID") String id ){
-    // return ResponseEntity.ok("Hello world");
-    // }
-    // http://localhost:8080/api/product?id=1233123
-    // @PostMapping("/product")
-    // public ResponseEntity test321(){
-    // return ResponseEntity.ok("Hello world");
-    // }
+    @Autowired
+    AccountUtils accountUtils;
+
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
         Account account = authenticationService.register(registerRequest);
@@ -57,10 +49,10 @@ public class AuthenticationAPI {
         return ResponseEntity.ok(account);
     }
 
-    @PostMapping("/registerManager")
-    public ResponseEntity registerManagement(@RequestBody RegisterRequest registerRequest) {
+    @PostMapping("/registerHaveRole")
+    public ResponseEntity registerHaveRole(@RequestBody RegisterRequest registerRequest) {
         try {
-            Account account = authenticationService.registerManager(registerRequest);
+            Account account = authenticationService.registerHaveRole(registerRequest);
             return ResponseEntity.ok(account);
         } catch (AuthenticationServiceException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
@@ -73,6 +65,11 @@ public class AuthenticationAPI {
     public ResponseEntity<List<Account>> getAccounts() {
         List<Account> accounts = authenticationService.getAllAccount();
         return ResponseEntity.ok(accounts);
+    }
+
+    @GetMapping("/testcurrent")
+    public Account current() {
+        return accountUtils.getAccountCurrent();
     }
 
     @PostMapping("login")

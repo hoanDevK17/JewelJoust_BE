@@ -24,7 +24,6 @@ public class Account implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long userid;
 
-    // bắt đầu thêm code
     @Column(unique = true)
     String username;
 
@@ -48,22 +47,10 @@ public class Account implements UserDetails {
 
     int credibility;
 
-    //hết code thêm
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
-
-//    @Override
-//    public String getPassword() {
-//        return this.password;
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return this.username;
-//    }
 
     @Override
     public boolean isAccountNonExpired() {
