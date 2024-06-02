@@ -81,7 +81,6 @@ public class Filter extends OncePerRequestFilter {
             authenToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenToken);
             // token ok, cho vao`
-            accountReponse.setToken(token);
             filterChain.doFilter(request, response);
         }
     }

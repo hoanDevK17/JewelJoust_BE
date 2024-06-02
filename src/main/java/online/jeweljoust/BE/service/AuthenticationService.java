@@ -9,6 +9,7 @@ import online.jeweljoust.BE.model.LoginRequest;
 import online.jeweljoust.BE.model.RegisterRequest;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
 //import online.jeweljoust.BE.respository.WalletRepository;
+import online.jeweljoust.BE.utils.AccountUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,6 @@ public class AuthenticationService implements UserDetailsService {
 
     @Autowired
     AuthenticationRepository authenticationRepository;
-//    @Autowired
-//    WalletRepository walletRepository;
 
     @Autowired
     SecurityConfig securityConfig;
@@ -54,9 +53,11 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     AccountReponse accountReponse;
 
+    @Autowired
+    AccountUtils accountUtils;
+
     //xu ly logic
     public Account register(RegisterRequest registerRequest){
-        //xu ly logic register
         Account account = new Account();
         account.setUsername(registerRequest.getUsername());
         account.setFullname(registerRequest.getFullname());
@@ -68,6 +69,30 @@ public class AuthenticationService implements UserDetailsService {
         account.setCredibility(0);
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         return authenticationRepository.save(account);
+    }
+
+    public Account registerHaveRole(RegisterRequest registerRequest) throws AuthenticationServiceException{
+        String role = accountUtils.getAccountCurrent().getRole();
+        Account account = new Account();
+        try {
+            if ("Admin".equals(role)){
+                account.setRole("Manager");
+            } else if ("Manager".equals(role)) {
+                account.setRole("Staff");
+            } else {
+                throw new AuthenticationServiceException("Your role not found!!!");
+            }
+                account.setUsername(registerRequest.getUsername());
+                account.setFullname(registerRequest.getFullname());
+                account.setAddress(registerRequest.getAddress());
+                account.setBirthday(registerRequest.getBirthday());
+                account.setEmail(registerRequest.getEmail());
+                account.setPhone(registerRequest.getPhone());
+                account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+                return authenticationRepository.save(account);
+        } catch (Exception e){
+            throw new AuthenticationServiceException("Error at register have a role!!!");
+        }
     }
 
     public AccountReponse login(LoginRequest loginRequest){
@@ -96,29 +121,6 @@ public class AuthenticationService implements UserDetailsService {
         } catch (AuthenticationException e){
             throw new BadCredentialsException("Incorrect username or password");
         }
-    }
-
-    public Account registerManager(RegisterRequest registerRequest) throws AuthenticationServiceException{
-        String token = accountReponse.getToken();
-        try {
-            if ("Admin".equals(tokenService.extractAccount(token).getRole())){
-                Account account = new Account();
-                account.setUsername(registerRequest.getUsername());
-                account.setFullname(registerRequest.getFullname());
-                account.setAddress(registerRequest.getAddress());
-                account.setBirthday(registerRequest.getBirthday());
-                account.setEmail(registerRequest.getEmail());
-                account.setPhone(registerRequest.getPhone());
-                account.setRole("Manager");
-                account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-                return authenticationRepository.save(account);
-            } else {
-                throw new AuthenticationServiceException("Your role can't register manager!!!");
-            }
-        } catch (Exception e){
-            throw new AuthenticationServiceException("Error at register manager");
-        }
-
     }
 
     public List<Account> getAllAccount(){
