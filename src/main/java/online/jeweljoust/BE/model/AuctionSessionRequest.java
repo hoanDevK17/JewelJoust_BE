@@ -1,28 +1,25 @@
-package online.jeweljoust.BE.entity;
+package online.jeweljoust.BE.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
-@Entity
+
+@Data
+@Service
 @Getter
 @Setter
-@ToString
-public class AutionSession {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long autionSessionid;
-    long auction_request_id;
-    long manager_id;
+public class AuctionSessionRequest {
+
+
     long staff_id;
     @Temporal(TemporalType.DATE)
     Date start_time;
     @Temporal(TemporalType.DATE)
     Date end_time;
-    @Temporal(TemporalType.DATE)
-    Date create_at;
     double initial_price;
     double min_stepPrice;
     double deposit_amount;
@@ -30,6 +27,5 @@ public class AutionSession {
     String name_session;
     String name_jewelrys;
     String description;
-    String status;
 
 }
