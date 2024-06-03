@@ -64,6 +64,7 @@ public class AuthenticationService implements UserDetailsService {
         account.setBirthday(registerRequest.getBirthday());
         account.setEmail(registerRequest.getEmail());
         account.setPhone(registerRequest.getPhone());
+        account.setStatus("Active");
         account.setRole("Member");
         account.setCredibility(0);
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
@@ -87,6 +88,7 @@ public class AuthenticationService implements UserDetailsService {
             account.setBirthday(registerRequest.getBirthday());
             account.setEmail(registerRequest.getEmail());
             account.setPhone(registerRequest.getPhone());
+            account.setStatus("Active");
             account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
             return authenticationRepository.save(account);
         } catch (Exception e){
@@ -115,6 +117,7 @@ public class AuthenticationService implements UserDetailsService {
             accountReponse.setPhone(account.getPhone());
             accountReponse.setRole(account.getRole());
             accountReponse.setCredibility(account.getCredibility());
+            accountReponse.setStatus(account.getStatus());
             accountReponse.setToken(token);
             return accountReponse;
         } catch (AuthenticationException e){
@@ -186,7 +189,6 @@ public class AuthenticationService implements UserDetailsService {
 
     public Account updateProfile(UpdateProfileRequest updateProfileRequest) {
         Account account = authenticationRepository.findAccountByUserid(updateProfileRequest.getUserid());
-        System.out.println(account.toString());
         account.setFullname(updateProfileRequest.getFullname());
         account.setAddress(updateProfileRequest.getAddress());
         account.setBirthday(updateProfileRequest.getBirthday());
@@ -197,5 +199,11 @@ public class AuthenticationService implements UserDetailsService {
 
     public List<Account> getAccountByName(String name) {
         return authenticationRepository.findAccountByFullnameContaining(name) ;
+    }
+
+    public void blockAccount(long userid, String status) {
+        Account account = authenticationRepository.findAccountByUserid(userid);
+        account.setStatus(status);
+        authenticationRepository.save(account);
     }
 }

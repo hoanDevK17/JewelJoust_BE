@@ -91,8 +91,15 @@ public class AuthenticationAPI {
     @PostMapping("login")
     public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
         Account account = authenticationService.login(loginRequest);
-        return ResponseEntity.ok(account);
+        System.out.println(account.getStatus());
+        if ("Active".equals(account.getStatus())){
+            return ResponseEntity.ok(account);
+        } else {
+            throw new AuthenticationServiceException("Your account locked!!!");
+        }
     }
+
+//    Active (Hoạt động), Locked (Bị khóa)
 
     @PostMapping("/login-google")
     public ResponseEntity<AccountReponse> loginGoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
@@ -136,6 +143,17 @@ public class AuthenticationAPI {
             return ResponseEntity.ok(accounts);
         } else {
              throw new AuthenticationServiceException("Your role not exception!!!");
+        }
+    }
+
+    @PutMapping("/block-account/{userid}")
+    public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, String status){
+        String role = accountUtils.getAccountCurrent().getRole();
+        if ("Admin".equals(role)){
+            authenticationService.blockAccount(userid, status);
+            return ResponseEntity.ok("Account has been changed");
+        } else {
+            throw new AuthenticationServiceException("Your role not exception!!!");
         }
     }
 
