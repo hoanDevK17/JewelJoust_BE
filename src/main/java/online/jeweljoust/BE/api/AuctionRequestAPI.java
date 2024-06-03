@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api")
 @SecurityRequirement(name = "api")
 
-public class AuctionAPI {
+public class AuctionRequestAPI {
 
     @Autowired
     AuctionSaleService auctionSaleService;

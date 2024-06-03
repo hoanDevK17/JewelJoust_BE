@@ -78,7 +78,12 @@ public class AuthenticationAPI {
 
     @PostMapping("/login-google")
     public ResponseEntity<AccountReponse> loginGoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
-        return ResponseEntity.ok(authenticationService.loginGoogle(loginGoogleRequest));
+        AccountReponse accountReponse = authenticationService.loginGoogle(loginGoogleRequest);
+        if(accountReponse.getUserid()>0){
+            Wallet wallet = walletService.registerWallet(accountReponse);
+            System.out.println(wallet);
+        }
+        return ResponseEntity.ok(accountReponse);
     }
 
     @PostMapping("/forgot-password")
@@ -90,6 +95,9 @@ public class AuthenticationAPI {
     public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         authenticationService.resetPassword(resetPasswordRequest);
     }
+
+//    @PutMapping("/update-profile")
+    
 
     @GetMapping("send-mail")
     public void sendMail() {

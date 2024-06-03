@@ -23,7 +23,9 @@ public class EmailService {
         try{
             Context context = new Context();
 
-            context.setVariable("name", "Gia Bảo");
+            context.setVariable("name", "Hoan");
+            context.setVariable("link", emailDetail.getLink());
+            context.setVariable("button", emailDetail.getButtonValue());
 
             String text = templateEngine.process("emailtemplate", context);
 
@@ -36,7 +38,9 @@ public class EmailService {
             mimeMessageHelper.setTo(emailDetail.getRecipient());
             mimeMessageHelper.setText(text, true);
             mimeMessageHelper.setSubject(emailDetail.getSubject());
+
             javaMailSender.send(mimeMessage);
+
         }catch (MessagingException messagingException){
             messagingException.printStackTrace();
         }

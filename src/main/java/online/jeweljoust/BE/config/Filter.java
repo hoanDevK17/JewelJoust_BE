@@ -41,7 +41,9 @@ public class Filter extends OncePerRequestFilter {
             "/swagger-resources/**",
             "/api/login",
             "/api/register",
-            "/api/test"
+            "/api/test",
+            "/api/forgot-password"
+
     );
     private boolean isPermitted(String uri){
         AntPathMatcher pathMatcher= new AntPathMatcher();
