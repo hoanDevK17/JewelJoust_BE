@@ -1,2 +1,13 @@
-package online.jeweljoust.BE.model;public class ResetPasswordRequest {
+package online.jeweljoust.BE.model;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
+@Data
+@Getter
+@Setter
+
+public class ResetPasswordRequest {
+    private String password;
 }

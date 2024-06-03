@@ -4,9 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.Account;
 //import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.entity.Wallet;
-import online.jeweljoust.BE.model.EmailDetail;
-import online.jeweljoust.BE.model.LoginRequest;
-import online.jeweljoust.BE.model.RegisterRequest;
+import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.service.AuthenticationService;
 import online.jeweljoust.BE.service.EmailService;
 //import online.jeweljoust.BE.service.WalletService;
@@ -76,6 +74,21 @@ public class AuthenticationAPI {
     public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
         Account account = authenticationService.login(loginRequest);
         return ResponseEntity.ok(account);
+    }
+
+    @PostMapping("/login-google")
+    public ResponseEntity<AccountReponse> loginGoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
+        return ResponseEntity.ok(authenticationService.loginGoogle(loginGoogleRequest));
+    }
+
+    @PostMapping("/forgot-password")
+    public void forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        authenticationService.forgotPassword(forgotPasswordRequest);
+    }
+
+    @PostMapping("/reset-password")
+    public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        authenticationService.resetPassword(resetPasswordRequest);
     }
 
     @GetMapping("send-mail")

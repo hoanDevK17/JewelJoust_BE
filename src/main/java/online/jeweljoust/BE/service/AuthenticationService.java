@@ -1,15 +1,13 @@
 package online.jeweljoust.BE.service;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 import online.jeweljoust.BE.config.SecurityConfig;
 import online.jeweljoust.BE.entity.Account;
-//import online.jeweljoust.BE.entity.Wallet;
-import online.jeweljoust.BE.exception.APIHandleException;
-import online.jeweljoust.BE.model.AccountReponse;
-import online.jeweljoust.BE.model.LoginRequest;
-import online.jeweljoust.BE.model.RegisterRequest;
+import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
-//import online.jeweljoust.BE.respository.WalletRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
+import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -56,6 +52,9 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     AccountUtils accountUtils;
 
+    @Autowired
+    EmailService emailService;
+
     //xu ly logic
     public Account register(RegisterRequest registerRequest){
         Account account = new Account();
@@ -82,14 +81,14 @@ public class AuthenticationService implements UserDetailsService {
             } else {
                 throw new AuthenticationServiceException("Your role not found!!!");
             }
-                account.setUsername(registerRequest.getUsername());
-                account.setFullname(registerRequest.getFullname());
-                account.setAddress(registerRequest.getAddress());
-                account.setBirthday(registerRequest.getBirthday());
-                account.setEmail(registerRequest.getEmail());
-                account.setPhone(registerRequest.getPhone());
-                account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-                return authenticationRepository.save(account);
+            account.setUsername(registerRequest.getUsername());
+            account.setFullname(registerRequest.getFullname());
+            account.setAddress(registerRequest.getAddress());
+            account.setBirthday(registerRequest.getBirthday());
+            account.setEmail(registerRequest.getEmail());
+            account.setPhone(registerRequest.getPhone());
+            account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+            return authenticationRepository.save(account);
         } catch (Exception e){
             throw new AuthenticationServiceException("Error at register have a role!!!");
         }
@@ -105,27 +104,79 @@ public class AuthenticationService implements UserDetailsService {
             if (account == null || !securityConfig.passwordEncoder().matches(loginRequest.getPassword(), account.getPassword())) {
                 throw new BadCredentialsException("Incorrect username or password");
             }
-                AccountReponse accountReponse = new AccountReponse();
-                String token = tokenService.generateToken(account);
-                accountReponse.setUsername(account.getUsername());
-                accountReponse.setUserid(account.getUserid());
-                accountReponse.setFullname(account.getFullname());
-                accountReponse.setAddress(account.getAddress());
-                accountReponse.setBirthday(account.getBirthday());
-                accountReponse.setEmail(account.getEmail());
-                accountReponse.setPhone(account.getPhone());
-                accountReponse.setRole(account.getRole());
-                accountReponse.setCredibility(account.getCredibility());
-                accountReponse.setToken(token);
-                return accountReponse;
+            AccountReponse accountReponse = new AccountReponse();
+            String token = tokenService.generateToken(account);
+            accountReponse.setUsername(account.getUsername());
+            accountReponse.setUserid(account.getUserid());
+            accountReponse.setFullname(account.getFullname());
+            accountReponse.setAddress(account.getAddress());
+            accountReponse.setBirthday(account.getBirthday());
+            accountReponse.setEmail(account.getEmail());
+            accountReponse.setPhone(account.getPhone());
+            accountReponse.setRole(account.getRole());
+            accountReponse.setCredibility(account.getCredibility());
+            accountReponse.setToken(token);
+            return accountReponse;
         } catch (AuthenticationException e){
             throw new BadCredentialsException("Incorrect username or password");
         }
     }
 
+    public AccountReponse loginGoogle(LoginGoogleRequest loginGoogleRequest){
+        AccountReponse accountReponse = new AccountReponse();
+        try {
+            FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
+            String email = firebaseToken.getEmail();
+            Account account = authenticationRepository.findAccountByEmail(email);
+            if (account == null){
+                account.setFullname(firebaseToken.getName());
+                account.setEmail(firebaseToken.getEmail());
+                authenticationRepository.save(account);
+            }
+            accountReponse.setUserid(account.getUserid());
+            accountReponse.setFullname(account.getFullname());
+            accountReponse.setEmail(account.getEmail());
+            accountReponse.setToken(tokenService.generateToken(account));
+        } catch (Exception e){
+            e.getMessage();
+        }
+        return accountReponse;
+    }
+
     public List<Account> getAllAccount(){
         return authenticationRepository.findAll();
     }
+
+    public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
+        Account account =  authenticationRepository.findAccountByEmail(forgotPasswordRequest.getEmail());
+        if (account == null){
+            try {
+                throw new BadRequestException("Account not found!!!");
+            } catch (BadRequestException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        EmailDetail emailDetail = new EmailDetail();
+        emailDetail.setRecipient(account.getEmail());
+        emailDetail.setSubject("Reset password for account " + forgotPasswordRequest.getEmail() + "!");
+        emailDetail.setMsgBody("");
+        emailDetail.setButtonValue("Reset password");
+        emailDetail.setLink("http://jeweljoust.online/reset-password?token=" + tokenService.generateToken(account));
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                emailService.sendMailTemplate(emailDetail);
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        Account account = accountUtils.getAccountCurrent();
+        account.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword()));
+        authenticationRepository.save(account);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return authenticationRepository.findAccountByUsername(username);
