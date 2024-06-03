@@ -144,9 +144,6 @@ public class AuthenticationService implements UserDetailsService {
         return accountReponse;
     }
 
-//    public Account updateProfile(UpdateProfileRequest updateProfileRequest){
-//
-//    }
     public List<Account> getAllAccount(){
         return authenticationRepository.findAll();
     }
@@ -186,5 +183,15 @@ public class AuthenticationService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return authenticationRepository.findAccountByUsername(username);
+    }
+
+    public Account updateProfile(UpdateProfileRequest updateProfileRequest) {
+        Account account = authenticationRepository.findAccountByUserid(updateProfileRequest.getUserid());
+        account.setFullname(updateProfileRequest.getFullname());
+        account.setAddress(updateProfileRequest.getAddress());
+        account.setBirthday(updateProfileRequest.getBirthday());
+        account.setEmail(updateProfileRequest.getEmail());
+        account.setPhone(updateProfileRequest.getPhone());
+        return authenticationRepository.save(account);
     }
 }

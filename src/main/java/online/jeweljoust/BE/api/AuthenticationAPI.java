@@ -96,8 +96,16 @@ public class AuthenticationAPI {
         authenticationService.resetPassword(resetPasswordRequest);
     }
 
-//    @PutMapping("/update-profile")
-    
+    @PutMapping("/update-profile")
+    public ResponseEntity<Account> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest){
+        Account accountCurrent = accountUtils.getAccountCurrent();
+
+        Account account = new Account();
+        if ("Admin".equals(accountCurrent.getRole()) || updateProfileRequest.getUserid() == accountCurrent.getUserid()){
+            authenticationService.updateProfile(updateProfileRequest);
+        }
+        return ResponseEntity.ok(account);
+    }
 
     @GetMapping("send-mail")
     public void sendMail() {
