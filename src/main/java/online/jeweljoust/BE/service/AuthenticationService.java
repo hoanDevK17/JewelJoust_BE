@@ -187,6 +187,7 @@ public class AuthenticationService implements UserDetailsService {
 
     public Account updateProfile(UpdateProfileRequest updateProfileRequest) {
         Account account = authenticationRepository.findAccountByUserid(updateProfileRequest.getUserid());
+        System.out.println(account.toString());
         account.setFullname(updateProfileRequest.getFullname());
         account.setAddress(updateProfileRequest.getAddress());
         account.setBirthday(updateProfileRequest.getBirthday());
