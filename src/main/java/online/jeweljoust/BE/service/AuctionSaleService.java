@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 
@@ -29,8 +30,8 @@ public class AuctionSaleService {
                 LocalDateTime now = LocalDateTime.now();
                 auctionRequest.setUserid(accountUtils.getAccountCurrent().getUserid());
                 auctionRequest.setRequestdate(now);
-                auctionRequest.setJewelryname(auctionRequest.getJewelryname());
-                auctionRequest.setJewelrydescription(auctionRequest.getJewelrydescription());
+                auctionRequest.setJewelryname(auctionSaleReponse.getJewelryName());
+                auctionRequest.setJewelrydescription(auctionSaleReponse.getJewelryDescription());
                 auctionRequest.setJewelryinitialprice(0);
                 auctionRequest.setStatus("Pending");
                 return auctionRepository.save(auctionRequest);
@@ -43,4 +44,14 @@ public class AuctionSaleService {
         return null;
     }
 
+    public List<AuctionRequest> getAuctionRequest() {
+        long userid = accountUtils.getAccountCurrent().getUserid();
+        return auctionRepository.findAuctionRequestByUserid(userid);
+    }
+
+    public AuctionRequest cancelRequest(String status, long auctionrequestid) {
+        AuctionRequest auctionRequest = auctionRepository.findAuctionSaleByAuctionrequestid(auctionrequestid);
+        auctionRequest.setStatus(status);
+        return auctionRepository.save(auctionRequest);
+    }
 }
