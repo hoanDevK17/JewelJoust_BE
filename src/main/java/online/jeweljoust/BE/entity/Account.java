@@ -47,6 +47,8 @@ public class Account implements UserDetails {
 
     int credibility;
 
+    String status;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
