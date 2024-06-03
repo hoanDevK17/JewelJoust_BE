@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import online.jeweljoust.BE.config.SecurityConfig;
 import online.jeweljoust.BE.entity.Account;
+import online.jeweljoust.BE.entity.AuctionRequest;
 import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
@@ -143,6 +144,9 @@ public class AuthenticationService implements UserDetailsService {
         return accountReponse;
     }
 
+//    public Account updateProfile(UpdateProfileRequest updateProfileRequest){
+//
+//    }
     public List<Account> getAllAccount(){
         return authenticationRepository.findAll();
     }
@@ -161,7 +165,9 @@ public class AuthenticationService implements UserDetailsService {
         emailDetail.setSubject("Reset password for account " + forgotPasswordRequest.getEmail() + "!");
         emailDetail.setMsgBody("");
         emailDetail.setButtonValue("Reset password");
-        emailDetail.setLink("http://jeweljoust.online/reset-password?token=" + tokenService.generateToken(account));
+        String token = tokenService.generateToken(account);
+        System.out.println(token);
+        emailDetail.setLink("http://jeweljoust.online/reset-password?token=" +token);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -172,9 +178,9 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        Account account = accountUtils.getAccountCurrent();
-        account.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword()));
-        authenticationRepository.save(account);
+            Account account = accountUtils.getAccountCurrent();
+            account.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword()));
+            authenticationRepository.save(account);
     }
 
     @Override
