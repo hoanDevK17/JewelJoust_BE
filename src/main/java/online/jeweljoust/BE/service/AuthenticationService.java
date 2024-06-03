@@ -56,7 +56,6 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     EmailService emailService;
 
-    //xu ly logic
     public Account register(RegisterRequest registerRequest){
         Account account = new Account();
         account.setUsername(registerRequest.getUsername());
@@ -194,5 +193,9 @@ public class AuthenticationService implements UserDetailsService {
         account.setEmail(updateProfileRequest.getEmail());
         account.setPhone(updateProfileRequest.getPhone());
         return authenticationRepository.save(account);
+    }
+
+    public List<Account> getAccountByName(String name) {
+        return authenticationRepository.findAccountByFullnameContaining(name) ;
     }
 }
