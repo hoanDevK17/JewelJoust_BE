@@ -2,6 +2,7 @@ package online.jeweljoust.BE.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,8 +19,8 @@ public class APIHandleException {
         return new ResponseEntity<>("Username or password not correct!!!", HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<String> handleAuthenticationException(AuthenticationException e) {
+    @ExceptionHandler(AuthenticationServiceException.class)
+    public ResponseEntity<String> handleAuthenticationServiceException(AuthenticationServiceException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
