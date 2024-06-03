@@ -101,8 +101,11 @@ public class AuthenticationAPI {
         Account accountCurrent = accountUtils.getAccountCurrent();
 
         Account account = new Account();
-        if ("Admin".equals(accountCurrent.getRole()) || updateProfileRequest.getUserid() == accountCurrent.getUserid()){
-            authenticationService.updateProfile(updateProfileRequest);
+        if ("Admin".equals(accountCurrent.getRole()) ){
+            account = authenticationService.updateProfile(updateProfileRequest);
+        }else{
+            updateProfileRequest.setUserid(accountCurrent.getUserid());
+            account = authenticationService.updateProfile(updateProfileRequest);
         }
         return ResponseEntity.ok(account);
     }
