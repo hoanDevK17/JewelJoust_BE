@@ -1,6 +1,5 @@
 package online.jeweljoust.BE.api;
 
-import com.google.api.gax.rpc.UnauthenticatedException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.Wallet;
@@ -9,10 +8,10 @@ import online.jeweljoust.BE.service.AuthenticationService;
 import online.jeweljoust.BE.service.EmailService;
 import online.jeweljoust.BE.service.WalletService;
 import online.jeweljoust.BE.utils.AccountUtils;
-import org.apache.http.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,23 +57,18 @@ public class AuthenticationAPI {
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
         Account account = authenticationService.register(registerRequest);
-        if(account.getUserid()>0){
+        if(account!=null){
             Wallet wallet = walletService.registerWallet(account);
-            System.out.println(wallet);
+
         }
         return ResponseEntity.ok(account);
     }
 
-    @PostMapping("/register-have -role")
+    @PostMapping("/register-have-role")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity registerHaveRole(@RequestBody RegisterRequest registerRequest) {
-        try {
             Account account = authenticationService.registerHaveRole(registerRequest);
             return ResponseEntity.ok(account);
-        } catch (AuthenticationServiceException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
-        }
     }
 
     @GetMapping("/accounts")
@@ -104,7 +98,7 @@ public class AuthenticationAPI {
     @PostMapping("/login-google")
     public ResponseEntity<AccountReponse> loginGoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
         AccountReponse accountReponse = authenticationService.loginGoogle(loginGoogleRequest);
-        if(accountReponse.getUserid()>0){
+        if(accountReponse.getId()>0){
             Wallet wallet = walletService.registerWallet(accountReponse);
             System.out.println(wallet);
         }
@@ -129,33 +123,33 @@ public class AuthenticationAPI {
         if ("Admin".equals(accountCurrent.getRole()) ){
             account = authenticationService.updateProfile(updateProfileRequest);
         }else{
-            updateProfileRequest.setUserid(accountCurrent.getUserid());
+            updateProfileRequest.setUserid(accountCurrent.getId());
             account = authenticationService.updateProfile(updateProfileRequest);
         }
         return ResponseEntity.ok(account);
     }
 
-    @GetMapping("/accounts-by-name/{name}")
-    public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name) throws AuthenticationException {
-        String role = accountUtils.getAccountCurrent().getRole();
-        if ("Admin".equals(role)){
-            List<Account> accounts = authenticationService.getAccountByName(name);
-            return ResponseEntity.ok(accounts);
-        } else {
-             throw new AuthenticationServiceException("Your role not exception!!!");
-        }
-    }
+//    @GetMapping("/accounts-by-name/{name}")
+//    public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name) throws AuthenticationException {
+//        String role = accountUtils.getAccountCurrent().getRole();
+//        if ("Admin".equals(role)){
+//            List<Account> accounts = authenticationService.getAccountByName(name);
+//            return ResponseEntity.ok(accounts);
+//        } else {
+//             throw new AuthenticationServiceException("Your role not exception!!!");
+//        }
+//    }
 
-    @PutMapping("/block-account/{userid}")
-    public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, String status){
-        String role = accountUtils.getAccountCurrent().getRole();
-        if ("Admin".equals(role)){
-            authenticationService.blockAccount(userid, status);
-            return ResponseEntity.ok("Account has been changed");
-        } else {
-            throw new AuthenticationServiceException("Your role not exception!!!");
-        }
-    }
+//    @PutMapping("/block-account/{userid}")
+//    public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, String status){
+//        String role = accountUtils.getAccountCurrent().getRole();
+//        if ("Admin".equals(role)){
+//            authenticationService.blockAccount(userid, status);
+//            return ResponseEntity.ok("Account has been changed");
+//        } else {
+//            throw new AuthenticationServiceException("Your role not exception!!!");
+//        }
+//    }
 
     @GetMapping("send-mail")
     public void sendMail() {

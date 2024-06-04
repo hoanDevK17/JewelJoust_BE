@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 public class AuctionRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long auctionrequestid;
+    Long id;
 
-    long userid;
+
 
     @Column(nullable = false)
     LocalDateTime requestdate;
@@ -29,5 +29,13 @@ public class AuctionRequest {
     double jewelryinitialprice;
 
     String status;
+
+
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    Account account;
+
+
+
 
 }

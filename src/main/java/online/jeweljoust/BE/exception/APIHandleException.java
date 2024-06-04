@@ -2,6 +2,7 @@ package online.jeweljoust.BE.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +23,11 @@ public class APIHandleException {
     @ExceptionHandler(AuthenticationServiceException.class)
     public ResponseEntity<String> handleAuthenticationServiceException(AuthenticationServiceException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAuthenticationServiceException(AccessDeniedException e) {
+        return new ResponseEntity<>("No access to register", HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
