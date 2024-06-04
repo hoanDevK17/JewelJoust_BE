@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseToken;
 import online.jeweljoust.BE.config.SecurityConfig;
 import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.enums.AccountRole;
+import online.jeweljoust.BE.enums.AccountStatus;
 import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
@@ -61,7 +62,7 @@ public class AuthenticationService implements UserDetailsService {
         account.setBirthday(registerRequest.getBirthday());
         account.setEmail(registerRequest.getEmail());
         account.setPhone(registerRequest.getPhone());
-        account.setStatus("Active");
+        account.setStatus(AccountStatus.ACTIVE.name());
         account.setRole(AccountRole.MEMBER);
         account.setCredibility(0);
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
@@ -71,14 +72,14 @@ public class AuthenticationService implements UserDetailsService {
     public Account registerHaveRole(RegisterRequest registerRequest) throws AuthenticationServiceException{
         Account account = new Account();
         try {
-            account.setRole(registerRequest.getRole().equalsIgnoreCase("manager")?AccountRole.MANAGER:AccountRole.STAFF);
+            account.setRole(registerRequest.getRole().equalsIgnoreCase("MANAGER")?AccountRole.MANAGER:AccountRole.STAFF);
             account.setUsername(registerRequest.getUsername());
             account.setFullname(registerRequest.getFullname());
             account.setAddress(registerRequest.getAddress());
             account.setBirthday(registerRequest.getBirthday());
             account.setEmail(registerRequest.getEmail());
             account.setPhone(registerRequest.getPhone());
-            account.setStatus("Active");
+            account.setStatus(AccountStatus.ACTIVE.name());
             account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
             return authenticationRepository.save(account);
         } catch (Exception e){
@@ -179,7 +180,7 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public Account updateProfile(UpdateProfileRequest updateProfileRequest) {
-        Account account = authenticationRepository.findAccountById(updateProfileRequest.getUserid());
+        Account account = authenticationRepository.findById(updateProfileRequest.getId());
         account.setFullname(updateProfileRequest.getFullname());
         account.setAddress(updateProfileRequest.getAddress());
         account.setBirthday(updateProfileRequest.getBirthday());
@@ -192,9 +193,13 @@ public class AuthenticationService implements UserDetailsService {
         return authenticationRepository.findByFullnameContaining(name) ;
     }
 
-    public void blockAccount(long userid, String status) {
-        Account account = authenticationRepository.findAccountById(userid);
+    public void blockAccount(long id, String status) {
+        Account account = authenticationRepository.findById(id);
         account.setStatus(status);
         authenticationRepository.save(account);
     }
+
+//    public void deleteAccountById(long id) {
+//        Account account = authenticationRepository.de
+//    }
 }

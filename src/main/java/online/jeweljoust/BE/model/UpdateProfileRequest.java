@@ -13,7 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class UpdateProfileRequest {
-    long userid;
+    long id;
     String fullname;
     String address;
     Date birthday;
