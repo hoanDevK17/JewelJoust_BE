@@ -54,4 +54,13 @@ public class AuctionSaleService {
         auctionRequest.setStatus(status);
         return auctionRepository.save(auctionRequest);
     }
+
+    public List<AuctionRequest> getAuctionRequestByStatus(String status) {
+        String role = accountUtils.getAccountCurrent().getRole();
+        if (role.equals("Manager") || role.equals("Staff")){
+            return auctionRepository.findAuctionRequestByStatus(status);
+        } else {
+            throw new AuthenticationServiceException("Your role not accept!!!");
+        }
+    }
 }

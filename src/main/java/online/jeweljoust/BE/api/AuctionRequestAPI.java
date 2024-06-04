@@ -41,4 +41,10 @@ public class AuctionRequestAPI {
         AuctionRequest auctionRequest = auctionSaleService.cancelRequest(status, auctionrequestid);
         return ResponseEntity.ok(auctionRequest);
     }
+
+    @GetMapping("/list-auction-request-by-status/{status}")
+    public ResponseEntity<List<AuctionRequest>> getAuctionRequestByStatus(@PathVariable("status") String status) {
+        List<AuctionRequest> auctionRequests = auctionSaleService.getAuctionRequestByStatus(status);
+        return ResponseEntity.ok(auctionRequests);
+    }
 }
