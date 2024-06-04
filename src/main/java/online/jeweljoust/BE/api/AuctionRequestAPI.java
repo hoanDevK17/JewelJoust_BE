@@ -1,18 +1,12 @@
 package online.jeweljoust.BE.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.AuctionRequest;
-import online.jeweljoust.BE.model.AuctionSaleReponse;
-import online.jeweljoust.BE.model.UpdateProfileRequest;
-import online.jeweljoust.BE.service.AuctionSaleService;
-import org.apache.http.auth.AuthenticationException;
+import online.jeweljoust.BE.model.AuctionRequestReponse;
+import online.jeweljoust.BE.service.AuctionRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api")
@@ -21,10 +15,10 @@ import java.util.List;
 public class AuctionRequestAPI {
 
     @Autowired
-    AuctionSaleService auctionSaleService;
+    AuctionRequestService auctionRequestService;
 
     @PostMapping("/request-sale")
-    public ResponseEntity requestSaleAuction(@RequestBody AuctionSaleReponse auctionSaleReponse) {
+    public ResponseEntity requestSaleAuction(@RequestBody AuctionRequestReponse auctionRequestReponse) {
 //        AuctionRequest auctionRequest = auctionSaleService.requestSale(auctionSaleReponse);
         AuctionRequest auctionRequest   = new AuctionRequest();
 

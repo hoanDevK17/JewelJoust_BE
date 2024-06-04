@@ -10,14 +10,8 @@ import java.util.List;
 @Repository
 public interface AuctionRepository extends JpaRepository<AuctionRequest, Long>
 {
-
-//    AuctionRequest find\\ByUserid (long userid);
-//     AuctionRequest findById (long id);
-//     List<AuctionRequest> findByAccountId(long userid);
-
-//     AuctionRequest findAuctionSaleByUserid (Long userid);
-//     AuctionRequest findAuctionSaleByAuctionrequestid (Long auctionrequestid);
-//     List<AuctionRequest> findAuctionRequestByUserid(long userid);
-//     List<AuctionRequest> findAuctionRequestByStatus(String status);
+     AuctionRequest findById (long id);
+     List<AuctionRequest> findByAccountId(long userid);
+     List<AuctionRequest> findAuctionRequestByStatus(String status);
 
 }

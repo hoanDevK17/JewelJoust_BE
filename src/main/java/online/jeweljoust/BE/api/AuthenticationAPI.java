@@ -130,16 +130,12 @@ public class AuthenticationAPI {
     }
 
 
-//    @GetMapping("/accounts-by-name/{name}")
-//    public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name) throws AuthenticationException {
-//        String role = accountUtils.getAccountCurrent().getRole();
-//        if ("Admin".equals(role)){
-//            List<Account> accounts = authenticationService.getAccountByName(name);
-//            return ResponseEntity.ok(accounts);
-//        } else {
-//             throw new AuthenticationServiceException("Your role not exception!!!");
-//        }
-//    }
+    @GetMapping("/accounts-by-name/{name}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name) {
+        List<Account> accounts = authenticationService.getAccountByName(name);
+        return ResponseEntity.ok(accounts);
+    }
 
 //    @PutMapping("/block-account/{userid}")
 //    public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, String status){
@@ -151,8 +147,8 @@ public class AuthenticationAPI {
 //            throw new AuthenticationServiceException("Your role not exception!!!");
 //        }
 //    }
-=======
-    @GetMapping("/search-accounts-by-name/{name}")
+
+//    @GetMapping("/search-accounts-by-name/{name}")
 //     public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name) throws AuthenticationException {
 //         String role = accountUtils.getAccountCurrent().getRole();
 //         if ("Admin".equals(role)){

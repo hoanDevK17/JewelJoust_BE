@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Getter
 @Setter
 
-public class AuctionSaleReponse {
+public class AuctionRequestReponse {
     String jewelryName;
     String jewelryDescription;
     double initialPrice;
