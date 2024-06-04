@@ -3,13 +3,13 @@ package online.jeweljoust.BE.api;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.Wallet;
+import online.jeweljoust.BE.enums.AccountStatus;
 import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.service.AuthenticationService;
 import online.jeweljoust.BE.service.EmailService;
 import online.jeweljoust.BE.service.WalletService;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -67,11 +67,12 @@ public class AuthenticationAPI {
     @PostMapping("/register-have-role")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity registerHaveRole(@RequestBody RegisterRequest registerRequest) {
-            Account account = authenticationService.registerHaveRole(registerRequest);
-            return ResponseEntity.ok(account);
+        Account account = authenticationService.registerHaveRole(registerRequest);
+        return ResponseEntity.ok(account);
     }
 
     @GetMapping("/accounts")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<Account>> getAccounts() {
         List<Account> accounts = authenticationService.getAllAccount();
         return ResponseEntity.ok(accounts);
@@ -85,15 +86,12 @@ public class AuthenticationAPI {
     @PostMapping("login")
     public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
         Account account = authenticationService.login(loginRequest);
-        System.out.println(account.getStatus());
-        if ("Active".equals(account.getStatus())){
+        if (account.getStatus().equalsIgnoreCase(AccountStatus.ACTIVE.name())){
             return ResponseEntity.ok(account);
         } else {
             throw new AuthenticationServiceException("Your account locked!!!");
         }
     }
-
-//    Active (Hoạt động), Locked (Bị khóa)
 
     @PostMapping("/login-google")
     public ResponseEntity<AccountReponse> loginGoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
@@ -117,59 +115,36 @@ public class AuthenticationAPI {
 
     @PutMapping("/update-profile")
     public ResponseEntity<Account> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest){
-        Account accountCurrent = accountUtils.getAccountCurrent();
-
+        String role = accountUtils.getAccountCurrent().getRole().name();
+        long id = accountUtils.getAccountCurrent().getId();
         Account account = new Account();
-        if ("Admin".equals(accountCurrent.getRole()) ){
-            account = authenticationService.updateProfile(updateProfileRequest);
-        }else{
-            updateProfileRequest.setUserid(accountCurrent.getId());
-            account = authenticationService.updateProfile(updateProfileRequest);
+        if (role.equalsIgnoreCase("MEMBER")){
+            updateProfileRequest.setId(id);
         }
+        account = authenticationService.updateProfile(updateProfileRequest);
         return ResponseEntity.ok(account);
     }
 
-
-    @GetMapping("/accounts-by-name/{name}")
+    @PutMapping("/block-account/{userid}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name) {
-        List<Account> accounts = authenticationService.getAccountByName(name);
-        return ResponseEntity.ok(accounts);
+    public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, String status){
+        authenticationService.blockAccount(userid, status);
+        return ResponseEntity.ok("Account has been changed");
     }
 
-//    @PutMapping("/block-account/{userid}")
-//    public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, String status){
-//        String role = accountUtils.getAccountCurrent().getRole();
-//        if ("Admin".equals(role)){
-//            authenticationService.blockAccount(userid, status);
-//            return ResponseEntity.ok("Account has been changed");
-//        } else {
-//            throw new AuthenticationServiceException("Your role not exception!!!");
-//        }
-//    }
+    @GetMapping("/search-accounts-by-name/{name}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+     public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name){
+         List<Account> accounts = authenticationService.getAccountByName(name);
+         return ResponseEntity.ok(accounts);
+     }
 
-//    @GetMapping("/search-accounts-by-name/{name}")
-//     public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name) throws AuthenticationException {
-//         String role = accountUtils.getAccountCurrent().getRole();
-//         if ("Admin".equals(role)){
-//             List<Account> accounts = authenticationService.getAccountByName(name);
-//             return ResponseEntity.ok(accounts);
-//         } else {
-//              throw new AuthenticationServiceException("Your role not exception!!!");
-//         }
+//     @DeleteMapping("/delete-account-by-id/{id}")
+//     @PreAuthorize("hasAuthority('ADMIN')")
+//     public ResponseEntity<String> deleteAccountById(@PathVariable("id") long id){
+//        authenticationService.deleteAccountById(id);
+//        return ResponseEntity.ok("Deleted successfully!!!");
 //     }
-
-//     @PutMapping("/block-account/{userid}")
-//     public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, String status){
-//         String role = accountUtils.getAccountCurrent().getRole();
-//         if ("Admin".equals(role)){
-//             authenticationService.blockAccount(userid, status);
-//             return ResponseEntity.ok("Account has been changed");
-//         } else {
-//             throw new AuthenticationServiceException("Your role not exception!!!");
-//         }
-//     }
-
 
     @GetMapping("send-mail")
     public void sendMail() {

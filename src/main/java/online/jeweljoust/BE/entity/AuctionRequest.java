@@ -30,7 +30,7 @@ public class AuctionRequest {
 
 
     @ManyToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "member_id")
     Account account;
 
 
