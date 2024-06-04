@@ -135,7 +135,7 @@ public class AuthenticationAPI {
         return ResponseEntity.ok(account);
     }
 
-    @GetMapping("/accounts-by-name/{name}")
+    @GetMapping("/search-accounts-by-name/{name}")
     public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name) throws AuthenticationException {
         String role = accountUtils.getAccountCurrent().getRole();
         if ("Admin".equals(role)){
