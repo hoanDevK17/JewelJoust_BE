@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface AuthenticationRepository extends JpaRepository<Account, Long>
 {
-    Account findAccountByUsername(String username);
-    Account findAccountByEmail(String email);
-    Account findAccountByUserid(long userid);
-    List<Account> findAccountByFullnameContaining(String name);
+    Account findByUsername(String username);
+    Account findByEmail(String email);
+    Account findAccountById(long userid);
+    List<Account> findByFullnameContaining(String name);
 }

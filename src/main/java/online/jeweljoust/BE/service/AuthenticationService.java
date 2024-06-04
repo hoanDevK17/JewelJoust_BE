@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import online.jeweljoust.BE.config.SecurityConfig;
 import online.jeweljoust.BE.entity.Account;
-import online.jeweljoust.BE.entity.AuctionRequest;
+import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
@@ -23,9 +23,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -65,23 +62,16 @@ public class AuthenticationService implements UserDetailsService {
         account.setEmail(registerRequest.getEmail());
         account.setPhone(registerRequest.getPhone());
         account.setStatus("Active");
-        account.setRole("Member");
+        account.setRole(AccountRole.MEMBER);
         account.setCredibility(0);
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         return authenticationRepository.save(account);
     }
 
     public Account registerHaveRole(RegisterRequest registerRequest) throws AuthenticationServiceException{
-        String role = accountUtils.getAccountCurrent().getRole();
         Account account = new Account();
         try {
-            if ("Admin".equals(role)){
-                account.setRole("Manager");
-            } else if ("Manager".equals(role)) {
-                account.setRole("Staff");
-            } else {
-                throw new AuthenticationServiceException("Your role not found!!!");
-            }
+            account.setRole(registerRequest.getRole().equalsIgnoreCase("manager")?AccountRole.MANAGER:AccountRole.STAFF);
             account.setUsername(registerRequest.getUsername());
             account.setFullname(registerRequest.getFullname());
             account.setAddress(registerRequest.getAddress());
@@ -102,14 +92,14 @@ public class AuthenticationService implements UserDetailsService {
                     loginRequest.getUsername(),
                     loginRequest.getPassword()
             ));
-            Account account = authenticationRepository.findAccountByUsername(loginRequest.getUsername());
+            Account account = authenticationRepository.findByUsername(loginRequest.getUsername());
             if (account == null || !securityConfig.passwordEncoder().matches(loginRequest.getPassword(), account.getPassword())) {
                 throw new BadCredentialsException("Incorrect username or password");
             }
             AccountReponse accountReponse = new AccountReponse();
             String token = tokenService.generateToken(account);
             accountReponse.setUsername(account.getUsername());
-            accountReponse.setUserid(account.getUserid());
+            accountReponse.setId(account.getId());
             accountReponse.setFullname(account.getFullname());
             accountReponse.setAddress(account.getAddress());
             accountReponse.setBirthday(account.getBirthday());
@@ -130,13 +120,14 @@ public class AuthenticationService implements UserDetailsService {
         try {
             FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
             String email = firebaseToken.getEmail();
-            Account account = authenticationRepository.findAccountByEmail(email);
+            Account account = authenticationRepository.findByEmail(email);
             if (account == null){
+                account = new Account();
                 account.setFullname(firebaseToken.getName());
                 account.setEmail(firebaseToken.getEmail());
-                authenticationRepository.save(account);
+                account = authenticationRepository.save(account);
             }
-            accountReponse.setUserid(account.getUserid());
+            accountReponse.setId(account.getId());
             accountReponse.setFullname(account.getFullname());
             accountReponse.setEmail(account.getEmail());
             accountReponse.setToken(tokenService.generateToken(account));
@@ -151,7 +142,7 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-        Account account =  authenticationRepository.findAccountByEmail(forgotPasswordRequest.getEmail());
+        Account account =  authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
         if (account == null){
             try {
                 throw new BadRequestException("Account not found!!!");
@@ -184,11 +175,11 @@ public class AuthenticationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return authenticationRepository.findAccountByUsername(username);
+        return authenticationRepository.findByUsername(username);
     }
 
     public Account updateProfile(UpdateProfileRequest updateProfileRequest) {
-        Account account = authenticationRepository.findAccountByUserid(updateProfileRequest.getUserid());
+        Account account = authenticationRepository.findAccountById(updateProfileRequest.getUserid());
         account.setFullname(updateProfileRequest.getFullname());
         account.setAddress(updateProfileRequest.getAddress());
         account.setBirthday(updateProfileRequest.getBirthday());
@@ -198,11 +189,11 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public List<Account> getAccountByName(String name) {
-        return authenticationRepository.findAccountByFullnameContaining(name) ;
+        return authenticationRepository.findByFullnameContaining(name) ;
     }
 
     public void blockAccount(long userid, String status) {
-        Account account = authenticationRepository.findAccountByUserid(userid);
+        Account account = authenticationRepository.findAccountById(userid);
         account.setStatus(status);
         authenticationRepository.save(account);
     }

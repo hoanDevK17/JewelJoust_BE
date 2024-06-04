@@ -25,26 +25,30 @@ public class AuctionRequestAPI {
 
     @PostMapping("/request-sale")
     public ResponseEntity requestSaleAuction(@RequestBody AuctionSaleReponse auctionSaleReponse) {
-        AuctionRequest auctionRequest = auctionSaleService.requestSale(auctionSaleReponse);
+//        AuctionRequest auctionRequest = auctionSaleService.requestSale(auctionSaleReponse);
+        AuctionRequest auctionRequest   = new AuctionRequest();
+
         return ResponseEntity.ok(auctionRequest);
     }
 
-    @GetMapping("/auction-request-by-userid")
-    public ResponseEntity<List<AuctionRequest>> getAuctionByUserid() {
-        List<AuctionRequest> auctionRequests = auctionSaleService.getAuctionRequest();
-        return ResponseEntity.ok(auctionRequests);
-    }
 
-    @PutMapping("/cancel-request-auction/{status}/{auctionrequestid}")
-    public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("status") String status,
-                                                               @PathVariable("auctionrequestid") long auctionrequestid){
-        AuctionRequest auctionRequest = auctionSaleService.cancelRequest(status, auctionrequestid);
-        return ResponseEntity.ok(auctionRequest);
-    }
+//    @GetMapping("/auction-request-by-userid")
+//    public ResponseEntity<List<AuctionRequest>> getAuctionByUserid() {
+//        List<AuctionRequest> auctionRequests = auctionSaleService.getAuctionRequest();
+//        return ResponseEntity.ok(auctionRequests);
+//    }
+//
+//    @PutMapping("/cancel-request-auction/{status}/{auctionrequestid}")
+//    public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("status") String status,
+//                                                               @PathVariable("auctionrequestid") long auctionrequestid){
+//        AuctionRequest auctionRequest = auctionSaleService.cancelRequest(status, auctionrequestid);
+//        return ResponseEntity.ok(auctionRequest);
+//    }
 
-    @GetMapping("/list-auction-request-by-status/{status}")
-    public ResponseEntity<List<AuctionRequest>> getAuctionRequestByStatus(@PathVariable("status") String status) {
-        List<AuctionRequest> auctionRequests = auctionSaleService.getAuctionRequestByStatus(status);
-        return ResponseEntity.ok(auctionRequests);
-    }
+//    @GetMapping("/list-auction-request-by-status/{status}")
+//    public ResponseEntity<List<AuctionRequest>> getAuctionRequestByStatus(@PathVariable("status") String status) {
+ //       List<AuctionRequest> auctionRequests = auctionSaleService.getAuctionRequestByStatus(status);
+ //       return ResponseEntity.ok(auctionRequests);
+ //   }
+
 }

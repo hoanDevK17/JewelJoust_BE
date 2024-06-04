@@ -2,17 +2,18 @@ package online.jeweljoust.BE.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Columns;
+import online.jeweljoust.BE.enums.AccountRole;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -22,7 +23,7 @@ import java.util.List;
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long userid;
+    Long id;
 
     @Column(unique = true)
     String username;
@@ -40,18 +41,23 @@ public class Account implements UserDetails {
     @Column(unique = true)
     String email;
 
-    //@Column(unique = true)
+    @Column(unique = true)
     String phone;
 
-    String role;
+
+    @Enumerated(EnumType.STRING)
+    AccountRole role;
 
     int credibility;
 
     String status;
 
+    @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
+    Set<AuctionRequest> auctionRequests;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority(this.getRole().toString()));
     }
 
     @Override

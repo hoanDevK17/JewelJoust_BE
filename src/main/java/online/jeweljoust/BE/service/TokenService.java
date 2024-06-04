@@ -54,7 +54,7 @@ public class TokenService {
     // get userName form CLAIM
     public Account extractAccount (String token){
         String username = extractClaim(token,Claims::getSubject);
-        return authenticationRepository.findAccountByUsername(username);
+        return authenticationRepository.findByUsername(username);
     }
 
 
