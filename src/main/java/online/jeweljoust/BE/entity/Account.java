@@ -54,7 +54,8 @@ public class Account implements UserDetails {
 
     @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
     Set<AuctionRequest> auctionRequests;
-
+    @OneToOne(mappedBy = "account",cascade = CascadeType.ALL)
+    Wallet wallet;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.getRole().toString()));

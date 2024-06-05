@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.math.BigDecimal;
 import java.util.Date;
 @Entity
 @Getter
@@ -13,8 +12,10 @@ import java.util.Date;
 public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long walletid;
-    long userid;
+    long id;
+    @OneToOne
+    @JoinColumn(name="account_id")
+    Account account;
 
     Double balance;
     @Temporal(TemporalType.DATE)

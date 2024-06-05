@@ -58,6 +58,7 @@ public class AuthenticationAPI {
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
         Account account = authenticationService.register(registerRequest);
         if(account!=null){
+            System.out.println(account);
             Wallet wallet = walletService.registerWallet(account);
 
         }

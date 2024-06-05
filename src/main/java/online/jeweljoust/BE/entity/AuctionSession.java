@@ -13,7 +13,7 @@ import java.util.Date;
 public class AuctionSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long autionSessionid;
+    long id;
     long auction_request_id;
     long manager_id;
     long staff_id;
