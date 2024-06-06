@@ -51,11 +51,16 @@ public class Account implements UserDetails {
     int credibility;
 
     String status;
-
-    @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
-    Set<AuctionRequest> auctionRequests;
     @OneToOne(mappedBy = "account",cascade = CascadeType.ALL)
     Wallet wallet;
+    @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
+    Set<AuctionRequest> auctionRequests;
+    @OneToMany(mappedBy = "manager",cascade = CascadeType.ALL)
+    Set<AuctionSession> ManagerAuctionSessions;
+    @OneToMany(mappedBy = "staff",cascade = CascadeType.ALL)
+    Set<AuctionSession> StaffAuctionSessions;
+    @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
+    Set<AuctionRegistration> auctionRegistrations;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.getRole().toString()));

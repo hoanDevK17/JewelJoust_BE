@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import online.jeweljoust.BE.enums.AuctionSessionStatus;
 
 import java.util.Date;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -14,9 +17,15 @@ public class AuctionSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-    long auction_request_id;
-    long manager_id;
-    long staff_id;
+    @OneToOne
+    @JoinColumn(name="auctionRequest_id")
+    AuctionRequest auctionRequest;
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    Account manager;
+    @JoinColumn(name = "staff_id")
+    Account staff;
+
     @Temporal(TemporalType.DATE)
     Date start_time;
     @Temporal(TemporalType.DATE)
@@ -28,8 +37,14 @@ public class AuctionSession {
     double deposit_amount;
     double Fee_amount;
     String name_session;
-    String name_jewelrys;
+    String name_jewelry;
     String description;
-    String status;
+    @OneToMany(mappedBy = "auctionSession",cascade = CascadeType.ALL)
+    List<AuctionRegistration> auctionRegistrations;
+
+    @Enumerated(EnumType.STRING)
+    AuctionSessionStatus status;
+//    AccountRole role;
+
 
 }

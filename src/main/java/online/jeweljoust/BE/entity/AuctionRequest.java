@@ -25,10 +25,9 @@ public class AuctionRequest {
     String jewelrydescription;
 
     double jewelryinitialprice;
-
     String status;
-
-
+    @OneToOne (mappedBy = "auctionRequest",cascade = CascadeType.ALL)
+    AuctionSession auctionSession;
     @ManyToOne
     @JoinColumn(name = "member_id")
     Account account;
