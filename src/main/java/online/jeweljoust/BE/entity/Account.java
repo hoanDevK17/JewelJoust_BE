@@ -67,6 +67,8 @@ public class Account implements UserDetails {
     @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
     @JsonIgnore
     Set<AuctionRegistration> auctionRegistrations;
+    @OneToMany(mappedBy = "accountInitial",cascade = CascadeType.ALL)
+    Set<InitialValuation> initialValuations;
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
