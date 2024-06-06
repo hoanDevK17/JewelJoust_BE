@@ -13,9 +13,10 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
+
     @OneToOne
     @JoinColumn(name="account_id")
-    Account account;
+    Account accountWallet;
 
     Double balance;
     @Temporal(TemporalType.DATE)

@@ -15,10 +15,15 @@ import java.util.Date;
 public class AuctionRegistration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long auctionRegistrationid;
-    long autionSessionid;
-    long userid;
+    long id;
+    @ManyToOne
+    @JoinColumn(name="auctionSession_id")
+    AuctionSession auctionSession;
+    @ManyToOne
+    @JoinColumn(name="member_id")
+    Account account;
     @Temporal(TemporalType.DATE)
     Date create_at;
+
     String status;
 }

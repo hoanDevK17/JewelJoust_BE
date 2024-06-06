@@ -1,5 +1,6 @@
 package online.jeweljoust.BE.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -51,17 +52,25 @@ public class Account implements UserDetails {
     int credibility;
 
     String status;
-
+    @OneToOne(mappedBy = "accountWallet",cascade = CascadeType.ALL)
+    @JsonIgnore
+    Wallet wallet;
     @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
+    @JsonIgnore
     Set<AuctionRequest> auctionRequests;
-
+    @OneToMany(mappedBy = "manager",cascade = CascadeType.ALL)
+    @JsonIgnore
+    Set<AuctionSession> ManagerAuctionSessions;
+    @OneToMany(mappedBy = "staff",cascade = CascadeType.ALL)
+    @JsonIgnore
+    Set<AuctionSession> StaffAuctionSessions;
+    @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
+    @JsonIgnore
+    Set<AuctionRegistration> auctionRegistrations;
     @OneToMany(mappedBy = "accountInitial",cascade = CascadeType.ALL)
     Set<InitialValuation> initialValuations;
-
-    @OneToOne(mappedBy = "account",cascade = CascadeType.ALL)
-    Wallet wallet;
-
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.getRole().toString()));
     }
