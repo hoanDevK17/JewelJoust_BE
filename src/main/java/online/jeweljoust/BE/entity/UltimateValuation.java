@@ -6,36 +6,30 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @ToString
 
-public class AuctionRequest {
+public class UltimateValuation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @Column(nullable = false)
-    LocalDateTime requestdate;
-
-    String jewelryname;
-
-    String jewelrydescription;
-
-    double jewelryinitialprice;
+    LocalDateTime ultimatedate;
 
     String status;
 
+    String reason;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    Account account;
+    @JoinColumn(name = "staff_id")
+    Account accountInitial;
 
-    @OneToOne(mappedBy = "request_id",cascade = CascadeType.ALL)
-    Set<InitialValuation> initialValuations;
-
+    @OneToOne
+    @JoinColumn(name = "request_id")
+    AuctionRequest auctionRequest;
 
 }

@@ -71,7 +71,6 @@ public class AuthenticationService implements UserDetailsService {
 
     public Account registerHaveRole(RegisterRequest registerRequest) throws AuthenticationServiceException{
         Account account = new Account();
-        try {
             account.setRole(registerRequest.getRole().equalsIgnoreCase("MANAGER")?AccountRole.MANAGER:AccountRole.STAFF);
             account.setUsername(registerRequest.getUsername());
             account.setFullname(registerRequest.getFullname());
@@ -81,10 +80,7 @@ public class AuthenticationService implements UserDetailsService {
             account.setPhone(registerRequest.getPhone());
             account.setStatus(AccountStatus.ACTIVE.name());
             account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-            return authenticationRepository.save(account);
-        } catch (Exception e){
-            throw new AuthenticationServiceException("Error at register have a role!!!");
-        }
+        return authenticationRepository.save(account);
     }
 
     public AccountReponse login(LoginRequest loginRequest){
@@ -158,7 +154,7 @@ public class AuthenticationService implements UserDetailsService {
         emailDetail.setButtonValue("Reset password");
         String token = tokenService.generateToken(account);
         System.out.println(token);
-        emailDetail.setLink("http://jeweljoust.online/reset-password?token=" +token);
+        emailDetail.setLink("http://jeweljoust.online/reset-password?token=" + token);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
