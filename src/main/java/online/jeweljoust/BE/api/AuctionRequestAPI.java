@@ -2,6 +2,7 @@ package online.jeweljoust.BE.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.AuctionRequest;
+
 import online.jeweljoust.BE.model.AuctionRequestReponse;
 import online.jeweljoust.BE.service.AuctionRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,18 +29,18 @@ public class AuctionRequestAPI {
     }
 
 
-    @GetMapping("/auction-request-by-userid")
-    public ResponseEntity<List<AuctionRequest>> getAuctionByUserid() {
-        List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequest();
-        return ResponseEntity.ok(auctionRequests);
-    }
+//    @GetMapping("/auction-request-by-userid")
+//    public ResponseEntity<List<AuctionRequest>> getAuctionByUserid() {
+//        List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequest();
+//        return ResponseEntity.ok(auctionRequests);
+//    }
 
-    @PutMapping("/cancel-request-auction/{status}/{auctionrequestid}")
-    @PreAuthorize("hasAuthority('MEMBER')")
-    public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("auctionrequestid") long auctionrequestid){
-        AuctionRequest auctionRequest = auctionRequestService.cancelRequest(auctionrequestid);
-        return ResponseEntity.ok(auctionRequest);
-    }
+//    @PutMapping("/cancel-request-auction/{status}/{auctionrequestid}")
+//    @PreAuthorize("hasAuthority('MEMBER')")
+//    public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("auctionrequestid") long auctionrequestid){
+//        AuctionRequest auctionRequest = auctionRequestService.cancelRequest(auctionrequestid);
+//        return ResponseEntity.ok(auctionRequest);
+//    }
 
     @GetMapping("/list-auction-request-by-status/{status}")
     @PreAuthorize("hasAuthority('STAFF')")
@@ -47,5 +48,4 @@ public class AuctionRequestAPI {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequestByStatus(status);
         return ResponseEntity.ok(auctionRequests);
     }
-
 }

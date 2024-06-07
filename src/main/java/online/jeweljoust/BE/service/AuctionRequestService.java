@@ -35,10 +35,10 @@ public class AuctionRequestService {
         return auctionRepository.save(auctionRequest);
     }
 
-    public List<AuctionRequest> getAuctionRequest() {
-        long userid = accountUtils.getAccountCurrent().getId();
-        return auctionRepository.findByAccountId(userid);
-    }
+//    public List<AuctionRequest> getAuctionRequest() {
+//        long userid = accountUtils.getAccountCurrent().getId();
+//        return auctionRepository.findByAccountId(userid);
+//    }
 
     public AuctionRequest cancelRequest(long auctionrequestid) {
         AuctionRequest auctionRequest = auctionRepository.findById(auctionrequestid);
