@@ -34,7 +34,7 @@ public class AuctionRequestAPI {
         return ResponseEntity.ok(auctionRequests);
     }
 
-    @PutMapping("/cancel-request-auction/{status}/{auctionrequestid}")
+    @PutMapping("/cancel-request-auction/{auctionrequestid}")
     @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("auctionrequestid") long auctionrequestid){
         AuctionRequest auctionRequest = auctionRequestService.cancelRequest(auctionrequestid);
@@ -46,6 +46,13 @@ public class AuctionRequestAPI {
     public ResponseEntity<List<AuctionRequest>> getAuctionRequestByStatus(@PathVariable("status") String status) {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequestByStatus(status);
         return ResponseEntity.ok(auctionRequests);
+    }
+
+    @GetMapping("/initial-by-staff/{requestid}/{status}")
+    @PreAuthorize("hasAuthority('STAFF')")
+    public ResponseEntity<AuctionRequest> initialByStaff(@PathVariable("requestid") String requestid, @PathVariable("status") String status) {
+        AuctionRequest auctionRequest = auctionRequestService.initialByStaff(requestid, status);
+        return ResponseEntity.ok(auctionRequest);
     }
 
 }

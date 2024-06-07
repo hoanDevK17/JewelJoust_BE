@@ -49,4 +49,8 @@ public class AuctionRequestService {
     public List<AuctionRequest> getAuctionRequestByStatus(String status) {
         return auctionRepository.findByStatus(status);
     }
+
+    public AuctionRequest initialByStaff(String requestid, String status) {
+
+    }
 }
