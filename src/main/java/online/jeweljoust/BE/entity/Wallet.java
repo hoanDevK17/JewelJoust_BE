@@ -19,8 +19,10 @@ public class Wallet {
     Account accountWallet;
 
     Double balance;
+
     @Temporal(TemporalType.DATE)
     Date createAt;
+
     @Temporal(TemporalType.DATE)
     Date updateAt;
 }

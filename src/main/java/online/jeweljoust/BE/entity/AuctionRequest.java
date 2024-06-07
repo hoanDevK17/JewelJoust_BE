@@ -26,15 +26,16 @@ public class AuctionRequest {
     String jewelrydescription;
 
     double jewelryinitialprice;
+
     String status;
-    @OneToOne (mappedBy = "auctionRequest",cascade = CascadeType.ALL)
-    AuctionSession auctionSession;
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    Account account;
 
-    @OneToOne(mappedBy = "request_id",cascade = CascadeType.ALL)
-    Set<InitialValuation> initialValuations;
+//    @ManyToOne
+//    @JoinColumn(name = "member_id")
+//    Account accountRequest;
 
+//    @OneToOne(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
+//    AuctionSession auctionSessionRequest;
 
+//    @OneToOne(mappedBy = "request_id",cascade = CascadeType.ALL)
+//    Set<InitialValuation> initialValuations;
 }

@@ -17,7 +17,7 @@ public class WalletService {
         wallet.setUpdateAt(new Date());
         wallet.setCreateAt(new Date());
         wallet.setId(account.getId());
-        wallet.setAccountWallet(account);
+//        wallet.setAccountWallet(account);
         return walletRepository.save(wallet);
     }
 }

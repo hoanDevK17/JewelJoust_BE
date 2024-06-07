@@ -52,25 +52,32 @@ public class Account implements UserDetails {
     int credibility;
 
     String status;
+
     @OneToOne(mappedBy = "accountWallet",cascade = CascadeType.ALL)
     @JsonIgnore
     Wallet wallet;
-    @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
-    @JsonIgnore
-    Set<AuctionRequest> auctionRequests;
-    @OneToMany(mappedBy = "manager",cascade = CascadeType.ALL)
+
+//    @OneToMany(mappedBy = "accountRequest",cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    Set<AuctionRequest> auctionRequests;
+
+    @OneToMany(mappedBy = "managerSession",cascade = CascadeType.ALL)
     @JsonIgnore
     Set<AuctionSession> ManagerAuctionSessions;
-    @OneToMany(mappedBy = "staff",cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "staffSession",cascade = CascadeType.ALL)
     @JsonIgnore
     Set<AuctionSession> StaffAuctionSessions;
-    @OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "accountRegistration",cascade = CascadeType.ALL)
     @JsonIgnore
     Set<AuctionRegistration> auctionRegistrations;
-    @OneToMany(mappedBy = "accountInitial",cascade = CascadeType.ALL)
-    Set<InitialValuation> initialValuations;
+
+//    @OneToMany(mappedBy = "accountInitial",cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    Set<InitialValuation> initialValuations;
+
     @Override
-    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.getRole().toString()));
     }

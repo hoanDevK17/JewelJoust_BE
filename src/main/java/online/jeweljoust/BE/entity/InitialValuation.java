@@ -26,11 +26,11 @@ public class InitialValuation {
 
     double price;
 
-    @ManyToOne
-    @JoinColumn(name = "staff_id")
-    Account accountInitial;
-
-    @OneToOne
-    @JoinColumn(name = "request_id")
-    AuctionRequest auctionRequest;
+//    @ManyToOne
+//    @JoinColumn(name = "staff_id")
+//    Account accountInitial;
+//
+//    @OneToOne
+//    @JoinColumn(name = "request_id")
+//    AuctionRequest auctionRequest;
 }

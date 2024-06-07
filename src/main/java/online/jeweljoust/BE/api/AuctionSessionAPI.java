@@ -30,8 +30,8 @@ public class AuctionSessionAPI {
     public ResponseEntity<AuctionSession> createAuctionsSession(@RequestBody AuctionSessionRequest auctionSessionRequest) {
 
         AuctionSession auctionSession = new AuctionSession();
-        auctionSession.setManager(accountUtils.getAccountCurrent());
-        auctionSession.setStaff(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
+//        auctionSession.setManager(accountUtils.getAccountCurrent());
+//        auctionSession.setStaff(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
         auctionSession.setStart_time(auctionSessionRequest.getStart_time());
         auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
         auctionSession.setInitial_price(auctionSessionRequest.getInitial_price());
