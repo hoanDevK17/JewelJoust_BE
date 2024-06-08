@@ -22,9 +22,9 @@ public class AuctionRegistration {
 
     String status;
 
-//    @ManyToOne
-//    @JoinColumn(name="auctionSession_id")
-//    AuctionSession auctionSessionRegistration;
+    @ManyToOne
+    @JoinColumn(name="auctionSession_id")
+    AuctionSession auctionSession;
 
     @ManyToOne
     @JoinColumn(name="member_id")

@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
 import online.jeweljoust.BE.entity.AuctionSession;
-import online.jeweljoust.BE.enums.AuctionSessionStatus;
 import online.jeweljoust.BE.model.AuctionSessionRequest;
+import online.jeweljoust.BE.respository.AuctionSessionRepository;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
 import online.jeweljoust.BE.service.AuctionSessionService;
 import online.jeweljoust.BE.utils.AccountUtils;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -22,45 +21,32 @@ import java.util.List;
 public class AuctionSessionAPI {
 @Autowired
     AuthenticationRepository authenticationRepository;
+    AuctionSessionRepository auctionSessionRepository;
     @Autowired
-    AuctionSessionService autionSessionService;
+    AuctionSessionService auctionSessionService;
     @Autowired
     AccountUtils accountUtils;
-    @PostMapping("/createAuctionSession")
+    @PostMapping("/auctionSessions")
     public ResponseEntity<AuctionSession> createAuctionsSession(@RequestBody AuctionSessionRequest auctionSessionRequest) {
 
-        AuctionSession auctionSession = new AuctionSession();
-//        auctionSession.setManager(accountUtils.getAccountCurrent());
-//        auctionSession.setStaff(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
-        auctionSession.setStart_time(auctionSessionRequest.getStart_time());
-        auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
-        auctionSession.setInitial_price(auctionSessionRequest.getInitial_price());
-        auctionSession.setMin_stepPrice(auctionSessionRequest.getMin_stepPrice());
-        auctionSession.setDeposit_amount(auctionSessionRequest.getDeposit_amount());
-        auctionSession.setName_session(auctionSessionRequest.getName_session());
-        auctionSession.setName_jewelry(auctionSessionRequest.getName_jewelrys());
-        auctionSession.setDescription(auctionSessionRequest.getDescription());
-        auctionSession.setFee_amount(auctionSessionRequest.getFee_amount());
-        auctionSession.setCreate_at(new Date());
-        auctionSession.setStatus(AuctionSessionStatus.CREATED);
-//        Initialized: khởi tạo thành công , chưa tới giờ đấu giá
-//        Bidding: đang được đấu giá
-//        Pending Payment: chờ thanh toán
-//        Completed : bán hoàn tất
-//        Cancelled : đã hủy
+        AuctionSession auctionSession = auctionSessionService.addAuctionSessions(auctionSessionRequest);
 
-
-
-
-
-        AuctionSession auctionSessions = autionSessionService.addAutionSessions(auctionSession);
-
-        return ResponseEntity.ok(auctionSessions);
-    }
-    @GetMapping("/getAllAuctionSessions")
-    public ResponseEntity<List<AuctionSession>> getAutionSessions() {
-        List<AuctionSession> auctionSession = autionSessionService.getAllAutionSessions();
         return ResponseEntity.ok(auctionSession);
     }
+    @GetMapping("/auctionSessions")
+    public ResponseEntity<List<AuctionSession>> getAllAuctionSessions() {
+        List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
+        return ResponseEntity.ok(auctionSession);
+    }
+    @PutMapping("/auctionSessions/{id}")
+    public ResponseEntity<AuctionSession> updateAuctionSessions(@PathVariable Long id,@RequestBody AuctionSessionRequest auctionSessionRequest) {
+        AuctionSession auctionSession =  auctionSessionService.updateAuctionSession(id, auctionSessionRequest);
+        return ResponseEntity.ok(auctionSession);
+    }
+    @GetMapping("/auctionSessions/{name}")
+    public ResponseEntity<List<AuctionSession>>findAuctionSessionByName(@PathVariable String name) {
+        return ResponseEntity.ok(auctionSessionRepository.findByNameSession(name));
+    }
+
 
 }

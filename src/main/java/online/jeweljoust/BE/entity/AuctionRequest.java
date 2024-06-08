@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,8 +34,8 @@ public class AuctionRequest {
     @JoinColumn(name = "member_id")
     Account accountRequest;
 
-    @OneToOne(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
-    AuctionSession auctionSessionRequest;
+    @OneToMany(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
+    List<AuctionSession> auctionSessions;
 
 //    @OneToOne(mappedBy = "request_id",cascade = CascadeType.ALL)
 //    Set<InitialValuation> initialValuations;
