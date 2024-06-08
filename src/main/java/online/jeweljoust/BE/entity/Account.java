@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import online.jeweljoust.BE.enums.AccountRole;
+import online.jeweljoust.BE.enums.AccountStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,13 +46,13 @@ public class Account implements UserDetails {
     @Column(unique = true)
     String phone;
 
-
     @Enumerated(EnumType.STRING)
     AccountRole role;
 
     int credibility;
 
-    String status;
+    @Enumerated(EnumType.STRING)
+    AccountStatus status;
 
     @OneToOne(mappedBy = "accountWallet",cascade = CascadeType.ALL)
     @JsonIgnore
@@ -73,9 +74,13 @@ public class Account implements UserDetails {
     @JsonIgnore
     Set<AuctionRegistration> auctionRegistrations;
 
-//    @OneToMany(mappedBy = "accountInitial",cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    Set<InitialValuation> initialValuations;
+    @OneToMany(mappedBy = "accountInitial",cascade = CascadeType.ALL)
+    @JsonIgnore
+    Set<InitialValuation> initialValuations;
+
+    @OneToMany(mappedBy = "accountUltimate",cascade = CascadeType.ALL)
+    @JsonIgnore
+    Set<UltimateValuation> ultimateValuations;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
