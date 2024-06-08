@@ -42,17 +42,18 @@ public class AuctionSession {
 
     String description;
 
-//    @OneToOne
-//    @JoinColumn(name="auctionSessionRequest")
-//    AuctionRequest auctionRequest;
+    @OneToOne
+    @JoinColumn(name="auctionSessionRequest")
+    AuctionRequest auctionRequest;
 
     @ManyToOne
     @JoinColumn(name = "manager_id")
     Account managerSession;
 
     @ManyToOne
-    Account staffSession;
     @JoinColumn(name = "staff_id")
+    Account staffSession;
+
 
 //    @OneToMany(mappedBy = "auctionSessionRegistration",cascade = CascadeType.ALL)
 //    List<AuctionRegistration> auctionRegistrations;

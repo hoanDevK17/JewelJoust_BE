@@ -25,5 +25,4 @@ public class Wallet {
 
     @Temporal(TemporalType.DATE)
     Date updateAt;
-    //sdhvbdjhfds
 }

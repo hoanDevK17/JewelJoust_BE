@@ -29,12 +29,12 @@ public class AuctionRequest {
 
     String status;
 
-//    @ManyToOne
-//    @JoinColumn(name = "member_id")
-//    Account accountRequest;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    Account accountRequest;
 
-//    @OneToOne(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
-//    AuctionSession auctionSessionRequest;
+    @OneToOne(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
+    AuctionSession auctionSessionRequest;
 
 //    @OneToOne(mappedBy = "request_id",cascade = CascadeType.ALL)
 //    Set<InitialValuation> initialValuations;
