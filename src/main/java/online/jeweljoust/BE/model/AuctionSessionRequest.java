@@ -14,7 +14,7 @@ import java.util.Date;
 @Setter
 public class AuctionSessionRequest {
 
-
+    long auction_request_id;
     long staff_id;
     @Temporal(TemporalType.DATE)
     Date start_time;
@@ -25,7 +25,7 @@ public class AuctionSessionRequest {
     double deposit_amount;
     double Fee_amount;
     String name_session;
-    String name_jewelrys;
+    String name_jewelry;
     String description;
 
 }

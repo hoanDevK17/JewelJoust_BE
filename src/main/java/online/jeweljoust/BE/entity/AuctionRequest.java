@@ -7,6 +7,7 @@ import lombok.ToString;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,8 +36,8 @@ public class AuctionRequest {
     @JoinColumn(name = "member_id")
     Account accountRequest;
 
-    @OneToOne(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
-    AuctionSession auctionSessionRequest;
+    @OneToMany(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
+    List<AuctionSession> auctionSessions;
 
     @OneToOne(mappedBy = "auctionRequestInitial",cascade = CascadeType.ALL)
     InitialValuation initialValuations;
