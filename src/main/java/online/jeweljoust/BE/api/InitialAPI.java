@@ -7,10 +7,7 @@ import online.jeweljoust.BE.service.InitialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api")
@@ -21,10 +18,10 @@ public class InitialAPI {
     @Autowired
     InitialService initialService;
 
-    @GetMapping("/change-status-initial-by-id")
+    @PutMapping("/change-status-initial-by-id/{id}")
     @PreAuthorize("hasAuthority('STAFF')")
-    public ResponseEntity<InitialValuation> changeStatusInitialById(InitialRequest initialRequest) {
-        InitialValuation initialValuation = InitialService.changeStatusInitial(initialRequest);
+    public ResponseEntity<InitialValuation> changeStatusInitialById(@PathVariable("id") long id, InitialRequest initialRequest) {
+        InitialValuation initialValuation = initialService.changeStatusInitial(id, initialRequest);
         return ResponseEntity.ok(initialValuation);
     }
 

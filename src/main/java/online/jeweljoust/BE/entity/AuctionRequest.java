@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import online.jeweljoust.BE.enums.AuctionRequestStatus;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -27,7 +28,8 @@ public class AuctionRequest {
 
     double jewelryinitialprice;
 
-    String status;
+    @Enumerated(EnumType.STRING)
+    AuctionRequestStatus status;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -36,6 +38,9 @@ public class AuctionRequest {
     @OneToOne(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
     AuctionSession auctionSessionRequest;
 
-//    @OneToOne(mappedBy = "request_id",cascade = CascadeType.ALL)
-//    Set<InitialValuation> initialValuations;
+    @OneToOne(mappedBy = "auctionRequestInitial",cascade = CascadeType.ALL)
+    InitialValuation initialValuations;
+
+    @OneToOne(mappedBy = "auctionRequestUltimate",cascade = CascadeType.ALL)
+    UltimateValuation ultimateValuation;
 }

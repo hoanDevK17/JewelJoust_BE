@@ -62,7 +62,7 @@ public class AuthenticationService implements UserDetailsService {
         account.setBirthday(registerRequest.getBirthday());
         account.setEmail(registerRequest.getEmail());
         account.setPhone(registerRequest.getPhone());
-        account.setStatus(AccountStatus.ACTIVE.name());
+        account.setStatus(AccountStatus.ACTIVE);
         account.setRole(AccountRole.MEMBER);
         account.setCredibility(0);
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
@@ -71,14 +71,14 @@ public class AuthenticationService implements UserDetailsService {
 
     public Account registerHaveRole(RegisterRequest registerRequest) throws AuthenticationServiceException{
         Account account = new Account();
-            account.setRole(registerRequest.getRole().equalsIgnoreCase("MANAGER")?AccountRole.MANAGER:AccountRole.STAFF);
+            account.setRole(registerRequest.getRole().equals(AccountRole.MANAGER)?AccountRole.MANAGER:AccountRole.STAFF);
             account.setUsername(registerRequest.getUsername());
             account.setFullname(registerRequest.getFullname());
             account.setAddress(registerRequest.getAddress());
             account.setBirthday(registerRequest.getBirthday());
             account.setEmail(registerRequest.getEmail());
             account.setPhone(registerRequest.getPhone());
-            account.setStatus(AccountStatus.ACTIVE.name());
+            account.setStatus(AccountStatus.ACTIVE);
             account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         return authenticationRepository.save(account);
     }
@@ -189,7 +189,7 @@ public class AuthenticationService implements UserDetailsService {
         return authenticationRepository.findByFullnameContaining(name) ;
     }
 
-    public void blockAccount(long id, String status) {
+    public void blockAccount(long id, AccountStatus status) {
         Account account = authenticationRepository.findById(id);
         account.setStatus(status);
         authenticationRepository.save(account);

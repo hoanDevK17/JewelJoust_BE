@@ -87,7 +87,7 @@ public class AuthenticationAPI {
     @PostMapping("login")
     public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
         Account account = authenticationService.login(loginRequest);
-        if (account.getStatus().equalsIgnoreCase(AccountStatus.ACTIVE.name())){
+        if (account.getStatus().equals(AccountStatus.ACTIVE)){
             return ResponseEntity.ok(account);
         } else {
             throw new AuthenticationServiceException("Your account locked!!!");
@@ -128,7 +128,7 @@ public class AuthenticationAPI {
 
     @PutMapping("/block-account/{userid}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, String status){
+    public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, AccountStatus status){
         authenticationService.blockAccount(userid, status);
         return ResponseEntity.ok("Account has been changed");
     }

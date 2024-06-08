@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import online.jeweljoust.BE.enums.AuctionRequestStatus;
 
 import java.time.LocalDateTime;
 
@@ -20,17 +21,17 @@ public class InitialValuation {
     @Column(nullable = false)
     LocalDateTime initialdate;
 
-    String status;
+    AuctionRequestStatus status;
 
     String reason;
 
     double price;
 
-//    @ManyToOne
-//    @JoinColumn(name = "staff_id")
-//    Account accountInitial;
-//
-//    @OneToOne
-//    @JoinColumn(name = "request_id")
-//    AuctionRequest auctionRequest;
+    @ManyToOne
+    @JoinColumn(name = "staff_id")
+    Account accountInitial;
+
+    @OneToOne
+    @JoinColumn(name = "request_id")
+    AuctionRequest auctionRequestInitial;
 }

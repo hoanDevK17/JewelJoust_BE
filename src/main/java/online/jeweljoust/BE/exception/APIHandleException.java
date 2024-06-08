@@ -27,7 +27,7 @@ public class APIHandleException {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAuthenticationServiceException(AccessDeniedException e) {
-        return new ResponseEntity<>("No access to register", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>("Your role not support!!!", HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)

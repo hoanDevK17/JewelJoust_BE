@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AccountStatus;
 
 import java.util.Date;
@@ -21,6 +22,6 @@ public class RegisterRequest {
     Date birthday;
     String email;
     String phone;
-    String role;
+    AccountRole role;
     String status;
 }

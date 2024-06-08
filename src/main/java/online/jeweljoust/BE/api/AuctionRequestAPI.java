@@ -38,7 +38,7 @@ public class AuctionRequestAPI {
 //    @PutMapping("/cancel-request-auction/{status}/{auctionrequestid}")
 //    @PreAuthorize("hasAuthority('MEMBER')")
 //    public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("auctionrequestid") long auctionrequestid){
-//        AuctionRequest auctionRequest = auctionRequestService.cancelRequest(auctionrequestid);
+////        AuctionRequest auctionRequest = auctionRequestService.cancelRequest(auctionrequestid);
 //        return ResponseEntity.ok(auctionRequest);
 //    }
 
