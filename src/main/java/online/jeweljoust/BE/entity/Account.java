@@ -78,9 +78,17 @@ public class Account implements UserDetails {
     @JsonIgnore
     Set<InitialValuation> initialValuations;
 
-    @OneToMany(mappedBy = "accountUltimate",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ultimateStaff",cascade = CascadeType.ALL)
     @JsonIgnore
-    Set<UltimateValuation> ultimateValuations;
+    Set<UltimateValuation> ultimateStaff;
+
+    @OneToMany(mappedBy = "ultimateManager",cascade = CascadeType.ALL)
+    @JsonIgnore
+    Set<UltimateValuation> ultimateManager;
+
+    @OneToOne(mappedBy = "accountShipment",cascade = CascadeType.ALL)
+    @JsonIgnore
+    Shipment shipment;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

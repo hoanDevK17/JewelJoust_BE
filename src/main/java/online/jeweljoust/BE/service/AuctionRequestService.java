@@ -31,7 +31,7 @@ public class AuctionRequestService {
             auctionRequest.setJewelryname(auctionRequestReponse.getJewelryName());
             auctionRequest.setJewelrydescription(auctionRequestReponse.getJewelryDescription());
             auctionRequest.setJewelryinitialprice(0);
-            auctionRequest.setStatus(AuctionRequestStatus.PENDING);
+            auctionRequest.setStatus(AuctionRequestStatus.initialStatus.PENDING);
         return auctionRepository.save(auctionRequest);
     }
 
@@ -42,11 +42,11 @@ public class AuctionRequestService {
 
     public AuctionRequest cancelRequest(long auctionrequestid) {
         AuctionRequest auctionRequest = auctionRepository.findById(auctionrequestid);
-        auctionRequest.setStatus(AuctionRequestStatus.CANCEL);
+        auctionRequest.setStatus(AuctionRequestStatus.initialStatus.CANCEL);
         return auctionRepository.save(auctionRequest);
     }
 
-    public List<AuctionRequest> getAuctionRequestByStatus(String status) {
+    public List<AuctionRequest> getAuctionRequestByStatus(AuctionRequestStatus.initialStatus status) {
         return auctionRepository.findByStatus(status);
     }
 }

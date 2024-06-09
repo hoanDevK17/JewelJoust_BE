@@ -2,6 +2,7 @@ package online.jeweljoust.BE.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,32 +15,25 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 
-public class InitialValuation {
+public class Shipment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @Column(nullable = false)
-    LocalDateTime initialdate;
+    LocalDateTime receiveddate;
 
     @Enumerated(EnumType.STRING)
-    AuctionRequestStatus.initialStatus status;
-
-    String reason;
-
-    double price;
-
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "staff_id")
-    Account accountInitial;
+    AuctionRequestStatus.shipmentStatus status;
 
     @OneToOne
     @JsonIgnore
-    @JoinColumn(name = "request_id")
-    AuctionRequest auctionRequestInitial;
+    @JoinColumn(name = "staff_id_received")
+    Account accountShipment;
 
-    @OneToOne(mappedBy = "initialShipment",cascade = CascadeType.ALL)
+    @OneToOne
     @JsonIgnore
-    Shipment shipment;
+    @JoinColumn(name = "initial_id")
+    InitialValuation initialShipment;
+
 }

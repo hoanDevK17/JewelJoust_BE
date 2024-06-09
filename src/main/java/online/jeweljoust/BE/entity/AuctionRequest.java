@@ -1,5 +1,6 @@
 package online.jeweljoust.BE.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,9 +31,10 @@ public class AuctionRequest {
     double jewelryinitialprice;
 
     @Enumerated(EnumType.STRING)
-    AuctionRequestStatus status;
+    AuctionRequestStatus.initialStatus status;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "member_id")
     Account accountRequest;
 

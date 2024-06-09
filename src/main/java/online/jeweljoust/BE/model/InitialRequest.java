@@ -10,7 +10,7 @@ import online.jeweljoust.BE.enums.AuctionRequestStatus;
 @Setter
 
 public class InitialRequest {
-    AuctionRequestStatus status;
+    AuctionRequestStatus.initialStatus status;
     String reason;
     double price;
 }

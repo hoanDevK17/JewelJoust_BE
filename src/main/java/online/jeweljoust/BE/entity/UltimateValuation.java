@@ -1,5 +1,6 @@
 package online.jeweljoust.BE.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,15 +22,23 @@ public class UltimateValuation {
     @Column(nullable = false)
     LocalDateTime ultimatedate;
 
-    AuctionRequestStatus status;
+    @Enumerated(EnumType.STRING)
+    AuctionRequestStatus.ultimateStatus status;
 
     String reason;
 
     @ManyToOne
-    @JoinColumn(name = "staff_id")
-    Account accountUltimate;
+    @JsonIgnore
+    @JoinColumn(name = "staff_id_sending")
+    Account ultimateStaff;
 
-    @ManyToOne
+    @OneToOne
+    @JsonIgnore
+    @JoinColumn(name = "manager_id")
+    Account ultimateManager;
+
+    @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "request_id")
     AuctionRequest auctionRequestUltimate;
 

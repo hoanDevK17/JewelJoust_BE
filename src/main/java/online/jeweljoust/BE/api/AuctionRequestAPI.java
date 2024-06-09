@@ -3,6 +3,7 @@ package online.jeweljoust.BE.api;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.AuctionRequest;
 
+import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.model.AuctionRequestReponse;
 import online.jeweljoust.BE.service.AuctionRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class AuctionRequestAPI {
 
     @GetMapping("/list-auction-request-by-status/{status}")
     @PreAuthorize("hasAuthority('STAFF')")
-    public ResponseEntity<List<AuctionRequest>> getAuctionRequestByStatus(@PathVariable("status") String status) {
+    public ResponseEntity<List<AuctionRequest>> getAuctionRequestByStatus(@PathVariable("status") AuctionRequestStatus.initialStatus status) {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequestByStatus(status);
         return ResponseEntity.ok(auctionRequests);
     }
