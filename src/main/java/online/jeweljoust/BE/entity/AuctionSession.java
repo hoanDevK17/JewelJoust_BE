@@ -1,5 +1,7 @@
 package online.jeweljoust.BE.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,8 +53,12 @@ public class AuctionSession {
 
     @ManyToOne
     @JoinColumn(name="auctionRequest_id")
+    @JsonIgnore
     AuctionRequest auctionRequest;
-
+    @JsonProperty("auctionRequest_id")
+    public Long getAuctionRequestId() {
+        return auctionRequest != null ? auctionRequest.getId() : null;
+    }
     @OneToMany(mappedBy = "auctionSession",cascade = CascadeType.ALL)
     List<AuctionRegistration> auctionRegistration;
 
