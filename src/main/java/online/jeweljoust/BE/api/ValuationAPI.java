@@ -3,8 +3,10 @@ package online.jeweljoust.BE.api;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.InitialValuation;
 import online.jeweljoust.BE.entity.Shipment;
+import online.jeweljoust.BE.entity.UltimateValuation;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.model.InitialRequest;
+import online.jeweljoust.BE.model.UltimateRequest;
 import online.jeweljoust.BE.service.ValuationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,5 +45,10 @@ public class ValuationAPI {
         return ResponseEntity.ok(shipmentList);
     }
 
-
+    @PutMapping("/ultimate-valuation/{id}")
+    @PreAuthorize("hasAuthority('STAFF')")
+    public ResponseEntity<UltimateValuation> ultimateValuationById(@PathVariable("id") long id, UltimateRequest ultimateRequest) {
+        UltimateValuation ultimateValuation = valuationService.ultimateValuationById(id, ultimateRequest);
+        return ResponseEntity.ok(ultimateValuation);
+    }
 }

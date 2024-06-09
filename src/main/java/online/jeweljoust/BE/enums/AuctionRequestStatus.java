@@ -13,7 +13,8 @@ public class AuctionRequestStatus {
     }
     public enum ultimateStatus{
         REVIEW,         //chờ xem xét (đánh giá chính thức)
-        ACCEPTED,       //đã xem xét và chấp nhận (đánh giá chính thức)
+        UNACCEPTED,       //đã xem xét và không chấp nhận (đánh giá chính thức)
+        UNAPPROVED,     //quản lý không phê duyệt
         APPROVED,       //quản lý phê duyệt
     }
 }
