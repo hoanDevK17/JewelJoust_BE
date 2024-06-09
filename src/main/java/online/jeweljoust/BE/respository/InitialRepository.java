@@ -12,6 +12,4 @@ import java.util.List;
 
 public interface InitialRepository extends JpaRepository<InitialValuation, Long> {
     InitialValuation findById(long id);
-    AuctionRequest findAuctionRequestById(long id);
-
 }

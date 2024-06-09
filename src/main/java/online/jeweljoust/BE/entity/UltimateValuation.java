@@ -22,10 +22,14 @@ public class UltimateValuation {
     @Column(nullable = false)
     LocalDateTime ultimatedate;
 
+    LocalDateTime approvaldanagerdate;
+
     @Enumerated(EnumType.STRING)
     AuctionRequestStatus.ultimateStatus status;
 
     String reason;
+
+    double price;
 
     @ManyToOne
     @JsonIgnore

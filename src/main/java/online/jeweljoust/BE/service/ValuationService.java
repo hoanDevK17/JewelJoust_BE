@@ -1,17 +1,16 @@
 package online.jeweljoust.BE.service;
 
-import online.jeweljoust.BE.entity.Account;
-import online.jeweljoust.BE.entity.AuctionRequest;
-import online.jeweljoust.BE.entity.InitialValuation;
-import online.jeweljoust.BE.entity.Shipment;
+import online.jeweljoust.BE.entity.*;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.model.InitialRequest;
+import online.jeweljoust.BE.model.UltimateRequest;
 import online.jeweljoust.BE.respository.AuctionRepository;
 import online.jeweljoust.BE.respository.InitialRepository;
 import online.jeweljoust.BE.respository.ShipmentRepository;
 import online.jeweljoust.BE.respository.UltimateRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -72,5 +71,28 @@ public class ValuationService {
     public List<Shipment> getAllReceived(AuctionRequestStatus.shipmentStatus status) {
         List<Shipment> shipmentList = shipmentRepository.findByStatus(status);
         return shipmentList;
+    }
+
+    public UltimateValuation ultimateValuationById(long id, UltimateRequest ultimateRequest) {
+        AuctionRequest auctionRequest = auctionRepository.findById(id);
+        UltimateValuation ultimateValuation = new UltimateValuation();
+        if (auctionRequest.getInitialValuations() != null){
+            AuctionRequestStatus.shipmentStatus status = auctionRequest.getInitialValuations().getShipment().getStatus();
+            if (status.equals(AuctionRequestStatus.shipmentStatus.RECEIVED)){
+                LocalDateTime now = LocalDateTime.now();
+                ultimateValuation.setUltimatedate(now);
+                ultimateValuation.setApprovaldanagerdate(null);
+                ultimateValuation.setStatus(ultimateRequest.getStatus());
+                ultimateValuation.setReason(ultimateRequest.getReason());
+                ultimateValuation.setPrice(ultimateRequest.getPrice());
+                ultimateValuation.setUltimateStaff(accountUtils.getAccountCurrent());
+                ultimateValuation.setUltimateManager(null);
+                ultimateValuation.setAuctionRequestUltimate(auctionRequest);
+                ultimateRepository.save(ultimateValuation);
+            }
+        } else {
+            throw new IllegalStateException("Status not match!!!");
+        }
+        return ultimateValuation;
     }
 }
