@@ -47,6 +47,8 @@ public class AuctionSessionAPI {
     public ResponseEntity<List<AuctionSession>>findAuctionSessionByName(@PathVariable String name) {
         return ResponseEntity.ok(auctionSessionRepository.findByNameSession(name));
     }
-
+//  mở phiên khi đến giờ ( staff)
+//   kết thúc phiên khi đến giờ (staff)
+    // dừng phiên khẩn cấp để tí tiếp tucj lại
 
 }
