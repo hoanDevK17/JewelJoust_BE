@@ -30,6 +30,7 @@ public class AuctionRequest {
 
     double jewelryinitialprice;
 
+
     @Enumerated(EnumType.STRING)
     AuctionRequestStatus.initialStatus status;
 
@@ -39,7 +40,7 @@ public class AuctionRequest {
     Account accountRequest;
 
     @OneToMany(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
-    List<AuctionSession> auctionSessions;
+    Set<AuctionSession> auctionSessions;
 
     @OneToOne(mappedBy = "auctionRequestInitial",cascade = CascadeType.ALL)
     InitialValuation initialValuations;

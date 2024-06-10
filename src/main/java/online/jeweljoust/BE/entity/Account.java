@@ -90,6 +90,10 @@ public class Account implements UserDetails {
     @JsonIgnore
     Shipment shipment;
 
+    @OneToMany(mappedBy = "acconutResource",cascade = CascadeType.ALL)
+    @JsonIgnore
+    Set<Resource> resource;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.getRole().toString()));
