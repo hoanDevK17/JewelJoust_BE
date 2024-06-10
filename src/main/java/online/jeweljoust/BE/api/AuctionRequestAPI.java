@@ -29,7 +29,6 @@ public class AuctionRequestAPI {
         return ResponseEntity.ok(auctionRequest);
     }
 
-
     @GetMapping("/auction-request-by-userid")
     @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<List<AuctionRequest>> getAuctionByUserid() {

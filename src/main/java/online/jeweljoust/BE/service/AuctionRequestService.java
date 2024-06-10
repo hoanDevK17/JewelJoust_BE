@@ -30,7 +30,7 @@ public class AuctionRequestService {
             auctionRequest.setRequestdate(now);
             auctionRequest.setJewelryname(auctionRequestReponse.getJewelryName());
             auctionRequest.setJewelrydescription(auctionRequestReponse.getJewelryDescription());
-            auctionRequest.setJewelryinitialprice(0);
+            auctionRequest.setJewelryinitialprice(auctionRequestReponse.getInitialPrice());
             auctionRequest.setStatus(AuctionRequestStatus.initialStatus.PENDING);
         return auctionRepository.save(auctionRequest);
     }
