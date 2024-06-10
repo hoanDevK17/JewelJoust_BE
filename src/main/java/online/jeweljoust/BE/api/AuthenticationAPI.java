@@ -140,12 +140,12 @@ public class AuthenticationAPI {
          return ResponseEntity.ok(accounts);
      }
 
-//     @DeleteMapping("/delete-account-by-id/{id}")
-//     @PreAuthorize("hasAuthority('ADMIN')")
-//     public ResponseEntity<String> deleteAccountById(@PathVariable("id") long id){
-//        authenticationService.deleteAccountById(id);
-//        return ResponseEntity.ok("Deleted successfully!!!");
-//     }
+     @DeleteMapping("/delete-account-by-id/{id}")
+     @PreAuthorize("hasAuthority('ADMIN')")
+     public ResponseEntity<String> deleteAccountById(@PathVariable("id") long id){
+        authenticationService.deleteAccountById(id);
+        return ResponseEntity.ok("Deleted successfully!!!");
+     }
 
     @GetMapping("send-mail")
     public void sendMail() {

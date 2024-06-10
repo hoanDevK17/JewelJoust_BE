@@ -16,8 +16,8 @@ import java.sql.SQLIntegrityConstraintViolationException;
 public class APIHandleException {
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Object> handleInvalidUserNamePassword(BadCredentialsException ex) {
-        return new ResponseEntity<>("Username or password not correct!!!", HttpStatus.FORBIDDEN);
+    public ResponseEntity<Object> handleInvalidUserNamePassword(BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     @ExceptionHandler(AuthenticationServiceException.class)
@@ -25,10 +25,15 @@ public class APIHandleException {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Object> handleAuthenticationServiceException(AccessDeniedException e) {
-        return new ResponseEntity<>("Your role not support!!!", HttpStatus.FORBIDDEN);
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
+
+//    @ExceptionHandler(AccessDeniedException.class)
+//    public ResponseEntity<Object> handleAuthenticationServiceException(AccessDeniedException e) {
+//        return new ResponseEntity<>("Your role not support!!!", HttpStatus.FORBIDDEN);
+//    }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Object> handleSQLIntegrityConstraintViolation(SQLIntegrityConstraintViolationException ex) {

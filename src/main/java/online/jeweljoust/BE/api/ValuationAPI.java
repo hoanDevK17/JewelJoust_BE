@@ -24,14 +24,14 @@ public class ValuationAPI {
     @Autowired
     ValuationService valuationService;
 
-    @PutMapping("/change-status-initial-by-id/{id}")
+    @PostMapping("/change-status-initial-by-id/{id}")
     @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<InitialValuation> changeStatusInitialById(@PathVariable("id") long id, InitialRequest initialRequest) {
         InitialValuation initialValuation = valuationService.changeStatusInitial(id, initialRequest);
         return ResponseEntity.ok(initialValuation);
     }
 
-    @PutMapping("/delivery-status-by-id/{id}/{status}")
+    @PostMapping("/delivery-status-by-id/{id}/{status}")
     @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<Shipment> deliveryStatusById(@PathVariable("id") long id, @PathVariable("status") AuctionRequestStatus.shipmentStatus status) {
         Shipment shipment = valuationService.deliveryStatusById(id, status);
@@ -45,10 +45,17 @@ public class ValuationAPI {
         return ResponseEntity.ok(shipmentList);
     }
 
-    @PutMapping("/ultimate-valuation/{id}")
+    @PostMapping("/ultimate-valuation/{id}")
     @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<UltimateValuation> ultimateValuationById(@PathVariable("id") long id, UltimateRequest ultimateRequest) {
         UltimateValuation ultimateValuation = valuationService.ultimateValuationById(id, ultimateRequest);
+        return ResponseEntity.ok(ultimateValuation);
+    }
+
+    @PutMapping("/approval-manager/{id}/{status}")
+    @PreAuthorize("hasAuthority('MANAGER')")
+    public ResponseEntity<UltimateValuation> approvalManager(@PathVariable("id") long id, @PathVariable("status") AuctionRequestStatus.ultimateStatus status, String reason) {
+        UltimateValuation ultimateValuation = valuationService.approvalManager(id, status, reason);
         return ResponseEntity.ok(ultimateValuation);
     }
 }

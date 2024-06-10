@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface UltimateRepository extends JpaRepository<UltimateValuation, Long> {
+    UltimateValuation findById(long id);
 
 }

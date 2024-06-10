@@ -31,6 +31,8 @@ public class UltimateValuation {
 
     double price;
 
+    String description;
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "staff_id_sending")

@@ -19,5 +19,6 @@ public class UltimateRequest {
     AuctionRequestStatus.ultimateStatus status;
     String reason;
     double price;
+    String description;
 }
 
