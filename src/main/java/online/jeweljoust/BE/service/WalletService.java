@@ -16,8 +16,13 @@ public class WalletService {
         wallet.setBalance(0.0);
         wallet.setUpdateAt(new Date());
         wallet.setCreateAt(new Date());
-        wallet.setId(account.getId());
+        wallet.setAccountWallet(account);
 //        wallet.setAccountWallet(account);
         return walletRepository.save(wallet);
     }
+        public Wallet changBalance(Long id,double amount){
+                Wallet wallet = walletRepository.findWalletById(id);
+                wallet.setBalance(wallet.getBalance()+amount);
+                return walletRepository.save(wallet);
+        }
 }

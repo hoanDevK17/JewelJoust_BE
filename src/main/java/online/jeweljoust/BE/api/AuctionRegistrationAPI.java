@@ -32,12 +32,12 @@ public class AuctionRegistrationAPI {
         List<AuctionRegistration> auctionRegistrations = auctionRegistrationService.findAllAuctionRegistration();
         return ResponseEntity.ok(auctionRegistrations);
     }
-    @PostMapping("/auctionRegistrations/{id}/cancel")
+    @PutMapping("/auctionRegistrations/{id}/cancel")
     public ResponseEntity cancelAuctionRegistrations(@PathVariable Long id) {
         AuctionRegistration auctionRegistration = auctionRegistrationService.cancelAuctionRegistration(id);
         return ResponseEntity.ok(auctionRegistration);
     }
-    @PostMapping("/auctionRegistrations/{id}/deposit")
+    @PutMapping("/auctionRegistrations/{id}/deposit")
     public ResponseEntity depositAuctionRegistrations(@PathVariable Long id) {
         AuctionRegistration auctionRegistration = auctionRegistrationService.depositAuctionRegistration(id);
         return ResponseEntity.ok(auctionRegistration);
