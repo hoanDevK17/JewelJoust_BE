@@ -15,5 +15,5 @@ import java.util.Date;
 public class AuctionRegistrationRequest {
 
  long auctionSession_id;
-long member_id;
+
 }

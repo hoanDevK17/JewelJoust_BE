@@ -11,6 +11,7 @@ import online.jeweljoust.BE.enums.AuctionSessionStatus;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -60,7 +61,7 @@ public class AuctionSession {
         return auctionRequest != null ? auctionRequest.getId() : null;
     }
     @OneToMany(mappedBy = "auctionSession",cascade = CascadeType.ALL)
-    List<AuctionRegistration> auctionRegistration;
+    Set<AuctionRegistration> auctionRegistration;
 
     @Enumerated(EnumType.STRING)
     AuctionSessionStatus status;

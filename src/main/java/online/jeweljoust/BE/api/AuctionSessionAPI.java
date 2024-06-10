@@ -33,11 +33,13 @@ public class AuctionSessionAPI {
 
         return ResponseEntity.ok(auctionSession);
     }
+//    getAll
     @GetMapping("/auctionSessions")
     public ResponseEntity<List<AuctionSession>> getAllAuctionSessions() {
         List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
         return ResponseEntity.ok(auctionSession);
     }
+//    update
     @PutMapping("/auctionSessions/{id}")
     public ResponseEntity<AuctionSession> updateAuctionSessions(@PathVariable Long id,@RequestBody AuctionSessionRequest auctionSessionRequest) {
         AuctionSession auctionSession =  auctionSessionService.updateAuctionSession(id, auctionSessionRequest);

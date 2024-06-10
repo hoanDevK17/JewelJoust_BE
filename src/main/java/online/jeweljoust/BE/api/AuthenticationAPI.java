@@ -35,11 +35,11 @@ public class AuthenticationAPI {
     @Autowired
     AccountUtils accountUtils;
 
-    @GetMapping("/test-param/{name}")
-    public ResponseEntity testParam(@PathVariable("name") String name) {
-        System.out.println(name);
-        return ResponseEntity.ok(name);
-    }
+//    @GetMapping("/test-param/{name}")
+//    public ResponseEntity testParam(@PathVariable("name") String name) {
+//        System.out.println(name);
+//        return ResponseEntity.ok(name);
+//    }
     // @GetMapping("/product/{id}")
     // public ResponseEntity test(@PathVariable String id){
     // return ResponseEntity.ok("Hello world");
