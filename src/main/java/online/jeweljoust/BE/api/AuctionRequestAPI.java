@@ -30,18 +30,19 @@ public class AuctionRequestAPI {
     }
 
 
-//    @GetMapping("/auction-request-by-userid")
-//    public ResponseEntity<List<AuctionRequest>> getAuctionByUserid() {
-//        List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequest();
-//        return ResponseEntity.ok(auctionRequests);
-//    }
+    @GetMapping("/auction-request-by-userid")
+    @PreAuthorize("hasAuthority('MEMBER')")
+    public ResponseEntity<List<AuctionRequest>> getAuctionByUserid() {
+        List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequest();
+        return ResponseEntity.ok(auctionRequests);
+    }
 
-//    @PutMapping("/cancel-request-auction/{status}/{auctionrequestid}")
-//    @PreAuthorize("hasAuthority('MEMBER')")
-//    public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("auctionrequestid") long auctionrequestid){
-////        AuctionRequest auctionRequest = auctionRequestService.cancelRequest(auctionrequestid);
-//        return ResponseEntity.ok(auctionRequest);
-//    }
+    @PutMapping("/cancel-request-auction/{status}/{auctionrequestid}")
+    @PreAuthorize("hasAuthority('MEMBER')")
+    public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("auctionrequestid") long auctionrequestid){
+        AuctionRequest auctionRequest = auctionRequestService.cancelRequest(auctionrequestid);
+        return ResponseEntity.ok(auctionRequest);
+    }
 
     @GetMapping("/list-auction-request-by-status/{status}")
     @PreAuthorize("hasAuthority('STAFF')")

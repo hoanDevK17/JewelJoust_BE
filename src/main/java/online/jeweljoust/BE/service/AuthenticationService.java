@@ -195,7 +195,7 @@ public class AuthenticationService implements UserDetailsService {
         authenticationRepository.save(account);
     }
 
-//    public void deleteAccountById(long id) {
-//        Account account = authenticationRepository.de
-//    }
+    public void deleteAccountById(long id) {
+        authenticationRepository.deleteById(id);
+    }
 }

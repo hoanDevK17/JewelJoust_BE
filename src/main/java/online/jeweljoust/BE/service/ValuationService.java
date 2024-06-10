@@ -47,7 +47,7 @@ public class ValuationService {
             initialValuation.setAccountInitial(account);
             initialRepository.save(initialValuation);
         } else {
-            throw new IllegalStateException("Status not match!!!");
+            throw new IllegalStateException("Invalid status to proceed!!!");
         }
     return initialValuation;
     }
@@ -63,7 +63,7 @@ public class ValuationService {
             shipment.setInitialShipment(initialValuation);
             shipmentRepository.save(shipment);
         } else {
-            throw new IllegalStateException("Status not match!!!");
+            throw new IllegalStateException("Invalid status to proceed!!!");
         }
         return shipment;
     }
@@ -85,13 +85,29 @@ public class ValuationService {
                 ultimateValuation.setStatus(ultimateRequest.getStatus());
                 ultimateValuation.setReason(ultimateRequest.getReason());
                 ultimateValuation.setPrice(ultimateRequest.getPrice());
+                ultimateValuation.setDescription(ultimateRequest.getDescription());
                 ultimateValuation.setUltimateStaff(accountUtils.getAccountCurrent());
                 ultimateValuation.setUltimateManager(null);
                 ultimateValuation.setAuctionRequestUltimate(auctionRequest);
                 ultimateRepository.save(ultimateValuation);
             }
         } else {
-            throw new IllegalStateException("Status not match!!!");
+            throw new IllegalStateException("Invalid status to proceed!!!");
+        }
+        return ultimateValuation;
+    }
+
+    public UltimateValuation approvalManager(long id, AuctionRequestStatus.ultimateStatus status, String reason) {
+        UltimateValuation ultimateValuation = ultimateRepository.findById(id);
+        if (ultimateValuation.getStatus().equals(AuctionRequestStatus.ultimateStatus.REVIEW)){
+            LocalDateTime now = LocalDateTime.now();
+            ultimateValuation.setStatus(status);
+            ultimateValuation.setReason(reason);
+            ultimateValuation.setApprovaldanagerdate(now);
+            ultimateValuation.setUltimateManager(accountUtils.getAccountCurrent());
+            ultimateRepository.save(ultimateValuation);
+        } else {
+            throw new IllegalStateException("Invalid status to proceed!!!");
         }
         return ultimateValuation;
     }

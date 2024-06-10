@@ -26,7 +26,7 @@ public class AuctionRequestService {
     public AuctionRequest requestSale(AuctionRequestReponse auctionRequestReponse){
         AuctionRequest auctionRequest = new AuctionRequest();
             LocalDateTime now = LocalDateTime.now();
-            auctionRequest.setId(accountUtils.getAccountCurrent().getId());
+            auctionRequest.setAccountRequest(accountUtils.getAccountCurrent());
             auctionRequest.setRequestdate(now);
             auctionRequest.setJewelryname(auctionRequestReponse.getJewelryName());
             auctionRequest.setJewelrydescription(auctionRequestReponse.getJewelryDescription());
@@ -35,10 +35,10 @@ public class AuctionRequestService {
         return auctionRepository.save(auctionRequest);
     }
 
-//    public List<AuctionRequest> getAuctionRequest() {
-//        long userid = accountUtils.getAccountCurrent().getId();
-//        return auctionRepository.findByAccountId(userid);
-//    }
+    public List<AuctionRequest> getAuctionRequest() {
+        long userid = accountUtils.getAccountCurrent().getId();
+        return auctionRepository.findByAccountRequestId(userid);
+    }
 
     public AuctionRequest cancelRequest(long auctionrequestid) {
         AuctionRequest auctionRequest = auctionRepository.findById(auctionrequestid);
