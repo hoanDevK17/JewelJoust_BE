@@ -90,9 +90,9 @@ public class Account implements UserDetails {
     @JsonIgnore
     Shipment shipment;
 
-    @OneToMany(mappedBy = "acconutResource",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "accountResource",cascade = CascadeType.ALL)
     @JsonIgnore
-    Set<Resource> resource;
+    Set<Resources> resource;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

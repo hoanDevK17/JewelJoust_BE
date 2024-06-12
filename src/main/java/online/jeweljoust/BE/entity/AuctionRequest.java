@@ -8,7 +8,6 @@ import lombok.ToString;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -46,4 +45,7 @@ public class AuctionRequest {
 
     @OneToOne(mappedBy = "auctionRequestUltimate",cascade = CascadeType.ALL)
     UltimateValuation ultimateValuation;
+
+//    @OneToMany(mappedBy = "auctionRequestResource",cascade = CascadeType.ALL)
+//    Set<Resources> resources;
 }
