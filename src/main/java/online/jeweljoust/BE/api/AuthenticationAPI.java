@@ -66,14 +66,14 @@ public class AuthenticationAPI {
     }
 
     @PostMapping("/register-have-role")
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity registerHaveRole(@RequestBody RegisterRequest registerRequest) {
         Account account = authenticationService.registerHaveRole(registerRequest);
         return ResponseEntity.ok(account);
     }
 
     @GetMapping("/accounts")
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<Account>> getAccounts() {
         List<Account> accounts = authenticationService.getAllAccount();
         return ResponseEntity.ok(accounts);
@@ -127,21 +127,21 @@ public class AuthenticationAPI {
     }
 
     @PutMapping("/block-account/{userid}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, AccountStatus status){
         authenticationService.blockAccount(userid, status);
         return ResponseEntity.ok("Account has been changed");
     }
 
     @GetMapping("/search-accounts-by-name/{name}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
      public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name){
          List<Account> accounts = authenticationService.getAccountByName(name);
          return ResponseEntity.ok(accounts);
      }
 
      @DeleteMapping("/delete-account-by-id/{id}")
-     @PreAuthorize("hasAuthority('ADMIN')")
+//     @PreAuthorize("hasAuthority('ADMIN')")
      public ResponseEntity<String> deleteAccountById(@PathVariable("id") long id){
         authenticationService.deleteAccountById(id);
         return ResponseEntity.ok("Deleted successfully!!!");

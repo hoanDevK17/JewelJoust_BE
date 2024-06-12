@@ -49,4 +49,8 @@ public class AuctionRequestService {
     public List<AuctionRequest> getAuctionRequestByStatus(AuctionRequestStatus.initialStatus status) {
         return auctionRepository.findByStatus(status);
     }
+
+    public List<AuctionRequest> getAllAuctionRequest() {
+        return auctionRepository.findAll();
+    }
 }
