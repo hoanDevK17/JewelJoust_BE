@@ -23,30 +23,37 @@ public class AuctionRequestAPI {
     AuctionRequestService auctionRequestService;
 
     @PostMapping("/request-sale")
-    @PreAuthorize("hasAuthority('MEMBER')")
+//    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity requestSaleAuction(@RequestBody AuctionRequestReponse auctionRequestReponse) {
         AuctionRequest auctionRequest = auctionRequestService.requestSale(auctionRequestReponse);
         return ResponseEntity.ok(auctionRequest);
     }
 
     @GetMapping("/auction-request-by-userid")
-    @PreAuthorize("hasAuthority('MEMBER')")
+//    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<List<AuctionRequest>> getAuctionByUserid() {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequest();
         return ResponseEntity.ok(auctionRequests);
     }
 
     @PutMapping("/cancel-request-auction/{status}/{auctionrequestid}")
-    @PreAuthorize("hasAuthority('MEMBER')")
+//    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("auctionrequestid") long auctionrequestid){
         AuctionRequest auctionRequest = auctionRequestService.cancelRequest(auctionrequestid);
         return ResponseEntity.ok(auctionRequest);
     }
 
     @GetMapping("/list-auction-request-by-status/{status}")
-    @PreAuthorize("hasAuthority('STAFF')")
+//    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<List<AuctionRequest>> getAuctionRequestByStatus(@PathVariable("status") AuctionRequestStatus.initialStatus status) {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequestByStatus(status);
+        return ResponseEntity.ok(auctionRequests);
+    }
+
+    @GetMapping("/get-all-auction-request")
+//    @PreAuthorize("hasAuthority('STAFF')")
+    public ResponseEntity<List<AuctionRequest>> getAllAuctionRequest() {
+        List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequest();
         return ResponseEntity.ok(auctionRequests);
     }
 }
