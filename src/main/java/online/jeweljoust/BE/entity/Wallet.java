@@ -19,6 +19,7 @@ public class Wallet {
 
     @OneToOne
     @JoinColumn(name="account_id")
+    @JsonIgnore
     Account accountWallet;
 
     Double balance;

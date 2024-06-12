@@ -1,7 +1,9 @@
 package online.jeweljoust.BE.service;
 
+import online.jeweljoust.BE.entity.AuctionRequest;
 import online.jeweljoust.BE.entity.AuctionSession;
 
+import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.enums.AuctionSessionStatus;
 import online.jeweljoust.BE.model.AuctionSessionRequest;
 import online.jeweljoust.BE.respository.AuctionRepository;
@@ -32,7 +34,11 @@ public class AuctionSessionService {
     public AuctionSession addAuctionSessions(AuctionSessionRequest auctionSessionRequest){
 
         AuctionSession auctionSession = new AuctionSession();
-        auctionSession.setAuctionRequest(auctionRepository.findById(auctionSessionRequest.getAuction_request_id()));
+        AuctionRequest auctionRequest = auctionRepository.findById(auctionSessionRequest.getAuction_request_id());
+                if(auctionRequest==null || auctionRequest.getUltimateValuation().getStatus() != AuctionRequestStatus.ultimateStatus.APPROVED){
+                    throw new IllegalStateException("Can't find auctionRequest or auctionRequest don't is APPROVED");
+                }
+        auctionSession.setAuctionRequest(auctionRequest);
         auctionSession.setManagerSession(accountUtils.getAccountCurrent());
         auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
         auctionSession.setStart_time(auctionSessionRequest.getStart_time());

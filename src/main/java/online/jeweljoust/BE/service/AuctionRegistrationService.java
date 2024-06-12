@@ -52,14 +52,13 @@ public class AuctionRegistrationService {
             if(auctionRegistration.getStatus()!=AuctionRegistrationStatus.PENDING  ){
 
                 Transaction transaction = transactionService.refundRegistration(auctionRegistration);
-                if (transaction.getStatus()== TransactionStatus.SUCCESSFUL) {
-                    auctionRegistration.setStatus(AuctionRegistrationStatus.CANCELLED);
-                }
+
             }
+            auctionRegistration.setStatus(AuctionRegistrationStatus.CANCELLED);
             return auctionRegistrationRepository.save(auctionRegistration);
         }
         else{
-            throw new IllegalStateException ("Cancel roi");
+            throw new IllegalStateException ("this registration had been canceled");
         }
     }
     public AuctionRegistration depositAuctionRegistration (long id){

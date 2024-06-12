@@ -1,5 +1,6 @@
 package online.jeweljoust.BE.service;
 
+import jakarta.transaction.Transactional;
 import online.jeweljoust.BE.entity.AuctionRegistration;
 import online.jeweljoust.BE.entity.Transaction;
 import online.jeweljoust.BE.entity.Wallet;
@@ -32,6 +33,7 @@ WalletService walletService;
         }
         return transactionRepository.save(transaction);
     }
+    @Transactional
     public Transaction refundRegistration(AuctionRegistration auctionRegistration){
         Transaction transaction = new Transaction();
         Double amountDeposit = auctionRegistration.getAuctionSession().getDepositAmount();
