@@ -97,10 +97,11 @@ public class AuthenticationAPI {
     @PostMapping("/login-google")
     public ResponseEntity<AccountReponse> loginGoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
         AccountReponse accountReponse = authenticationService.loginGoogle(loginGoogleRequest);
-        if(accountReponse.getId()>0){
-            Wallet wallet = walletService.registerWallet(accountReponse);
-            System.out.println(wallet);
-        }
+
+//        if(accountReponse.getId()>0){
+//            Wallet wallet = walletService.registerWallet(accountReponse);
+//            System.out.println(wallet);
+//        }
         return ResponseEntity.ok(accountReponse);
     }
 
