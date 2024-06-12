@@ -16,6 +16,8 @@ public class AuctionRequestStatus {
         UNACCEPTED,       //đã xem xét và không chấp nhận (đánh giá chính thức)
         UNAPPROVED,     //quản lý không phê duyệt
         APPROVED,       //quản lý phê duyệt
+        AGREED,         //member đồng ý định giá cuối
+        DECLINED        //member từ chối định giá cuối
     }
 }
 
