@@ -122,11 +122,13 @@ public class AuthenticationService implements UserDetailsService {
                 account = new Account();
                 account.setFullname(firebaseToken.getName());
                 account.setEmail(firebaseToken.getEmail());
+                account.setUsername(email);
                 account = authenticationRepository.save(account);
             }
             accountReponse.setId(account.getId());
             accountReponse.setFullname(account.getFullname());
             accountReponse.setEmail(account.getEmail());
+            accountReponse.setUsername(account.getUsername());
             accountReponse.setToken(tokenService.generateToken(account));
         } catch (Exception e){
             e.getMessage();

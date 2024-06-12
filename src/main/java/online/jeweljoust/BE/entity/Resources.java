@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 
-public class Resource {
+public class Resources {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -30,15 +30,20 @@ public class Resource {
     @Enumerated(EnumType.STRING)
     ResourceTypes.ReferenceType referenceType;
 
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "auctionrequest_id")
-    AuctionRequest requestResource;
+//    @ManyToOne
+//    @JsonIgnore
+//    @JoinColumn(name = "reference_id")
+//    AuctionRequest auctionRequestResource;
+//
+//    @ManyToOne
+//    @JsonIgnore
+//    @JoinColumn(name = "reference_id")
+//    AuctionSession auctionSessionResource;
 
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "upload_by")
-    Account acconutResource;
+    Account accountResource;
 
     @Column(nullable = false)
     LocalDateTime uploadAt;
