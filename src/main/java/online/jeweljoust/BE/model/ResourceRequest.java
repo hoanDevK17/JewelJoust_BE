@@ -9,6 +9,5 @@ import org.springframework.stereotype.Service;
 @Setter
 
 public class ResourceRequest {
-    String name;
     String path;
 }
