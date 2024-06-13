@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import online.jeweljoust.BE.config.SecurityConfig;
 import online.jeweljoust.BE.entity.Account;
+import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AccountStatus;
 import online.jeweljoust.BE.model.*;
@@ -53,6 +54,8 @@ public class AuthenticationService implements UserDetailsService {
 
     @Autowired
     EmailService emailService;
+    @Autowired
+    WalletService walletService;
 
     public Account register(RegisterRequest registerRequest){
         Account account = new Account();
@@ -106,6 +109,7 @@ public class AuthenticationService implements UserDetailsService {
             accountReponse.setCredibility(account.getCredibility());
             accountReponse.setStatus(account.getStatus());
             accountReponse.setToken(token);
+            accountReponse.setWallet(account.getWallet());
             return accountReponse;
         } catch (AuthenticationException e){
             throw new BadCredentialsException("Incorrect username or password");
@@ -124,6 +128,11 @@ public class AuthenticationService implements UserDetailsService {
                 account.setEmail(firebaseToken.getEmail());
                 account.setUsername(email);
                 account = authenticationRepository.save(account);
+                if(account.getId()!=null){
+                    account.setWallet(walletService.registerWallet(account));
+                }
+
+
             }
             accountReponse.setId(account.getId());
             accountReponse.setFullname(account.getFullname());

@@ -59,8 +59,8 @@ public class AuthenticationAPI {
         Account account = authenticationService.register(registerRequest);
         if(account!=null){
             System.out.println(account);
-            Wallet wallet = walletService.registerWallet(account);
-
+             Wallet wallet = walletService.registerWallet(account);
+             account.setWallet(wallet);
         }
         return ResponseEntity.ok(account);
     }
@@ -84,9 +84,10 @@ public class AuthenticationAPI {
         return accountUtils.getAccountCurrent();
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
         Account account = authenticationService.login(loginRequest);
+
         if (account.getStatus().equals(AccountStatus.ACTIVE)){
             return ResponseEntity.ok(account);
         } else {
@@ -98,10 +99,7 @@ public class AuthenticationAPI {
     public ResponseEntity<AccountReponse> loginGoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
         AccountReponse accountReponse = authenticationService.loginGoogle(loginGoogleRequest);
 
-//        if(accountReponse.getId()>0){
-//            Wallet wallet = walletService.registerWallet(accountReponse);
-//            System.out.println(wallet);
-//        }
+
         return ResponseEntity.ok(accountReponse);
     }
 
@@ -148,7 +146,7 @@ public class AuthenticationAPI {
         return ResponseEntity.ok("Deleted successfully!!!");
      }
 
-    @GetMapping("send-mail")
+    @GetMapping("/send-mail")
     public void sendMail() {
         EmailDetail emailDetail = new EmailDetail();
         emailDetail.setRecipient("phatttse170312@fpt.edu.vn");

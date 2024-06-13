@@ -55,8 +55,11 @@ public class Account implements UserDetails {
     AccountStatus status;
 
     @OneToOne(mappedBy = "accountWallet",cascade = CascadeType.ALL)
+//            @JsonIgnore
     Wallet wallet;
-
+    public Wallet getWallet() {
+        return wallet;
+    }
     @OneToMany(mappedBy = "accountRequest",cascade = CascadeType.ALL)
     @JsonIgnore
     Set<AuctionRequest> auctionRequests;
