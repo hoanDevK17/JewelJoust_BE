@@ -24,10 +24,24 @@ public class ValuationAPI {
     @Autowired
     ValuationService valuationService;
 
-    @PostMapping("/change-status-initial-by-id/{id}")
+//    @PostMapping("/change-status-initial-by-id/{id}")
+////    @PreAuthorize("hasAuthority('STAFF')")
+//    public ResponseEntity<InitialValuation> changeStatusInitialById(@PathVariable("id") long id, InitialRequest initialRequest) {
+//        InitialValuation initialValuation = valuationService.changeStatusInitial(id, initialRequest);
+//        return ResponseEntity.ok(initialValuation);
+//    }
+
+    @PostMapping("/confirmed-initial/{id}")
 //    @PreAuthorize("hasAuthority('STAFF')")
-    public ResponseEntity<InitialValuation> changeStatusInitialById(@PathVariable("id") long id, InitialRequest initialRequest) {
-        InitialValuation initialValuation = valuationService.changeStatusInitial(id, initialRequest);
+    public ResponseEntity<InitialValuation> comfirmedInitial(@PathVariable("id") long id, double price) {
+        InitialValuation initialValuation = valuationService.comfirmedInitial(id, price);
+        return ResponseEntity.ok(initialValuation);
+    }
+
+    @PostMapping("/rejected-initial/{id}")
+//    @PreAuthorize("hasAuthority('STAFF')")
+    public ResponseEntity<InitialValuation> rejectedInitial(@PathVariable("id") long id, String reason) {
+        InitialValuation initialValuation = valuationService.rejectedInitial(id, reason);
         return ResponseEntity.ok(initialValuation);
     }
 

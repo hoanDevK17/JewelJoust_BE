@@ -44,11 +44,10 @@ public class AuctionRequestService {
 
             for (ResourceRequest resourceRequest : auctionRequestReponse.getResourceRequests()){
                 Resources resources = new Resources();
-                resources.setName(resourceRequest.getName());
                 resources.setResourceType(ResourceTypes.ResourceType.img);
                 resources.setPath(resourceRequest.getPath());
                 resources.setReferenceType(ResourceTypes.ReferenceType.AUCTION_REQUEST);
-//                resources.setAuctionRequestResource(saveAuctionRequest);
+                resources.setAuctionRequestResource(saveAuctionRequest);
                 resources.setAccountResource(accountUtils.getAccountCurrent());
                 resources.setUploadAt(now);
                 resourceRepository.save(resources);
