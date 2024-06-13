@@ -30,15 +30,18 @@ public class Resources {
     @Enumerated(EnumType.STRING)
     ResourceTypes.ReferenceType referenceType;
 
-//    @ManyToOne
-//    @JsonIgnore
-//    @JoinColumn(name = "reference_id")
-//    AuctionRequest auctionRequestResource;
-//
-//    @ManyToOne
-//    @JsonIgnore
-//    @JoinColumn(name = "reference_id")
-//    AuctionSession auctionSessionResource;
+//    @Column(name = "reference_id", nullable = false)
+//    Long referenceId;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "reference_id", insertable = false, updatable = false)
+    AuctionRequest auctionRequestResource;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "reference_id", insertable = false, updatable = false)
+    AuctionSession auctionSessionResource;
 
     @ManyToOne
     @JsonIgnore

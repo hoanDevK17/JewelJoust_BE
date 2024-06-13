@@ -33,24 +33,24 @@ public class ValuationService {
     @Autowired
     UltimateRepository ultimateRepository;
 
-    public InitialValuation changeStatusInitial(long id, InitialRequest initialRequest) {
-        AuctionRequest auctionRequest = auctionRepository.findById(id);
-        InitialValuation initialValuation = new InitialValuation();
-        if (auctionRequest.getStatus().equals(AuctionRequestStatus.initialStatus.PENDING)){
-            Account account = accountUtils.getAccountCurrent();
-            LocalDateTime now = LocalDateTime.now();
-            initialValuation.setInitialdate(now);
-            initialValuation.setStatus(initialRequest.getStatus());
-            initialValuation.setReason(initialRequest.getReason());
-            initialValuation.setPrice(initialRequest.getPrice());
-            initialValuation.setAuctionRequestInitial(auctionRequest);
-            initialValuation.setAccountInitial(account);
-            initialRepository.save(initialValuation);
-        } else {
-            throw new IllegalStateException("Invalid status to proceed!!!");
-        }
-    return initialValuation;
-    }
+//    public InitialValuation changeStatusInitial(long id, InitialRequest initialRequest) {
+//        AuctionRequest auctionRequest = auctionRepository.findById(id);
+//        InitialValuation initialValuation = new InitialValuation();
+//        if (auctionRequest.getStatus().equals(AuctionRequestStatus.initialStatus.PENDING)){
+//            Account account = accountUtils.getAccountCurrent();
+//            LocalDateTime now = LocalDateTime.now();
+//            initialValuation.setInitialdate(now);
+//            initialValuation.setStatus(initialRequest.getStatus());
+//            initialValuation.setReason(initialRequest.getReason());
+//            initialValuation.setPrice(initialRequest.getPrice());
+//            initialValuation.setAuctionRequestInitial(auctionRequest);
+//            initialValuation.setAccountInitial(account);
+//            initialRepository.save(initialValuation);
+//        } else {
+//            throw new IllegalStateException("Invalid status to proceed!!!");
+//        }
+//    return initialValuation;
+//    }
 
     public Shipment deliveryStatusById(long id, AuctionRequestStatus.shipmentStatus status) {
         InitialValuation initialValuation = initialRepository.findById(id);
@@ -110,5 +110,43 @@ public class ValuationService {
             throw new IllegalStateException("Invalid status to proceed!!!");
         }
         return ultimateValuation;
+    }
+
+    public InitialValuation comfirmedInitial(long id, double price) {
+        AuctionRequest auctionRequest = auctionRepository.findById(id);
+        InitialValuation initialValuation = new InitialValuation();
+        if (auctionRequest.getStatus().equals(AuctionRequestStatus.initialStatus.PENDING)){
+            Account account = accountUtils.getAccountCurrent();
+            LocalDateTime now = LocalDateTime.now();
+            initialValuation.setInitialdate(now);
+            initialValuation.setStatus(AuctionRequestStatus.initialStatus.CONFIRMED);
+            initialValuation.setPrice(price);
+            initialValuation.setAuctionRequestInitial(auctionRequest);
+            initialValuation.setAccountInitial(account);
+            auctionRequest.setStatus(AuctionRequestStatus.initialStatus.CONFIRMED);
+            initialRepository.save(initialValuation);
+        } else {
+            throw new IllegalStateException("Invalid status to proceed!!!");
+        }
+        return initialValuation;
+    }
+
+    public InitialValuation rejectedInitial(long id, String reason) {
+        AuctionRequest auctionRequest = auctionRepository.findById(id);
+        InitialValuation initialValuation = new InitialValuation();
+        if (auctionRequest.getStatus().equals(AuctionRequestStatus.initialStatus.PENDING)){
+            Account account = accountUtils.getAccountCurrent();
+            LocalDateTime now = LocalDateTime.now();
+            initialValuation.setInitialdate(now);
+            initialValuation.setStatus(AuctionRequestStatus.initialStatus.REJECTED);
+            initialValuation.setReason(reason);
+            initialValuation.setAuctionRequestInitial(auctionRequest);
+            initialValuation.setAccountInitial(account);
+            auctionRequest.setStatus(AuctionRequestStatus.initialStatus.REJECTED);
+            initialRepository.save(initialValuation);
+        } else {
+            throw new IllegalStateException("Invalid status to proceed!!!");
+        }
+        return initialValuation;
     }
 }
