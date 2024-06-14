@@ -7,6 +7,7 @@ import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AccountStatus;
+import online.jeweljoust.BE.exception.InvalidPasswordException;
 import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
@@ -188,14 +189,36 @@ public class AuthenticationService implements UserDetailsService {
 
     public Account updateProfile(UpdateProfileRequest updateProfileRequest) {
         Account account = authenticationRepository.findById(updateProfileRequest.getId());
-        account.setFullname(updateProfileRequest.getFullname());
-        account.setAddress(updateProfileRequest.getAddress());
-        account.setBirthday(updateProfileRequest.getBirthday());
-        account.setEmail(updateProfileRequest.getEmail());
-        account.setPhone(updateProfileRequest.getPhone());
-        if (!updateProfileRequest.getNewPassword().equals(updateProfileRequest.getOldPassword())){
+//        account.setFullname(updateProfileRequest.getFullname());
+//        account.setAddress(updateProfileRequest.getAddress());
+//        account.setBirthday(updateProfileRequest.getBirthday());
+//        account.setEmail(updateProfileRequest.getEmail());
+//        account.setPhone(updateProfileRequest.getPhone());
+//        if (!updateProfileRequest.getNewPassword().equals(updateProfileRequest.getOldPassword())){
+//            if (passwordEncoder.encode(updateProfileRequest.getOldPassword()).equals(account.getPassword())){
+//                account.setPassword(passwordEncoder.encode(updateProfileRequest.getNewPassword()));
+//            }
+//        }
+        if (updateProfileRequest.getFullname() != null) {
+            account.setFullname(updateProfileRequest.getFullname());
+        }
+        if (updateProfileRequest.getAddress() != null) {
+            account.setAddress(updateProfileRequest.getAddress());
+        }
+        if (updateProfileRequest.getBirthday() != null) {
+            account.setBirthday(updateProfileRequest.getBirthday());
+        }
+        if (updateProfileRequest.getEmail() != null) {
+            account.setEmail(updateProfileRequest.getEmail());
+        }
+        if (updateProfileRequest.getPhone() != null) {
+            account.setPhone(updateProfileRequest.getPhone());
+        }
+        if (updateProfileRequest.getNewPassword() != null && !updateProfileRequest.getNewPassword().equals(updateProfileRequest.getOldPassword())) {
             if (passwordEncoder.encode(updateProfileRequest.getOldPassword()).equals(account.getPassword())){
                 account.setPassword(passwordEncoder.encode(updateProfileRequest.getNewPassword()));
+            } else {
+                throw new InvalidPasswordException("Old password incorrect or new password not match!!!");
             }
         }
         return authenticationRepository.save(account);

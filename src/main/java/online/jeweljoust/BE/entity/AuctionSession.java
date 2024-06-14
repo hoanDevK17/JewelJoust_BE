@@ -66,7 +66,7 @@ public class AuctionSession {
     @Enumerated(EnumType.STRING)
     AuctionSessionStatus status;
 
-//    @OneToMany(mappedBy = "auctionSessionResource",cascade = CascadeType.ALL)
-//    Set<Resources> resources;
+    @OneToMany(mappedBy = "auctionSessionResource",cascade = CascadeType.ALL)
+    Set<Resources> resources;
 
 }
