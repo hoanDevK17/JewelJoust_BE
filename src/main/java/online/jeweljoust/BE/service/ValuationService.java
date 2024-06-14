@@ -40,11 +40,12 @@ public class ValuationService {
 //            Account account = accountUtils.getAccountCurrent();
 //            LocalDateTime now = LocalDateTime.now();
 //            initialValuation.setInitialdate(now);
-//            initialValuation.setStatus(initialRequest.getStatus());
+//            initialValuation.setStatus(AuctionRequestStatus.initialStatus.CONFIRMED);
 //            initialValuation.setReason(initialRequest.getReason());
 //            initialValuation.setPrice(initialRequest.getPrice());
 //            initialValuation.setAuctionRequestInitial(auctionRequest);
 //            initialValuation.setAccountInitial(account);
+//            auctionRequest.setStatus(AuctionRequestStatus.initialStatus.CONFIRMED);
 //            initialRepository.save(initialValuation);
 //        } else {
 //            throw new IllegalStateException("Invalid status to proceed!!!");

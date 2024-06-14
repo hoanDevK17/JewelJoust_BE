@@ -10,7 +10,6 @@ import online.jeweljoust.BE.respository.AuctionRepository;
 import online.jeweljoust.BE.respository.ResourceRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,18 +39,19 @@ public class AuctionRequestService {
             auctionRequest.setJewelrydescription(auctionRequestReponse.getJewelryDescription());
             auctionRequest.setJewelryinitialprice(auctionRequestReponse.getInitialPrice());
             auctionRequest.setStatus(AuctionRequestStatus.initialStatus.PENDING);
+            AuctionRequest saveAuctionRequest = auctionRepository.save(auctionRequest);
 
             for (ResourceRequest resourceRequest : auctionRequestReponse.getResourceRequests()){
                 Resources resources = new Resources();
                 resources.setResourceType(ResourceTypes.ResourceType.img);
                 resources.setPath(resourceRequest.getPath());
                 resources.setReferenceType(ResourceTypes.ReferenceType.AUCTION_REQUEST);
-                resources.setAuctionRequestResource(auctionRequest);
+                resources.setAuctionRequestResource(saveAuctionRequest);
                 resources.setAccountResource(accountUtils.getAccountCurrent());
                 resources.setUploadAt(now);
                 resourceRepository.save(resources);
             }
-        return auctionRepository.save(auctionRequest);
+        return auctionRequest;
     }
 
     public List<AuctionRequest> getAuctionRequest() {
@@ -73,7 +73,7 @@ public class AuctionRequestService {
         return auctionRepository.findAll();
     }
 
-    public List<AuctionRequest> getAllAuctionRequestById() {
-        return auctionRepository.findByAccountRequestId(accountUtils.getAccountCurrent().getId());
-    }
+//    public List<AuctionRequest> getAllAuctionRequestById() {
+//        return auctionRepository.findByAccountRequestId(accountUtils.getAccountCurrent().getId());
+//    }
 }

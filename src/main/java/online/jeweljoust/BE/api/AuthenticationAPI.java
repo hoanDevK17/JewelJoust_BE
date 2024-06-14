@@ -65,14 +65,14 @@ public class AuthenticationAPI {
         return ResponseEntity.ok(account);
     }
 
-    @PostMapping("/register-have-role")
+    @PostMapping("/account/register")
 //    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity registerHaveRole(@RequestBody RegisterRequest registerRequest) {
         Account account = authenticationService.registerHaveRole(registerRequest);
         return ResponseEntity.ok(account);
     }
 
-    @GetMapping("/accounts")
+    @GetMapping("/account")
 //    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<Account>> getAccounts() {
         List<Account> accounts = authenticationService.getAllAccount();
@@ -113,7 +113,7 @@ public class AuthenticationAPI {
         authenticationService.resetPassword(resetPasswordRequest);
     }
 
-    @PutMapping("/update-profile")
+    @PutMapping("/account")
     public ResponseEntity<Account> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest){
         String role = accountUtils.getAccountCurrent().getRole().name();
         long id = accountUtils.getAccountCurrent().getId();
@@ -125,21 +125,21 @@ public class AuthenticationAPI {
         return ResponseEntity.ok(account);
     }
 
-    @PutMapping("/block-account/{userid}")
+    @PutMapping("/account/{userid}/block")
 //    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, AccountStatus status){
         authenticationService.blockAccount(userid, status);
         return ResponseEntity.ok("Account has been changed");
     }
 
-    @GetMapping("/search-accounts-by-name/{name}")
+    @GetMapping("/account/{name}")
 //    @PreAuthorize("hasAuthority('ADMIN')")
      public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name){
          List<Account> accounts = authenticationService.getAccountByName(name);
          return ResponseEntity.ok(accounts);
      }
 
-     @DeleteMapping("/delete-account-by-id/{id}")
+     @DeleteMapping("/account/{id}")
 //     @PreAuthorize("hasAuthority('ADMIN')")
      public ResponseEntity<String> deleteAccountById(@PathVariable("id") long id){
         authenticationService.deleteAccountById(id);

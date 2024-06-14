@@ -30,11 +30,6 @@ public class APIHandleException {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
-//    @ExceptionHandler(AccessDeniedException.class)
-//    public ResponseEntity<Object> handleAuthenticationServiceException(AccessDeniedException e) {
-//        return new ResponseEntity<>("Your role not support!!!", HttpStatus.FORBIDDEN);
-//    }
-
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Object> handleSQLIntegrityConstraintViolation(SQLIntegrityConstraintViolationException ex) {
         String message = ex.getMessage();

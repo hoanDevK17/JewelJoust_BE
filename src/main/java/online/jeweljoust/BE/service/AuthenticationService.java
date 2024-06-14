@@ -193,6 +193,11 @@ public class AuthenticationService implements UserDetailsService {
         account.setBirthday(updateProfileRequest.getBirthday());
         account.setEmail(updateProfileRequest.getEmail());
         account.setPhone(updateProfileRequest.getPhone());
+        if (!updateProfileRequest.getNewPassword().equals(updateProfileRequest.getOldPassword())){
+            if (passwordEncoder.encode(updateProfileRequest.getOldPassword()).equals(account.getPassword())){
+                account.setPassword(passwordEncoder.encode(updateProfileRequest.getNewPassword()));
+            }
+        }
         return authenticationRepository.save(account);
     }
 
