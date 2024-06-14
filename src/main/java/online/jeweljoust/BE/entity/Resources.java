@@ -19,8 +19,6 @@ public class Resources {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String name;
-
     @Enumerated(EnumType.STRING)
     ResourceTypes.ResourceType resourceType;
 
@@ -32,13 +30,13 @@ public class Resources {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "reference_id")
+    @JoinColumn(name = "request_id")
     AuctionRequest auctionRequestResource;
 
-//    @ManyToOne
-//    @JsonIgnore
-//    @JoinColumn(name = "reference_id")
-//    AuctionSession auctionSessionResource;
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "session_id")
+    AuctionSession auctionSessionResource;
 
     @ManyToOne
     @JsonIgnore

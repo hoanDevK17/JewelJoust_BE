@@ -33,26 +33,6 @@ public class ValuationService {
     @Autowired
     UltimateRepository ultimateRepository;
 
-//    public InitialValuation changeStatusInitial(long id, InitialRequest initialRequest) {
-//        AuctionRequest auctionRequest = auctionRepository.findById(id);
-//        InitialValuation initialValuation = new InitialValuation();
-//        if (auctionRequest.getStatus().equals(AuctionRequestStatus.initialStatus.PENDING)){
-//            Account account = accountUtils.getAccountCurrent();
-//            LocalDateTime now = LocalDateTime.now();
-//            initialValuation.setInitialdate(now);
-//            initialValuation.setStatus(AuctionRequestStatus.initialStatus.CONFIRMED);
-//            initialValuation.setReason(initialRequest.getReason());
-//            initialValuation.setPrice(initialRequest.getPrice());
-//            initialValuation.setAuctionRequestInitial(auctionRequest);
-//            initialValuation.setAccountInitial(account);
-//            auctionRequest.setStatus(AuctionRequestStatus.initialStatus.CONFIRMED);
-//            initialRepository.save(initialValuation);
-//        } else {
-//            throw new IllegalStateException("Invalid status to proceed!!!");
-//        }
-//    return initialValuation;
-//    }
-
     public Shipment deliveryStatusById(long id, AuctionRequestStatus.shipmentStatus status) {
         InitialValuation initialValuation = initialRepository.findById(id);
         Shipment shipment = new Shipment();

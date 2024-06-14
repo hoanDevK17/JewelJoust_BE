@@ -30,6 +30,11 @@ public class APIHandleException {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<String> handleInvalidPasswordException(InvalidPasswordException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Object> handleSQLIntegrityConstraintViolation(SQLIntegrityConstraintViolationException ex) {
         String message = ex.getMessage();
@@ -41,15 +46,5 @@ public class APIHandleException {
             return new ResponseEntity<>("Database error!!!", HttpStatus.BAD_REQUEST);
         }
     }
-
-//    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-//    public ResponseEntity<Object> handleDuplicatePhone(SQLIntegrityConstraintViolationException ex) {
-//        return new ResponseEntity<>("Duplicate phone number!!!", HttpStatus.BAD_REQUEST);
-//    }
-
-//    @ExceptionHandler(AuthException.class)
-//    public ResponseEntity<Object> handleDuplicatePhone(AuthException ex) {
-//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-//    }
 
 }
