@@ -116,7 +116,7 @@ public class AuthenticationAPI {
     @PutMapping("/update-profile")
     public ResponseEntity<Account> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest){
         String role = accountUtils.getAccountCurrent().getRole().name();
-        long id = accountUtils.getAccountCurrent().getId();
+            long id = accountUtils.getAccountCurrent().getId();
         Account account = new Account();
         if (role.equalsIgnoreCase("MEMBER")){
             updateProfileRequest.setId(id);

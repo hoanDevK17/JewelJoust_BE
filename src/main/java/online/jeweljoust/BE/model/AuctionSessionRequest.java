@@ -20,10 +20,11 @@ public class AuctionSessionRequest {
     Date start_time;
     @Temporal(TemporalType.DATE)
     Date end_time;
-    double initial_price;
+//    double initial_price;
     double min_stepPrice;
     double deposit_amount;
-    double Fee_amount;
+//    double Fee_amount;
+//    5%
     String name_session;
     String name_jewelry;
     String description;

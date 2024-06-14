@@ -43,13 +43,13 @@ public class AuctionSessionService {
         auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
         auctionSession.setStart_time(auctionSessionRequest.getStart_time());
         auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
-        auctionSession.setInitialPrice(auctionSessionRequest.getInitial_price());
+        auctionSession.setInitialPrice(auctionRequest.getUltimateValuation().getPrice());
         auctionSession.setMinStepPrice(auctionSessionRequest.getMin_stepPrice());
         auctionSession.setDepositAmount(auctionSessionRequest.getDeposit_amount());
         auctionSession.setNameSession(auctionSessionRequest.getName_session());
         auctionSession.setNameJewelry(auctionSessionRequest.getName_jewelry());
         auctionSession.setDescription(auctionSessionRequest.getDescription());
-        auctionSession.setFeeAmount(auctionSessionRequest.getFee_amount());
+        auctionSession.setFeeAmount(0.05);
         auctionSession.setCreateAt(new Date());
         auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
 //        Initialized: khởi tạo thành công , chưa tới giờ đấu giá
@@ -67,14 +67,14 @@ public class AuctionSessionService {
         auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
         auctionSession.setStart_time(auctionSessionRequest.getStart_time());
         auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
-        auctionSession.setInitialPrice(auctionSessionRequest.getInitial_price());
+        auctionSession.setInitialPrice(auctionSession.getAuctionRequest().getUltimateValuation().getPrice());
         auctionSession.setMinStepPrice(auctionSessionRequest.getMin_stepPrice());
         auctionSession.setDepositAmount(auctionSessionRequest.getDeposit_amount());
         auctionSession.setNameSession(auctionSessionRequest.getName_session());
         auctionSession.setNameJewelry(auctionSessionRequest.getName_jewelry());
         auctionSession.setDescription(auctionSessionRequest.getDescription());
-        auctionSession.setFeeAmount(auctionSessionRequest.getFee_amount());
-        auctionSession.setCreateAt(new Date());
+//        auctionSession.setFeeAmount(auctionSessionRequest.getFee_amount());
+//        auctionSession.setCreateAt(new Date());
         auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
         return auctionSessionRepository.save(auctionSession);
     }

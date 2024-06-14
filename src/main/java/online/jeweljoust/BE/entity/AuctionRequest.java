@@ -38,6 +38,7 @@ public class AuctionRequest {
     Account accountRequest;
 
     @OneToMany(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
+    @JsonIgnore
     Set<AuctionSession> auctionSessions;
 
     @OneToOne(mappedBy = "auctionRequestInitial",cascade = CascadeType.ALL)

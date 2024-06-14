@@ -54,12 +54,12 @@ public class AuctionSession {
 
     @ManyToOne
     @JoinColumn(name="auctionRequest_id")
-    @JsonIgnore
+
     AuctionRequest auctionRequest;
-    @JsonProperty("auctionRequest_id")
-    public Long getAuctionRequestId() {
-        return auctionRequest != null ? auctionRequest.getId() : null;
-    }
+//    @JsonProperty("auctionRequest_id")
+//    public Long getAuctionRequestId() {
+//        return auctionRequest != null ? auctionRequest.getId() : null;
+//    }
     @OneToMany(mappedBy = "auctionSession",cascade = CascadeType.ALL)
     Set<AuctionRegistration> auctionRegistration;
 
