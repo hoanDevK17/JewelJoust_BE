@@ -40,19 +40,18 @@ public class AuctionRequestService {
             auctionRequest.setJewelrydescription(auctionRequestReponse.getJewelryDescription());
             auctionRequest.setJewelryinitialprice(auctionRequestReponse.getInitialPrice());
             auctionRequest.setStatus(AuctionRequestStatus.initialStatus.PENDING);
-            AuctionRequest saveAuctionRequest = auctionRepository.save(auctionRequest);
 
             for (ResourceRequest resourceRequest : auctionRequestReponse.getResourceRequests()){
                 Resources resources = new Resources();
                 resources.setResourceType(ResourceTypes.ResourceType.img);
                 resources.setPath(resourceRequest.getPath());
                 resources.setReferenceType(ResourceTypes.ReferenceType.AUCTION_REQUEST);
-                resources.setAuctionRequestResource(saveAuctionRequest);
+                resources.setAuctionRequestResource(auctionRequest);
                 resources.setAccountResource(accountUtils.getAccountCurrent());
                 resources.setUploadAt(now);
                 resourceRepository.save(resources);
             }
-        return saveAuctionRequest;
+        return auctionRepository.save(auctionRequest);
     }
 
     public List<AuctionRequest> getAuctionRequest() {
@@ -72,5 +71,9 @@ public class AuctionRequestService {
 
     public List<AuctionRequest> getAllAuctionRequest() {
         return auctionRepository.findAll();
+    }
+
+    public List<AuctionRequest> getAllAuctionRequestById() {
+        return auctionRepository.findByAccountRequestId(accountUtils.getAccountCurrent().getId());
     }
 }
