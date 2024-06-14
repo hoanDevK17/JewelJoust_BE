@@ -38,10 +38,10 @@ public class Resources {
     @JoinColumn(name = "reference_id", insertable = false, updatable = false)
     AuctionRequest auctionRequestResource;
 
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "reference_id", insertable = false, updatable = false)
-    AuctionSession auctionSessionResource;
+//    @ManyToOne
+//    @JsonIgnore
+//    @JoinColumn(name = "reference_id", insertable = false, updatable = false)
+//    AuctionSession auctionSessionResource;
 
     @ManyToOne
     @JsonIgnore

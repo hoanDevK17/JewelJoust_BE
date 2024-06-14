@@ -56,4 +56,11 @@ public class AuctionRequestAPI {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequest();
         return ResponseEntity.ok(auctionRequests);
     }
+
+    @GetMapping("/get-request-account-current")
+//    @PreAuthorize("hasAuthority('MEMBER')")
+    public ResponseEntity<List<AuctionRequest>> getAllAuctionRequestById() {
+        List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequestById();
+        return ResponseEntity.ok(auctionRequests);
+    }
 }

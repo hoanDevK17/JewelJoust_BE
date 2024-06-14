@@ -47,6 +47,6 @@ public class AuctionRequest {
     @OneToOne(mappedBy = "auctionRequestUltimate",cascade = CascadeType.ALL)
     UltimateValuation ultimateValuation;
 
-//    @OneToMany(mappedBy = "auctionRequestResource",cascade = CascadeType.ALL)
-//    Set<Resources> resources;
+    @OneToMany(mappedBy = "auctionRequestResource",cascade = CascadeType.ALL)
+    Set<Resources> resources;
 }
