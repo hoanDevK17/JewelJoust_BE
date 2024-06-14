@@ -19,4 +19,6 @@ public class UpdateProfileRequest {
     Date birthday;
     String email;
     String phone;
+    String oldPassword;
+    String newPassword;
 }

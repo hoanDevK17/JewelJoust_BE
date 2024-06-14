@@ -22,45 +22,45 @@ public class AuctionRequestAPI {
     @Autowired
     AuctionRequestService auctionRequestService;
 
-    @PostMapping("/request-sale")
+    @PostMapping("/auctionRequest")
 //    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity requestSaleAuction(@RequestBody AuctionRequestReponse auctionRequestReponse) {
         AuctionRequest auctionRequest = auctionRequestService.requestSale(auctionRequestReponse);
         return ResponseEntity.ok(auctionRequest);
     }
 
-    @GetMapping("/auction-request-by-userid")
+    @GetMapping("/auctionRequest/accountCurrent")
 //    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<List<AuctionRequest>> getAuctionByUserid() {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequest();
         return ResponseEntity.ok(auctionRequests);
     }
 
-    @PutMapping("/cancel-request-auction/{status}/{auctionrequestid}")
+    @PutMapping("/auctionRequest/{id}/cancel")
 //    @PreAuthorize("hasAuthority('MEMBER')")
-    public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("auctionrequestid") long auctionrequestid){
-        AuctionRequest auctionRequest = auctionRequestService.cancelRequest(auctionrequestid);
+    public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("id") long id){
+        AuctionRequest auctionRequest = auctionRequestService.cancelRequest(id);
         return ResponseEntity.ok(auctionRequest);
     }
 
-    @GetMapping("/list-auction-request-by-status/{status}")
+    @GetMapping("/auctionRequest/{status}")
 //    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<List<AuctionRequest>> getAuctionRequestByStatus(@PathVariable("status") AuctionRequestStatus.initialStatus status) {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequestByStatus(status);
         return ResponseEntity.ok(auctionRequests);
     }
 
-    @GetMapping("/get-all-auction-request")
+    @GetMapping("/auctionRequest")
 //    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<List<AuctionRequest>> getAllAuctionRequest() {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequest();
         return ResponseEntity.ok(auctionRequests);
     }
 
-    @GetMapping("/get-request-account-current")
-//    @PreAuthorize("hasAuthority('MEMBER')")
-    public ResponseEntity<List<AuctionRequest>> getAllAuctionRequestById() {
-        List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequestById();
-        return ResponseEntity.ok(auctionRequests);
-    }
+//    @GetMapping("/auctionRequest/accountCurrent")
+////    @PreAuthorize("hasAuthority('MEMBER')")
+//    public ResponseEntity<List<AuctionRequest>> getAllAuctionRequestById() {
+//        List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequestById();
+//        return ResponseEntity.ok(auctionRequests);
+//    }
 }
