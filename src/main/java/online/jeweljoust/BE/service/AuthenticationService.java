@@ -27,6 +27,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AuthenticationService implements UserDetailsService {
@@ -55,6 +57,7 @@ public class AuthenticationService implements UserDetailsService {
 
     @Autowired
     EmailService emailService;
+
     @Autowired
     WalletService walletService;
 
@@ -127,13 +130,13 @@ public class AuthenticationService implements UserDetailsService {
                 account = new Account();
                 account.setFullname(firebaseToken.getName());
                 account.setEmail(firebaseToken.getEmail());
+                account.setRole(AccountRole.MEMBER);
+                account.setStatus(AccountStatus.ACTIVE);
                 account.setUsername(email);
                 account = authenticationRepository.save(account);
                 if(account.getId()!=null){
                     account.setWallet(walletService.registerWallet(account));
                 }
-
-
             }
             accountReponse.setId(account.getId());
             accountReponse.setFullname(account.getFullname());
@@ -214,13 +217,6 @@ public class AuthenticationService implements UserDetailsService {
         if (updateProfileRequest.getPhone() != null) {
             account.setPhone(updateProfileRequest.getPhone());
         }
-        if (updateProfileRequest.getNewPassword() != null && !updateProfileRequest.getNewPassword().equals(updateProfileRequest.getOldPassword())) {
-            if (passwordEncoder.encode(updateProfileRequest.getOldPassword()).equals(account.getPassword())){
-                account.setPassword(passwordEncoder.encode(updateProfileRequest.getNewPassword()));
-            } else {
-                throw new InvalidPasswordException("Old password incorrect or new password not match!!!");
-            }
-        }
         return authenticationRepository.save(account);
     }
 
@@ -236,5 +232,19 @@ public class AuthenticationService implements UserDetailsService {
 
     public void deleteAccountById(long id) {
         authenticationRepository.deleteById(id);
+    }
+
+    public String changePassword(String oldPassWord, String newPassword) {
+        long id = accountUtils.getAccountCurrent().getId();
+           Account account= authenticationRepository.findById(id);
+        System.out.println(passwordEncoder.encode(oldPassWord));
+        System.out.println(account.getPassword());
+       if(passwordEncoder.encode(oldPassWord).equals(account.getPassword())){
+           account.setPassword(passwordEncoder.encode(newPassword));
+           authenticationRepository.save(account);
+           return "Changed password successfully!!!";
+       }else{
+           return "Wrong old password";
+       }
     }
 }
