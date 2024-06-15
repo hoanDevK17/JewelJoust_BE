@@ -234,17 +234,15 @@ public class AuthenticationService implements UserDetailsService {
         authenticationRepository.deleteById(id);
     }
 
-    public String changePassword(String oldPassWord, String newPassword) {
-        long id = accountUtils.getAccountCurrent().getId();
-           Account account= authenticationRepository.findById(id);
-        System.out.println(passwordEncoder.encode(oldPassWord));
-        System.out.println(account.getPassword());
-       if(passwordEncoder.encode(oldPassWord).equals(account.getPassword())){
-           account.setPassword(passwordEncoder.encode(newPassword));
-           authenticationRepository.save(account);
-           return "Changed password successfully!!!";
-       }else{
-           return "Wrong old password";
-       }
+    public String changePassword(ChangePasswordRequest changePasswordRequest) {
+        Account account = authenticationRepository.findByUsername(accountUtils.getAccountCurrent().getUsername());
+        if (securityConfig.passwordEncoder().matches(changePasswordRequest.getOldPassword(), account.getPassword())) {
+            account.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+            authenticationRepository.save(account);
+            return "Change password Succesfully";
+        }
+        else{
+            return "Changed password not successfully";
+        }
     }
 }

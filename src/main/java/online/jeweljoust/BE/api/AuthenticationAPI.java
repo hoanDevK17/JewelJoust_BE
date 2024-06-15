@@ -81,9 +81,9 @@ public class AuthenticationAPI {
 
     @PutMapping("/account/changePassword")
 //    @PreAuthorize("hasAuthority('MEMBER')")
-    public ResponseEntity<String> changePassword(String oldPassWord, String newPassword) {
-        String status = authenticationService.changePassword(oldPassWord, newPassword);
-        return ResponseEntity.ok(status);
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        String message = authenticationService.changePassword(changePasswordRequest);
+        return ResponseEntity.ok(message);
     }
 
     @GetMapping("/testcurrent")
