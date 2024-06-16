@@ -2,7 +2,6 @@ package online.jeweljoust.BE.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,7 +23,7 @@ public class Shipment {
     LocalDateTime receiveddate;
 
     @Enumerated(EnumType.STRING)
-    AuctionRequestStatus.shipmentStatus status;
+    AuctionRequestStatus status;
 
     @OneToOne
     @JsonIgnore

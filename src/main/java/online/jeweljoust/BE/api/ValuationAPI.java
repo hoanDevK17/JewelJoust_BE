@@ -5,12 +5,10 @@ import online.jeweljoust.BE.entity.InitialValuation;
 import online.jeweljoust.BE.entity.Shipment;
 import online.jeweljoust.BE.entity.UltimateValuation;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
-import online.jeweljoust.BE.model.InitialRequest;
 import online.jeweljoust.BE.model.UltimateRequest;
 import online.jeweljoust.BE.service.ValuationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,14 +45,14 @@ public class ValuationAPI {
 
     @PostMapping("/shipment/{id}/{status}")
 //    @PreAuthorize("hasAuthority('STAFF')")
-    public ResponseEntity<Shipment> deliveryStatusById(@PathVariable("id") long id, @PathVariable("status") AuctionRequestStatus.shipmentStatus status) {
+    public ResponseEntity<Shipment> deliveryStatusById(@PathVariable("id") long id, @PathVariable("status") AuctionRequestStatus status) {
         Shipment shipment = valuationService.deliveryStatusById(id, status);
         return ResponseEntity.ok(shipment);
     }
 
         @GetMapping("/shipment/{status}")
 //    @PreAuthorize("hasAuthority('MANAGER')")
-    public ResponseEntity<List<Shipment>> getAllReceived(@PathVariable("status") AuctionRequestStatus.shipmentStatus status) {
+    public ResponseEntity<List<Shipment>> getAllReceived(@PathVariable("status") AuctionRequestStatus status) {
         List<Shipment> shipmentList = valuationService.getAllReceived(status);
         return ResponseEntity.ok(shipmentList);
     }
@@ -68,7 +66,7 @@ public class ValuationAPI {
 
     @PutMapping("/ultimateValuation/{id}/{status}/approvalManager")
 //    @PreAuthorize("hasAuthority('MANAGER')")
-    public ResponseEntity<UltimateValuation> approvalManager(@PathVariable("id") long id, @PathVariable("status") AuctionRequestStatus.ultimateStatus status, String reason) {
+    public ResponseEntity<UltimateValuation> approvalManager(@PathVariable("id") long id, @PathVariable("status") AuctionRequestStatus status, String reason) {
         UltimateValuation ultimateValuation = valuationService.approvalManager(id, status, reason);
         return ResponseEntity.ok(ultimateValuation);
     }

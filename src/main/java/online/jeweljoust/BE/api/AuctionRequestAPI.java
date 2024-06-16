@@ -8,7 +8,6 @@ import online.jeweljoust.BE.model.AuctionRequestReponse;
 import online.jeweljoust.BE.service.AuctionRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,7 +44,7 @@ public class AuctionRequestAPI {
 
     @GetMapping("/auctionRequest/{status}")
 //    @PreAuthorize("hasAuthority('STAFF')")
-    public ResponseEntity<List<AuctionRequest>> getAuctionRequestByStatus(@PathVariable("status") AuctionRequestStatus.initialStatus status) {
+    public ResponseEntity<List<AuctionRequest>> getAuctionRequestByStatus(@PathVariable("status") AuctionRequestStatus status) {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequestByStatus(status);
         return ResponseEntity.ok(auctionRequests);
     }

@@ -25,7 +25,7 @@ public class UltimateValuation {
     LocalDateTime approvaldanagerdate;
 
     @Enumerated(EnumType.STRING)
-    AuctionRequestStatus.ultimateStatus status;
+    AuctionRequestStatus status;
 
     String reason;
 
