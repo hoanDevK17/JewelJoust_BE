@@ -35,7 +35,7 @@ public class AuctionSessionService {
 
         AuctionSession auctionSession = new AuctionSession();
         AuctionRequest auctionRequest = auctionRepository.findById(auctionSessionRequest.getAuction_request_id());
-                if(auctionRequest==null || auctionRequest.getUltimateValuation().getStatus() != AuctionRequestStatus.ultimateStatus.APPROVED){
+                if(auctionRequest==null || auctionRequest.getUltimateValuation().getStatus() != AuctionRequestStatus.APPROVED){
                     throw new IllegalStateException("Can't find auctionRequest or auctionRequest don't is APPROVED");
                 }
         auctionSession.setAuctionRequest(auctionRequest);

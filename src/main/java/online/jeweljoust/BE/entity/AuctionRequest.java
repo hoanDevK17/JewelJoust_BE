@@ -30,7 +30,7 @@ public class AuctionRequest {
     double jewelryinitialprice;
 
     @Enumerated(EnumType.STRING)
-    AuctionRequestStatus.initialStatus status;
+    AuctionRequestStatus status;
 
     @ManyToOne
     @JsonIgnore

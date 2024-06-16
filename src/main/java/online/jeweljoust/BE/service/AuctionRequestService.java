@@ -38,7 +38,7 @@ public class AuctionRequestService {
             auctionRequest.setJewelryname(auctionRequestReponse.getJewelryName());
             auctionRequest.setJewelrydescription(auctionRequestReponse.getJewelryDescription());
             auctionRequest.setJewelryinitialprice(auctionRequestReponse.getInitialPrice());
-            auctionRequest.setStatus(AuctionRequestStatus.initialStatus.PENDING);
+            auctionRequest.setStatus(AuctionRequestStatus.PENDING);
             AuctionRequest saveAuctionRequest = auctionRepository.save(auctionRequest);
 
             for (ResourceRequest resourceRequest : auctionRequestReponse.getResourceRequests()){
@@ -61,11 +61,11 @@ public class AuctionRequestService {
 
     public AuctionRequest cancelRequest(long auctionrequestid) {
         AuctionRequest auctionRequest = auctionRepository.findById(auctionrequestid);
-        auctionRequest.setStatus(AuctionRequestStatus.initialStatus.CANCEL);
+        auctionRequest.setStatus(AuctionRequestStatus.CANCEL);
         return auctionRepository.save(auctionRequest);
     }
 
-    public List<AuctionRequest> getAuctionRequestByStatus(AuctionRequestStatus.initialStatus status) {
+    public List<AuctionRequest> getAuctionRequestByStatus(AuctionRequestStatus status) {
         return auctionRepository.findByStatus(status);
     }
 

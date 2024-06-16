@@ -23,7 +23,7 @@ public class InitialValuation {
     LocalDateTime initialdate;
 
     @Enumerated(EnumType.STRING)
-    AuctionRequestStatus.initialStatus status;
+    AuctionRequestStatus status;
 
     String reason;
 

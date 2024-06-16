@@ -2,7 +2,6 @@ package online.jeweljoust.BE.service;
 
 import online.jeweljoust.BE.entity.*;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
-import online.jeweljoust.BE.model.InitialRequest;
 import online.jeweljoust.BE.model.UltimateRequest;
 import online.jeweljoust.BE.respository.AuctionRepository;
 import online.jeweljoust.BE.respository.InitialRepository;
@@ -10,7 +9,6 @@ import online.jeweljoust.BE.respository.ShipmentRepository;
 import online.jeweljoust.BE.respository.UltimateRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,15 +31,17 @@ public class ValuationService {
     @Autowired
     UltimateRepository ultimateRepository;
 
-    public Shipment deliveryStatusById(long id, AuctionRequestStatus.shipmentStatus status) {
+    public Shipment deliveryStatusById(long id, AuctionRequestStatus status) {
         InitialValuation initialValuation = initialRepository.findById(id);
         Shipment shipment = new Shipment();
-        if (initialValuation.getStatus().equals(AuctionRequestStatus.initialStatus.CONFIRMED)){
+        if (initialValuation.getStatus().equals(AuctionRequestStatus.CONFIRMED)){
             LocalDateTime now = LocalDateTime.now();
             shipment.setReceiveddate(now);
             shipment.setStatus(status);
             shipment.setAccountShipment(accountUtils.getAccountCurrent());
             shipment.setInitialShipment(initialValuation);
+            AuctionRequest auctionRequest = initialValuation.getAuctionRequestInitial();
+            auctionRequest.setStatus(AuctionRequestStatus.CONFIRMED);
             shipmentRepository.save(shipment);
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
@@ -49,7 +49,7 @@ public class ValuationService {
         return shipment;
     }
 
-    public List<Shipment> getAllReceived(AuctionRequestStatus.shipmentStatus status) {
+    public List<Shipment> getAllReceived(AuctionRequestStatus status) {
         List<Shipment> shipmentList = shipmentRepository.findByStatus(status);
         return shipmentList;
     }
@@ -58,8 +58,8 @@ public class ValuationService {
         AuctionRequest auctionRequest = auctionRepository.findById(id);
         UltimateValuation ultimateValuation = new UltimateValuation();
         if (auctionRequest.getInitialValuations() != null){
-            AuctionRequestStatus.shipmentStatus status = auctionRequest.getInitialValuations().getShipment().getStatus();
-            if (status.equals(AuctionRequestStatus.shipmentStatus.RECEIVED)){
+            AuctionRequestStatus status = auctionRequest.getInitialValuations().getShipment().getStatus();
+            if (status.equals(AuctionRequestStatus.RECEIVED)){
                 LocalDateTime now = LocalDateTime.now();
                 ultimateValuation.setUltimatedate(now);
                 ultimateValuation.setApprovaldanagerdate(null);
@@ -78,9 +78,9 @@ public class ValuationService {
         return ultimateValuation;
     }
 
-    public UltimateValuation approvalManager(long id, AuctionRequestStatus.ultimateStatus status, String reason) {
+    public UltimateValuation approvalManager(long id, AuctionRequestStatus status, String reason) {
         UltimateValuation ultimateValuation = ultimateRepository.findById(id);
-        if (ultimateValuation.getStatus().equals(AuctionRequestStatus.ultimateStatus.REVIEW)){
+        if (ultimateValuation.getStatus().equals(AuctionRequestStatus.REVIEW)){
             LocalDateTime now = LocalDateTime.now();
             ultimateValuation.setStatus(status);
             ultimateValuation.setReason(reason);
@@ -96,15 +96,15 @@ public class ValuationService {
     public InitialValuation comfirmedInitial(long id, double price) {
         AuctionRequest auctionRequest = auctionRepository.findById(id);
         InitialValuation initialValuation = new InitialValuation();
-        if (auctionRequest.getStatus().equals(AuctionRequestStatus.initialStatus.PENDING)){
+        if (auctionRequest.getStatus().equals(AuctionRequestStatus.PENDING)){
             Account account = accountUtils.getAccountCurrent();
             LocalDateTime now = LocalDateTime.now();
             initialValuation.setInitialdate(now);
-            initialValuation.setStatus(AuctionRequestStatus.initialStatus.CONFIRMED);
+            initialValuation.setStatus(AuctionRequestStatus.CONFIRMED);
             initialValuation.setPrice(price);
             initialValuation.setAuctionRequestInitial(auctionRequest);
             initialValuation.setAccountInitial(account);
-            auctionRequest.setStatus(AuctionRequestStatus.initialStatus.CONFIRMED);
+            auctionRequest.setStatus(AuctionRequestStatus.CONFIRMED);
             initialRepository.save(initialValuation);
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
@@ -115,15 +115,15 @@ public class ValuationService {
     public InitialValuation rejectedInitial(long id, String reason) {
         AuctionRequest auctionRequest = auctionRepository.findById(id);
         InitialValuation initialValuation = new InitialValuation();
-        if (auctionRequest.getStatus().equals(AuctionRequestStatus.initialStatus.PENDING)){
+        if (auctionRequest.getStatus().equals(AuctionRequestStatus.PENDING)){
             Account account = accountUtils.getAccountCurrent();
             LocalDateTime now = LocalDateTime.now();
             initialValuation.setInitialdate(now);
-            initialValuation.setStatus(AuctionRequestStatus.initialStatus.REJECTED);
+            initialValuation.setStatus(AuctionRequestStatus.REJECTED);
             initialValuation.setReason(reason);
             initialValuation.setAuctionRequestInitial(auctionRequest);
             initialValuation.setAccountInitial(account);
-            auctionRequest.setStatus(AuctionRequestStatus.initialStatus.REJECTED);
+            auctionRequest.setStatus(AuctionRequestStatus.REJECTED);
             initialRepository.save(initialValuation);
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");

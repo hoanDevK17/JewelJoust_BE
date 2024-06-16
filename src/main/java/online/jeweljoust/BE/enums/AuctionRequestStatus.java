@@ -1,24 +1,19 @@
 package online.jeweljoust.BE.enums;
 
-public class AuctionRequestStatus {
-    public enum initialStatus{
+public enum AuctionRequestStatus {
+
         PENDING,        //chờ xác nhận
         CONFIRMED,      //đã xác nhận
         REJECTED,       //bị từ chối
-        CANCEL          //hủy bỏ
-    }
-    public enum shipmentStatus{
+        CANCEL,         //hủy bỏ
         RECEIVED,       //đã nhận được hàng
         MISSED,         //trễ thời gian gửi hàng
-    }
-    public enum ultimateStatus{
         REVIEW,         //chờ xem xét (đánh giá chính thức)
         UNACCEPTED,       //đã xem xét và không chấp nhận (đánh giá chính thức)
         UNAPPROVED,     //quản lý không phê duyệt
         APPROVED,       //quản lý phê duyệt
         AGREED,         //member đồng ý định giá cuối
         DECLINED        //member từ chối định giá cuối
-    }
 }
 
 //1.tao don + dinh gia (row)
