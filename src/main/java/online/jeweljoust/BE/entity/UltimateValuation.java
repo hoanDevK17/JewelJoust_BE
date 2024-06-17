@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
+import online.jeweljoust.BE.enums.UltimateValuationsStatus;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -20,12 +22,12 @@ public class UltimateValuation {
     Long id;
 
     @Column(nullable = false)
-    LocalDateTime ultimatedate;
+    Date ultimatedate;
 
-    LocalDateTime approvaldanagerdate;
+    Date approvaldanagerdate;
 
     @Enumerated(EnumType.STRING)
-    AuctionRequestStatus status;
+    UltimateValuationsStatus status;
 
     String reason;
 

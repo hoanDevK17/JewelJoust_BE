@@ -3,13 +3,11 @@ package online.jeweljoust.BE.model;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 
-
+@Data
 @Getter
 @Setter
-@Data
-
-public class ResourceRequest {
-    String path;
+public class RejectUltimateRequest {
+    long id_auctionRequest;
+    String reason;
 }

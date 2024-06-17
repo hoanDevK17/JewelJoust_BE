@@ -88,9 +88,9 @@ public class Account implements UserDetails {
     @JsonIgnore
     Set<UltimateValuation> ultimateManager;
 
-    @OneToOne(mappedBy = "accountShipment",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "accountShipment",cascade = CascadeType.ALL)
     @JsonIgnore
-    Shipment shipment;
+    Set<Shipment> shipment;
 
     @OneToMany(mappedBy = "accountResource",cascade = CascadeType.ALL)
     @JsonIgnore

@@ -19,14 +19,13 @@ public class Shipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false)
+
     LocalDateTime receiveddate;
 
     @Enumerated(EnumType.STRING)
     AuctionRequestStatus status;
 
-    @OneToOne
-    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "staff_id_received")
     Account accountShipment;
 

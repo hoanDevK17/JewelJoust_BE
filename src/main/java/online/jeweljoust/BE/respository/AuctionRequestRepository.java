@@ -10,9 +10,9 @@ import java.util.List;
 
 
 @Repository
-public interface AuctionRepository extends JpaRepository<AuctionRequest, Long>
+public interface AuctionRequestRepository extends JpaRepository<AuctionRequest, Long>
 {
-     AuctionRequest findById (long id);
+     AuctionRequest findAuctionRequestById(long id);
      List<AuctionRequest> findByAccountRequestId(long userid);
      List<AuctionRequest> findByStatus(AuctionRequestStatus status);
      InitialValuation findInitialValuationById(long id);

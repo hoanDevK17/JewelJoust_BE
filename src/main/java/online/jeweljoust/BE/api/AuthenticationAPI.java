@@ -2,6 +2,7 @@ package online.jeweljoust.BE.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.Account;
+import online.jeweljoust.BE.entity.Shipment;
 import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.enums.AccountStatus;
 import online.jeweljoust.BE.model.*;
@@ -56,6 +57,7 @@ public class AuthenticationAPI {
     // }
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
+        Shipment shipment = new Shipment();
         Account account = authenticationService.register(registerRequest);
         if(account!=null){
             System.out.println(account);

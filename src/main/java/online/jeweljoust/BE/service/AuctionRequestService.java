@@ -6,7 +6,7 @@ import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.enums.ResourceTypes;
 import online.jeweljoust.BE.model.AuctionRequestReponse;
 import online.jeweljoust.BE.model.ResourceRequest;
-import online.jeweljoust.BE.respository.AuctionRepository;
+import online.jeweljoust.BE.respository.AuctionRequestRepository;
 import online.jeweljoust.BE.respository.ResourceRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class AuctionRequestService {
 
 
     @Autowired
-    AuctionRepository auctionRepository;
+    AuctionRequestRepository auctionRepository;
 
     @Autowired
     AccountUtils accountUtils;
@@ -51,7 +51,7 @@ public class AuctionRequestService {
                 resources.setUploadAt(now);
                 resourceRepository.save(resources);
             }
-        return auctionRequest;
+        return saveAuctionRequest;
     }
 
     public List<AuctionRequest> getAuctionRequest() {
@@ -60,7 +60,7 @@ public class AuctionRequestService {
     }
 
     public AuctionRequest cancelRequest(long auctionrequestid) {
-        AuctionRequest auctionRequest = auctionRepository.findById(auctionrequestid);
+        AuctionRequest auctionRequest = auctionRepository.findAuctionRequestById(auctionrequestid);
         auctionRequest.setStatus(AuctionRequestStatus.CANCEL);
         return auctionRepository.save(auctionRequest);
     }

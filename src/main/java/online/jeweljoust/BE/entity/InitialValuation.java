@@ -40,6 +40,6 @@ public class InitialValuation {
     AuctionRequest auctionRequestInitial;
 
     @OneToOne(mappedBy = "initialShipment",cascade = CascadeType.ALL)
-    @JsonIgnore
+    @ToString.Exclude
     Shipment shipment;
 }

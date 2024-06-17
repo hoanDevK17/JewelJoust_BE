@@ -10,9 +10,10 @@ import online.jeweljoust.BE.enums.AuctionRequestStatus;
 @Setter
 
 public class UltimateRequest {
-    AuctionRequestStatus status;
-    String reason;
+
+
     double price;
-    String description;
+
+    long id_auctionRequest;
 }
 
