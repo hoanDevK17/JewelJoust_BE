@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
+import online.jeweljoust.BE.enums.ShipmentStatus;
 
 import java.time.LocalDateTime;
 
@@ -20,10 +21,10 @@ public class Shipment {
     Long id;
 
 
-    LocalDateTime receiveddate;
+    LocalDateTime receivedDate;
 
     @Enumerated(EnumType.STRING)
-    AuctionRequestStatus status;
+    ShipmentStatus status;
 
     @ManyToOne
     @JoinColumn(name = "staff_id_received")

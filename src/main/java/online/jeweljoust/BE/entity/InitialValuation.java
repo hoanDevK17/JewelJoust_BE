@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
+import online.jeweljoust.BE.enums.InitialValuationsStatus;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +24,7 @@ public class InitialValuation {
     LocalDateTime initialdate;
 
     @Enumerated(EnumType.STRING)
-    AuctionRequestStatus status;
+    InitialValuationsStatus status;
 
     String reason;
 
@@ -40,6 +41,5 @@ public class InitialValuation {
     AuctionRequest auctionRequestInitial;
 
     @OneToOne(mappedBy = "initialShipment",cascade = CascadeType.ALL)
-    @ToString.Exclude
     Shipment shipment;
 }
