@@ -27,12 +27,17 @@ public class APIHandleException {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> handleIllegalStateException(IllegalStateException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<String> handleInvalidPasswordException(InvalidPasswordException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    public ResponseEntity<String> handleInvalidPasswordException(InvalidPasswordException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidStatusException.class)
+    public ResponseEntity<Object> handleInvalidStatusException(InvalidStatusException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
@@ -42,7 +47,7 @@ public class APIHandleException {
             return new ResponseEntity<>("Duplicate username!!!", HttpStatus.BAD_REQUEST);
         } else if (message.contains("account.UK_q0uja26qgu1atulenwup9rxyr")){
             return new ResponseEntity<>("Duplicate email!!!", HttpStatus.BAD_REQUEST);
-        } else {
+        }else {
             return new ResponseEntity<>("Database error!!!", HttpStatus.BAD_REQUEST);
         }
     }

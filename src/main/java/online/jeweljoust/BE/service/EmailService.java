@@ -23,7 +23,7 @@ public class EmailService {
         try{
             Context context = new Context();
 
-            context.setVariable("name", "Hoan");
+            context.setVariable("name", emailDetail.getFullName());
             context.setVariable("link", emailDetail.getLink());
             context.setVariable("button", emailDetail.getButtonValue());
 
