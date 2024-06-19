@@ -109,7 +109,7 @@ public class ValuationService {
             ultimateValuation.setApprovaldanagerdate(new Date());
             ultimateValuation.setUltimateManager(accountUtils.getAccountCurrent());
             auctionRequest.setStatus(AuctionRequestStatus.APPROVED);
-          
+
             ultimateValuation.setAuctionRequestUltimate(auctionRequest);
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
