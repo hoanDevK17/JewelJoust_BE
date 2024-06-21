@@ -7,6 +7,7 @@ import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AccountStatus;
+import online.jeweljoust.BE.exception.AuthException;
 import online.jeweljoust.BE.exception.InvalidPasswordException;
 import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
@@ -78,7 +79,7 @@ public class AuthenticationService implements UserDetailsService {
 
     public Account registerHaveRole(RegisterRequest registerRequest) throws AuthenticationServiceException{
         Account account = new Account();
-            account.setRole(registerRequest.getRole().equals(AccountRole.MANAGER)?AccountRole.MANAGER:AccountRole.STAFF);
+            account.setRole(registerRequest.getRole());
             account.setUsername(registerRequest.getUsername());
             account.setFullname(registerRequest.getFullname());
             account.setAddress(registerRequest.getAddress());
@@ -191,7 +192,7 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public Account updateProfile(UpdateProfileRequest updateProfileRequest) {
-        Account account = authenticationRepository.findById(updateProfileRequest.getId());
+
 //        account.setFullname(updateProfileRequest.getFullname());
 //        account.setAddress(updateProfileRequest.getAddress());
 //        account.setBirthday(updateProfileRequest.getBirthday());
@@ -202,22 +203,33 @@ public class AuthenticationService implements UserDetailsService {
 //                account.setPassword(passwordEncoder.encode(updateProfileRequest.getNewPassword()));
 //            }
 //        }
-        if (updateProfileRequest.getFullname() != null) {
-            account.setFullname(updateProfileRequest.getFullname());
+        if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)||accountUtils.getAccountCurrent().getId() == updateProfileRequest.getId())
+        {
+            Account account = authenticationRepository.findById(updateProfileRequest.getId());
+            if (updateProfileRequest.getFullname() != null) {
+                account.setFullname(updateProfileRequest.getFullname());
+            }
+            if (updateProfileRequest.getAddress() != null) {
+                account.setAddress(updateProfileRequest.getAddress());
+            }
+            if (updateProfileRequest.getBirthday() != null) {
+                account.setBirthday(updateProfileRequest.getBirthday());
+            }
+            if (updateProfileRequest.getEmail() != null) {
+                account.setEmail(updateProfileRequest.getEmail());
+            }
+            if (updateProfileRequest.getPhone() != null) {
+                account.setPhone(updateProfileRequest.getPhone());
+                if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)){
+                        account.setStatus(updateProfileRequest.getStatus());
+                }
+            }
+            return authenticationRepository.save(account);
         }
-        if (updateProfileRequest.getAddress() != null) {
-            account.setAddress(updateProfileRequest.getAddress());
+        else{
+            throw new AuthException("Can't access to edit");
         }
-        if (updateProfileRequest.getBirthday() != null) {
-            account.setBirthday(updateProfileRequest.getBirthday());
-        }
-        if (updateProfileRequest.getEmail() != null) {
-            account.setEmail(updateProfileRequest.getEmail());
-        }
-        if (updateProfileRequest.getPhone() != null) {
-            account.setPhone(updateProfileRequest.getPhone());
-        }
-        return authenticationRepository.save(account);
+
     }
 
     public List<Account> getAccountByName(String name) {

@@ -33,21 +33,21 @@ public class ValuationAPI {
 //        return ResponseEntity.ok(initialValuation);
 //    }
 
-    @PostMapping("/initialValuation/comfirmed")
+    @PostMapping("/initialValuations/comfirmed")
 //    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<InitialValuation> confirmedInitial(@RequestBody ConfirmedInititalRequest confirmedInititalRequest) {
         InitialValuation initialValuation = valuationService.comfirmedInitial(confirmedInititalRequest);
         return ResponseEntity.ok(initialValuation);
     }
 
-    @PostMapping("/initialValuation/rejected")
+    @PostMapping("/initialValuations/rejected")
 //    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<InitialValuation> rejectedInitial(@RequestBody RejectedInititalPriceRequest rejectedInititalPriceRequest) {
         InitialValuation initialValuation = valuationService.rejectedInitial(rejectedInititalPriceRequest);
         return ResponseEntity.ok(initialValuation);
     }
 
-    @PostMapping("/shipment/{id}")
+    @PostMapping("/shipments/{id}")
 //    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<AuctionRequest> deliveryStatusById(@PathVariable("id") long id) {
         AuctionRequest auctionRequest = valuationService.deliveryStatusById(id);
@@ -86,4 +86,5 @@ public class ValuationAPI {
         UltimateValuation ultimateValuation = valuationService.unApprovalManager(id,reason);
         return ResponseEntity.ok(ultimateValuation);
     }
+
 }

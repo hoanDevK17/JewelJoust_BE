@@ -118,7 +118,7 @@ public class AuthenticationAPI {
     }
 
     @PostMapping("/reset-password")
-    public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+    public void resetPassword(@ RequestBody ResetPasswordRequest resetPasswordRequest) {
         authenticationService.resetPassword(resetPasswordRequest);
     }
 
@@ -163,4 +163,9 @@ public class AuthenticationAPI {
         emailDetail.setMsgBody("abc");
         emailService.sendMailTemplate(emailDetail);
     }
+    @GetMapping("/refreshBalance")
+    public double refreshBalance() {
+        return walletService.refreshBalance();
+    }   
+
 }
