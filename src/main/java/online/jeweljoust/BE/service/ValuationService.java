@@ -108,8 +108,8 @@ public class ValuationService {
     }
     public UltimateValuation approvalManager(long id) {
         AuctionRequest auctionRequest = auctionRepository.findAuctionRequestById(id);
-        UltimateValuation ultimateValuation = ultimateRepository.findById(id);
-        if (ultimateValuation.getStatus().equals(UltimateValuationsStatus.APPROVED) ){
+        UltimateValuation ultimateValuation = auctionRequest.getUltimateValuation();
+        if (ultimateValuation.getStatus().equals(UltimateValuationsStatus.REVIEW) ){
             ultimateValuation.setStatus(UltimateValuationsStatus.APPROVED);
             ultimateValuation.setApprovaldanagerdate(new Date());
             ultimateValuation.setUltimateManager(accountUtils.getAccountCurrent());
@@ -122,9 +122,11 @@ public class ValuationService {
         return ultimateRepository.save(ultimateValuation);
     }
     public UltimateValuation unApprovalManager(long id,String reason) {
-        UltimateValuation ultimateValuation = ultimateRepository.findById(id);
+
+
         AuctionRequest auctionRequest = auctionRepository.findAuctionRequestById(id);
-        if (ultimateValuation.getStatus().equals( UltimateValuationsStatus.UNAPPROVED)){
+        UltimateValuation ultimateValuation = auctionRequest.getUltimateValuation();
+        if (ultimateValuation.getStatus().equals( UltimateValuationsStatus.REVIEW)){
             ultimateValuation.setStatus(UltimateValuationsStatus.UNAPPROVED);
             ultimateValuation.setApprovaldanagerdate(new Date());
             ultimateValuation.setUltimateManager(accountUtils.getAccountCurrent());

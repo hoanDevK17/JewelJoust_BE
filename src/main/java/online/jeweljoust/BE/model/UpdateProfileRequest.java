@@ -7,6 +7,7 @@ import jakarta.persistence.TemporalType;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import online.jeweljoust.BE.enums.AccountStatus;
 
 import java.util.Date;
 @Data
@@ -19,6 +20,6 @@ public class UpdateProfileRequest {
     Date birthday;
     String email;
     String phone;
-    String oldPassword;
-    String newPassword;
+    AccountStatus status;
+
 }

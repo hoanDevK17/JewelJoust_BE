@@ -4,6 +4,7 @@ import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
 import online.jeweljoust.BE.respository.WalletRepository;
+import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,8 @@ import java.util.Date;
 public class WalletService {
         @Autowired
         WalletRepository walletRepository;
+        @Autowired
+        AccountUtils accountUtils;
         @Autowired
         AuthenticationRepository authenticationRepository;
         public Wallet registerWallet(Account account){
@@ -31,5 +34,9 @@ public class WalletService {
                 Wallet wallet = walletRepository.findWalletById(id);
                 wallet.setBalance(wallet.getBalance()+amount);
                 return walletRepository.save(wallet);
+        }
+        public double refreshBalance(){
+                Wallet wallet = accountUtils.getAccountCurrent().getWallet();
+                return wallet.getBalance();
         }
 }
