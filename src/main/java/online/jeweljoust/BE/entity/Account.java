@@ -54,45 +54,47 @@ public class Account implements UserDetails {
     @Enumerated(EnumType.STRING)
     AccountStatus status;
 
-    @OneToOne(mappedBy = "accountWallet",cascade = CascadeType.ALL)
-//            @JsonIgnore
+    @OneToOne(mappedBy = "accountWallet", cascade = CascadeType.ALL)
+    // @JsonIgnore
     Wallet wallet;
+
     public Wallet getWallet() {
         return wallet;
     }
-    @OneToMany(mappedBy = "accountRequest",cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "accountRequest", cascade = CascadeType.ALL)
     @JsonIgnore
     Set<AuctionRequest> auctionRequests;
 
-    @OneToMany(mappedBy = "managerSession",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "managerSession", cascade = CascadeType.ALL)
     @JsonIgnore
     Set<AuctionSession> ManagerAuctionSessions;
 
-    @OneToMany(mappedBy = "staffSession",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "staffSession", cascade = CascadeType.ALL)
     @JsonIgnore
     Set<AuctionSession> StaffAuctionSessions;
 
-    @OneToMany(mappedBy = "accountRegistration",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "accountRegistration", cascade = CascadeType.ALL)
     @JsonIgnore
     Set<AuctionRegistration> auctionRegistrations;
 
-    @OneToMany(mappedBy = "accountInitial",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "accountInitial", cascade = CascadeType.ALL)
     @JsonIgnore
     Set<InitialValuation> initialValuations;
 
-    @OneToMany(mappedBy = "ultimateStaff",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ultimateStaff", cascade = CascadeType.ALL)
     @JsonIgnore
     Set<UltimateValuation> ultimateStaff;
 
-    @OneToMany(mappedBy = "ultimateManager",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ultimateManager", cascade = CascadeType.ALL)
     @JsonIgnore
     Set<UltimateValuation> ultimateManager;
 
-    @OneToMany(mappedBy = "accountShipment",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "accountShipment", cascade = CascadeType.ALL)
     @JsonIgnore
     Set<Shipment> shipment;
 
-    @OneToMany(mappedBy = "accountResource",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "accountResource", cascade = CascadeType.ALL)
     @JsonIgnore
     Set<Resources> resource;
 

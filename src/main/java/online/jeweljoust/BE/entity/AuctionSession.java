@@ -28,10 +28,10 @@ public class AuctionSession {
     @ManyToOne
     @JoinColumn(name = "staff_id")
     Account staffSession;
-    @Temporal(TemporalType.DATE)
+
     Date start_time;
 
-    @Temporal(TemporalType.DATE)
+
     Date end_time;
 
     @Temporal(TemporalType.DATE)

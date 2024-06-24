@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.Shipment;
 import online.jeweljoust.BE.entity.Wallet;
+import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AccountStatus;
 import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.service.AuthenticationService;
@@ -12,7 +13,6 @@ import online.jeweljoust.BE.service.WalletService;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,6 +80,8 @@ public class AuthenticationAPI {
         List<Account> accounts = authenticationService.getAllAccount();
         return ResponseEntity.ok(accounts);
     }
+    @GetMapping("/account/{role}")
+
 
     @PutMapping("/account/changePassword")
 //    @PreAuthorize("hasAuthority('MEMBER')")
@@ -118,7 +120,7 @@ public class AuthenticationAPI {
     }
 
     @PostMapping("/reset-password")
-    public void resetPassword(@ RequestBody ResetPasswordRequest resetPasswordRequest) {
+    public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         authenticationService.resetPassword(resetPasswordRequest);
     }
 

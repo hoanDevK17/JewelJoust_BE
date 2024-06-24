@@ -40,7 +40,7 @@ public class UltimateValuation {
     @JoinColumn(name = "staff_id_sending")
     Account ultimateStaff;
 
-    @OneToOne
+    @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "manager_id")
     Account ultimateManager;

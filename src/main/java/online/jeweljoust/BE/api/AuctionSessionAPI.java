@@ -39,13 +39,18 @@ public class AuctionSessionAPI {
         List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
         return ResponseEntity.ok(auctionSession);
     }
+    @GetMapping("/auctionSessions/id/{id}")
+    public ResponseEntity<AuctionSession> getAuctionSessionByID(@PathVariable long id) {
+        AuctionSession auctionSession = auctionSessionService.getAuctionSessionByID(id);
+        return ResponseEntity.ok(auctionSession);
+    }
 //    update
     @PutMapping("/auctionSessions/{id}")
     public ResponseEntity<AuctionSession> updateAuctionSessions(@PathVariable Long id,@RequestBody AuctionSessionRequest auctionSessionRequest) {
         AuctionSession auctionSession =  auctionSessionService.updateAuctionSession(id, auctionSessionRequest);
         return ResponseEntity.ok(auctionSession);
     }
-    @GetMapping("/auctionSessions/{name}")
+    @GetMapping("/auctionSessions/name/{name}")
     public ResponseEntity<List<AuctionSession>>findAuctionSessionByName(@PathVariable String name) {
         return ResponseEntity.ok(auctionSessionRepository.findByNameSession(name));
     }

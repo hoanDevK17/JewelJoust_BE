@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+
 @Service
 public class AuctionSessionService {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
@@ -28,21 +29,30 @@ public class AuctionSessionService {
     AuthenticationRepository authenticationRepository;
     @Autowired
     AuctionRequestRepository auctionRepository;
-    public List<AuctionSession> getAllAuctionSessions(){
+
+    public List<AuctionSession> getAllAuctionSessions() {
         return auctionSessionRepository.findAll();
     }
-    public AuctionSession addAuctionSessions(AuctionSessionRequest auctionSessionRequest){
+    public AuctionSession getAuctionSessionByID(long id) {
+        return auctionSessionRepository.findAuctionSessionById(id);
+    }
+    public AuctionSession addAuctionSessions(AuctionSessionRequest auctionSessionRequest) {
 
         AuctionSession auctionSession = new AuctionSession();
-        AuctionRequest auctionRequest = auctionRepository.findAuctionRequestById(auctionSessionRequest.getAuction_request_id());
-                if(auctionRequest==null || !auctionRequest.getStatus().equals(AuctionRequestStatus.APPROVED) ){
-                    throw new IllegalStateException("Can't find auctionRequest or auctionRequest don't is APPROVED");
-                }
+        AuctionRequest auctionRequest = auctionRepository
+                .findAuctionRequestById(auctionSessionRequest.getAuction_request_id());
+
+        if (auctionRequest == null || !auctionRequest.getStatus().equals(AuctionRequestStatus.APPROVED)) {
+            throw new IllegalStateException("Not support this AuctionRequest");
+        }
+        else if(auctionRequest.getAuctionSessions() != null){
+            throw new IllegalStateException("Session has initial");
+        }
         auctionSession.setAuctionRequest(auctionRequest);
         auctionSession.setManagerSession(accountUtils.getAccountCurrent());
         auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
-        auctionSession.setStart_time(auctionSessionRequest.getStart_time());
-        auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
+            auctionSession.setStart_time(auctionSessionRequest.getStart_time());
+                auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
         auctionSession.setInitialPrice(auctionRequest.getUltimateValuation().getPrice());
         auctionSession.setMinStepPrice(auctionSessionRequest.getMin_stepPrice());
         auctionSession.setDepositAmount(auctionSessionRequest.getDeposit_amount());
@@ -52,17 +62,19 @@ public class AuctionSessionService {
         auctionSession.setFeeAmount(0.05);
         auctionSession.setCreateAt(new Date());
         auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
-//        Initialized: khởi tạo thành công , chưa tới giờ đấu giá
-//        Bidding: đang được đấu giá
-//        Pending Payment: chờ thanh toán
-//        Completed : bán hoàn tất
-//        Cancelled : đã hủy
+        // Initialized: khởi tạo thành công , chưa tới giờ đấu giá
+        // Bidding: đang được đấu giá
+        // Pending Payment: chờ thanh toán
+        // Completed : bán hoàn tất
+        // Cancelled : đã hủy
 
         return auctionSessionRepository.save(auctionSession);
     }
-    public AuctionSession updateAuctionSession(long id, AuctionSessionRequest auctionSessionRequest){
-        AuctionSession auctionSession =  auctionSessionRepository.findAuctionSessionById(id);
-        auctionSession.setAuctionRequest(auctionRepository.findAuctionRequestById(auctionSessionRequest.getAuction_request_id()));
+
+    public AuctionSession updateAuctionSession(long id, AuctionSessionRequest auctionSessionRequest) {
+        AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
+        auctionSession.setAuctionRequest(
+                auctionRepository.findAuctionRequestById(auctionSessionRequest.getAuction_request_id()));
         auctionSession.setManagerSession(accountUtils.getAccountCurrent());
         auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
         auctionSession.setStart_time(auctionSessionRequest.getStart_time());
@@ -73,10 +85,9 @@ public class AuctionSessionService {
         auctionSession.setNameSession(auctionSessionRequest.getName_session());
         auctionSession.setNameJewelry(auctionSessionRequest.getName_jewelry());
         auctionSession.setDescription(auctionSessionRequest.getDescription());
-//        auctionSession.setFeeAmount(auctionSessionRequest.getFee_amount());
-//        auctionSession.setCreateAt(new Date());
+        // auctionSession.setFeeAmount(auctionSessionRequest.getFee_amount());
+        // auctionSession.setCreateAt(new Date());
         auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
         return auctionSessionRepository.save(auctionSession);
     }
 }
-
