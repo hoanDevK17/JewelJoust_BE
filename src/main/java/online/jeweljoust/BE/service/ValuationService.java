@@ -22,6 +22,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -47,8 +50,10 @@ public class ValuationService {
     @Autowired
     UltimateRepository ultimateRepository;
 
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+
     public AuctionRequest deliveryStatusById(long id) {
-        InitialValuation initialValuation =   auctionRepository.findAuctionRequestById(id).getInitialValuations();
+        InitialValuation initialValuation = auctionRepository.findAuctionRequestById(id).getInitialValuations();
         AuctionRequest auctionRequest = initialValuation.getAuctionRequestInitial();
         Shipment shipment = new Shipment();
         if (initialValuation.getStatus().equals(InitialValuationsStatus.CONFIRMED)){
@@ -177,27 +182,41 @@ public class ValuationService {
         return initialValuation;
     }
 
-    @Scheduled(cron = "3 * * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void checkMissingShipment() {
-//        List<InitialValuation> lists = initialRepository.findByStatus(InitialValuationsStatus.CONFIRMED);
-//        LocalDateTime now = LocalDateTime.now();
-//        System.out.println(lists);
-//        for (InitialValuation initial : lists) {
-//            if (initial.getStatus().equals(InitialValuationsStatus.CONFIRMED)) {
-//                Shipment shipment = initial.getShipment();
-//                if (shipment != null && !shipment.getStatus().equals(ShipmentStatus.MISSED)) {
-//                    LocalDateTime receivedDate = shipment.getReceivedDate();
-//                    long daysSinceReceived = ChronoUnit.DAYS.between(receivedDate, now);
-//                    System.out.println(daysSinceReceived);
-//                    if (daysSinceReceived <= 14) {
-//                        shipment.setStatus(ShipmentStatus.MISSED);
-//                        shipmentRepository.save(shipment);
-//                        System.out.println("Auto updated status for shipment ID: " + shipment.getId());
-//                    }
-//                }
-//            }
-//        }
+        List<InitialValuation> lists = initialRepository.findByStatus(InitialValuationsStatus.CONFIRMED);
+        LocalDateTime now = LocalDateTime.now();
+        for (InitialValuation iv : lists){
+            if (iv.getShipment() == null){
+                LocalDateTime targetDate = iv.getInitialdate().plusDays(1);
+                long delay = now.until(targetDate, ChronoUnit.SECONDS);
+                if (delay > 0){
+                    scheduledExecutorService.schedule(() -> {
+                        Shipment shipment = new Shipment();
+                        shipment.setStatus(ShipmentStatus.MISSED);
+                        shipment.setReceivedDate(now);
+                        shipment.setInitialShipment(iv);
+                        shipmentRepository.save(shipment);
+                    },delay, TimeUnit.SECONDS);
+                }
+            }
+        }
         System.out.println("done");
     }
 
+//    for (InitialValuation initial : lists) {
+//        if (initial.getStatus().equals(InitialValuationsStatus.CONFIRMED)) {
+////                Shipment shipment = initial.getShipment();
+////                if (shipment != null && !shipment.getStatus().equals(ShipmentStatus.MISSED)) {
+////                    LocalDateTime receivedDate = shipment.getReceivedDate();
+////                    long daysSinceReceived = ChronoUnit.DAYS.between(receivedDate, now);
+////                    System.out.println(daysSinceReceived);
+////                    if (daysSinceReceived <= 14) {
+////                        shipment.setStatus(ShipmentStatus.MISSED);
+////                        shipmentRepository.save(shipment);
+////                        System.out.println("Auto updated status for shipment ID: " + shipment.getId());
+////                    }
+////                }
+//        }
+//    }
 }
