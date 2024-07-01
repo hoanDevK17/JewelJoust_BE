@@ -170,8 +170,10 @@ public class AuthenticationService implements UserDetailsService {
         }
         EmailDetail emailDetail = new EmailDetail();
         emailDetail.setRecipient(account.getEmail());
+        emailDetail.setFullName(accountUtils.getAccountCurrent().getFullname());
+        emailDetail.setLink("jeweljoust.online");
         emailDetail.setSubject("Reset password for account " + forgotPasswordRequest.getEmail() + "!");
-        emailDetail.setMsgBody("");
+        emailDetail.setMsgBody("alo");
         emailDetail.setButtonValue("Reset password");
         String token = tokenService.generateToken(account);
         System.out.println(token);
@@ -197,17 +199,6 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public Account updateProfile(UpdateProfileRequest updateProfileRequest) {
-
-//        account.setFullname(updateProfileRequest.getFullname());
-//        account.setAddress(updateProfileRequest.getAddress());
-//        account.setBirthday(updateProfileRequest.getBirthday());
-//        account.setEmail(updateProfileRequest.getEmail());
-//        account.setPhone(updateProfileRequest.getPhone());
-//        if (!updateProfileRequest.getNewPassword().equals(updateProfileRequest.getOldPassword())){
-//            if (passwordEncoder.encode(updateProfileRequest.getOldPassword()).equals(account.getPassword())){
-//                account.setPassword(passwordEncoder.encode(updateProfileRequest.getNewPassword()));
-//            }
-//        }
         if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)||accountUtils.getAccountCurrent().getId() == updateProfileRequest.getId())
         {
             Account account = authenticationRepository.findById(updateProfileRequest.getId());
