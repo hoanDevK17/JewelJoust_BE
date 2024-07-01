@@ -80,7 +80,7 @@ public class AuthenticationAPI {
         List<Account> accounts = authenticationService.getAllAccount();
         return ResponseEntity.ok(accounts);
     }
-    @GetMapping("/account/{role}")
+
 
 
     @PutMapping("/account/changePassword")
@@ -109,8 +109,7 @@ public class AuthenticationAPI {
     @PostMapping("/login-google")
     public ResponseEntity<AccountReponse> loginGoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
         AccountReponse accountReponse = authenticationService.loginGoogle(loginGoogleRequest);
-
-
+        System.out.println(accountReponse.getUsername());
         return ResponseEntity.ok(accountReponse);
     }
 
@@ -161,7 +160,7 @@ public class AuthenticationAPI {
     public void sendMail() {
         EmailDetail emailDetail = new EmailDetail();
         emailDetail.setRecipient("phatttse170312@fpt.edu.vn");
-        emailDetail.setSubject("test123");
+        emailDetail.setSubject("test123");  
         emailDetail.setMsgBody("abc");
         emailService.sendMailTemplate(emailDetail);
     }

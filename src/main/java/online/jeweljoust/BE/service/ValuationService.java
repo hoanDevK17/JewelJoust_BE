@@ -6,10 +6,7 @@ import online.jeweljoust.BE.enums.InitialValuationsStatus;
 import online.jeweljoust.BE.enums.ShipmentStatus;
 import online.jeweljoust.BE.enums.UltimateValuationsStatus;
 import online.jeweljoust.BE.exception.InvalidStatusException;
-import online.jeweljoust.BE.model.ConfirmedInititalRequest;
-import online.jeweljoust.BE.model.RejectUltimateRequest;
-import online.jeweljoust.BE.model.RejectedInititalPriceRequest;
-import online.jeweljoust.BE.model.UltimateRequest;
+import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.respository.AuctionRequestRepository;
 import online.jeweljoust.BE.respository.InitialRepository;
 import online.jeweljoust.BE.respository.ShipmentRepository;
@@ -46,6 +43,8 @@ public class ValuationService {
 
     @Autowired
     UltimateRepository ultimateRepository;
+    @Autowired
+    EmailService emailService;
 
     public AuctionRequest deliveryStatusById(long id) {
         InitialValuation initialValuation =   auctionRepository.findAuctionRequestById(id).getInitialValuations();
@@ -152,6 +151,11 @@ public class ValuationService {
             initialValuation.setAccountInitial(account);
             auctionRequest.setStatus(AuctionRequestStatus.CONFIRMED);
             initialRepository.save(initialValuation);
+            EmailDetail emailDetail = new EmailDetail();
+                emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
+                emailDetail.setSubject("Preliminary Appraisal Complete");
+                emailDetail.setMsgBody("");
+            emailService.sendMailNotification(emailDetail);
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
         }

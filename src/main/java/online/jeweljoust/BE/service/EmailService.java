@@ -45,5 +45,31 @@ public class EmailService {
             messagingException.printStackTrace();
         }
     }
+    public void sendMailNotification(EmailDetail emailDetail){
+        try{
+            Context context = new Context();
+
+            context.setVariable("name", emailDetail.getFullName());
+            context.setVariable("link", emailDetail.getLink());
+            context.setVariable("button", emailDetail.getButtonValue());
+
+            String text = templateEngine.process("templateInitalValuation", context);
+
+            // Creating a simple mail message
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+
+            // Setting up necessary details
+            mimeMessageHelper.setFrom("jeweljoust@gmail.com");
+            mimeMessageHelper.setTo(emailDetail.getRecipient());
+            mimeMessageHelper.setText(text, true);
+            mimeMessageHelper.setSubject(emailDetail.getSubject());
+
+            javaMailSender.send(mimeMessage);
+
+        }catch (MessagingException messagingException){
+            messagingException.printStackTrace();
+        }
+    }
 }
 

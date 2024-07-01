@@ -28,8 +28,6 @@ public class Filter extends OncePerRequestFilter {
     @Autowired
     TokenService tokenService;
 
-    @Autowired
-    AccountReponse accountReponse;
 
     @Autowired
     @Qualifier("handlerExceptionResolver")

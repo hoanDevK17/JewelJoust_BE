@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
 import online.jeweljoust.BE.entity.AuctionSession;
+import online.jeweljoust.BE.enums.AuctionSessionStatus;
 import online.jeweljoust.BE.model.AuctionSessionRequest;
 import online.jeweljoust.BE.respository.AuctionSessionRepository;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
@@ -12,6 +13,7 @@ import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
 import java.util.List;
 
@@ -39,6 +41,11 @@ public class AuctionSessionAPI {
         List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
         return ResponseEntity.ok(auctionSession);
     }
+    @GetMapping("/auctionSessions/{status}")
+    public ResponseEntity<List<AuctionSession>> getAuctionSessionsbyStatus(AuctionSessionStatus status) {
+        List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
+        return ResponseEntity.ok(auctionSession);
+    }
     @GetMapping("/auctionSessions/id/{id}")
     public ResponseEntity<AuctionSession> getAuctionSessionByID(@PathVariable long id) {
         AuctionSession auctionSession = auctionSessionService.getAuctionSessionByID(id);
@@ -54,6 +61,7 @@ public class AuctionSessionAPI {
     public ResponseEntity<List<AuctionSession>>findAuctionSessionByName(@PathVariable String name) {
         return ResponseEntity.ok(auctionSessionRepository.findByNameSession(name));
     }
+
 //  mở phiên khi đến giờ ( staff)
 //   kết thúc phiên khi đến giờ (staff)
     // dừng phiên khẩn cấp để tí tiếp tucj lại

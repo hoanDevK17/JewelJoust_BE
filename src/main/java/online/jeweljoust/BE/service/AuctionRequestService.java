@@ -50,6 +50,7 @@ public class AuctionRequestService {
                 resources.setAccountResource(accountUtils.getAccountCurrent());
                 resources.setUploadAt(now);
                 resourceRepository.save(resources);
+
             }
         return saveAuctionRequest;
     }

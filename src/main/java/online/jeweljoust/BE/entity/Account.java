@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AccountStatus;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,8 +19,6 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@ToString
-
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

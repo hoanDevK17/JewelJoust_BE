@@ -46,8 +46,7 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     SecurityConfig securityConfig;
 
-    @Autowired
-    AccountReponse accountReponse;
+
 
     @Autowired
     AccountUtils accountUtils;
@@ -122,7 +121,9 @@ public class AuthenticationService implements UserDetailsService {
         try {
             FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
             String email = firebaseToken.getEmail();
+            System.out.println(email);
             Account account = authenticationRepository.findByEmail(email);
+            System.out.println(account.getId());
             if (account == null){
                 account = new Account();
                 account.setFullname(firebaseToken.getName());
@@ -135,11 +136,19 @@ public class AuthenticationService implements UserDetailsService {
                     account.setWallet(walletService.registerWallet(account));
                 }
             }
+            String token = tokenService.generateToken(account);
+            accountReponse.setUsername(account.getUsername());
             accountReponse.setId(account.getId());
             accountReponse.setFullname(account.getFullname());
+            accountReponse.setAddress(account.getAddress());
+            accountReponse.setBirthday(account.getBirthday());
             accountReponse.setEmail(account.getEmail());
-            accountReponse.setUsername(account.getUsername());
-            accountReponse.setToken(tokenService.generateToken(account));
+            accountReponse.setPhone(account.getPhone());
+            accountReponse.setRole(account.getRole());
+            accountReponse.setCredibility(account.getCredibility());
+            accountReponse.setStatus(account.getStatus());
+            accountReponse.setToken(token);
+            accountReponse.setWallet(account.getWallet());
         } catch (Exception e){
             e.getMessage();
         }

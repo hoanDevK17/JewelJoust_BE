@@ -3,6 +3,7 @@ package online.jeweljoust.BE.service;
 import online.jeweljoust.BE.entity.AuctionRequest;
 import online.jeweljoust.BE.entity.AuctionSession;
 
+import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.enums.AuctionSessionStatus;
 import online.jeweljoust.BE.model.AuctionSessionRequest;
@@ -32,6 +33,9 @@ public class AuctionSessionService {
 
     public List<AuctionSession> getAllAuctionSessions() {
         return auctionSessionRepository.findAll();
+    }
+    public List<AuctionSession> getAuctionSessionsByStatus(AuctionSessionStatus status) {
+        return auctionSessionRepository.findByStatus(status);
     }
     public AuctionSession getAuctionSessionByID(long id) {
         return auctionSessionRepository.findAuctionSessionById(id);
