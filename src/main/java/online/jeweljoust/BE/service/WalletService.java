@@ -45,7 +45,12 @@ public class WalletService {
     }
         public Wallet changBalance(Long id,double amount){
                 Wallet wallet = walletRepository.findWalletById(id);
-                wallet.setBalance(wallet.getBalance()+amount);
+                double newBalance = wallet.getBalance() + amount;
+                if(newBalance < 0){
+                    throw new IllegalStateException("Insufficient funds in the wallet.");
+                }
+            System.out.println(newBalance);
+                wallet.setBalance(newBalance);
                 return walletRepository.save(wallet);
         }
         public double refreshBalance(){
