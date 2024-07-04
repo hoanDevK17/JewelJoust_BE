@@ -1,6 +1,7 @@
 package online.jeweljoust.BE.service;
 
 import online.jeweljoust.BE.entity.AuctionRegistration;
+import online.jeweljoust.BE.entity.AuctionSession;
 import online.jeweljoust.BE.entity.Transaction;
 import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.enums.AuctionRegistrationStatus;
@@ -35,13 +36,20 @@ public class AuctionRegistrationService {
     TransactionService transactionService;
 
     public AuctionRegistration addAuctionRegistration (AuctionRegistrationRequest auctionRegistrationRequest){
-
-        AuctionRegistration auctionRegistration = new AuctionRegistration();
-        auctionRegistration.setCreate_at(new Date());
+        AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(auctionRegistrationRequest.getAuctionSession_id());
+   if(!auctionRegistrationRepository.existsByAccountIdAndSessionId(accountUtils.getAccountCurrent().getId(), auctionSession.getId()))
+   {
+       AuctionRegistration auctionRegistration = new AuctionRegistration();
+       auctionRegistration.setCreate_at(new Date());
         auctionRegistration.setStatus(AuctionRegistrationStatus.PENDING);
         auctionRegistration.setAuctionSession(auctionSessionRepository.findAuctionSessionById(auctionRegistrationRequest.getAuctionSession_id()));
         auctionRegistration.setAccountRegistration((accountUtils.getAccountCurrent()));
-        return auctionRegistrationRepository.save(auctionRegistration);
+       return auctionRegistrationRepository.save(auctionRegistration);
+   }
+    else {
+        throw  new IllegalStateException("You are already registered for this auction session");
+   }
+
     }
     public List<AuctionRegistration> findAllAuctionRegistration (){
         return auctionRegistrationRepository.findAll();

@@ -8,6 +8,7 @@ import lombok.ToString;
 import online.jeweljoust.BE.enums.ResourceTypes;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -44,5 +45,5 @@ public class Resources {
     Account accountResource;
 
     @Column(nullable = false)
-    LocalDateTime uploadAt;
+    Date uploadAt;
 }

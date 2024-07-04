@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -31,10 +32,10 @@ public class AuctionRequestService {
 
     public AuctionRequest requestSale(AuctionRequestReponse auctionRequestReponse){
         AuctionRequest auctionRequest = new AuctionRequest();
-        LocalDateTime now = LocalDateTime.now();
+
 
             auctionRequest.setAccountRequest(accountUtils.getAccountCurrent());
-            auctionRequest.setRequestdate(now);
+            auctionRequest.setRequestdate(new Date());
             auctionRequest.setJewelryname(auctionRequestReponse.getJewelryName());
             auctionRequest.setJewelrydescription(auctionRequestReponse.getJewelryDescription());
             auctionRequest.setJewelryinitialprice(auctionRequestReponse.getInitialPrice());
@@ -48,7 +49,7 @@ public class AuctionRequestService {
                 resources.setReferenceType(ResourceTypes.ReferenceType.AUCTION_REQUEST);
                 resources.setAuctionRequestResource(saveAuctionRequest);
                 resources.setAccountResource(accountUtils.getAccountCurrent());
-                resources.setUploadAt(now);
+                resources.setUploadAt(new Date());
                 resourceRepository.save(resources);
 
             }

@@ -8,6 +8,7 @@ import lombok.ToString;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -20,8 +21,8 @@ public class AuctionRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false)
-    LocalDateTime requestdate;
+
+    Date requestdate;
 
     String jewelryname;
 
