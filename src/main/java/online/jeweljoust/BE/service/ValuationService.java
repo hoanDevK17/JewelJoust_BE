@@ -1,5 +1,6 @@
 package online.jeweljoust.BE.service;
 
+import online.jeweljoust.BE.config.TimeConverter;
 import online.jeweljoust.BE.entity.*;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.enums.InitialValuationsStatus;
@@ -48,6 +49,9 @@ public class ValuationService {
     UltimateRepository ultimateRepository;
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    TimeConverter timeConverter;
 
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
@@ -208,19 +212,5 @@ public class ValuationService {
         System.out.println("done");
     }
 
-//    for (InitialValuation initial : lists) {
-//        if (initial.getStatus().equals(InitialValuationsStatus.CONFIRMED)) {
-////                Shipment shipment = initial.getShipment();
-////                if (shipment != null && !shipment.getStatus().equals(ShipmentStatus.MISSED)) {
-////                    LocalDateTime receivedDate = shipment.getReceivedDate();
-////                    long daysSinceReceived = ChronoUnit.DAYS.between(receivedDate, now);
-////                    System.out.println(daysSinceReceived);
-////                    if (daysSinceReceived <= 14) {
-////                        shipment.setStatus(ShipmentStatus.MISSED);
-////                        shipmentRepository.save(shipment);
-////                        System.out.println("Auto updated status for shipment ID: " + shipment.getId());
-////                    }
-////                }
-//        }
-//    }
+
 }

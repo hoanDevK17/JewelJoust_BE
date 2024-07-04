@@ -40,20 +40,20 @@ public class AuctionRequestService {
             auctionRequest.setJewelrydescription(auctionRequestReponse.getJewelryDescription());
             auctionRequest.setJewelryinitialprice(auctionRequestReponse.getInitialPrice());
             auctionRequest.setStatus(AuctionRequestStatus.PENDING);
-            AuctionRequest saveAuctionRequest = auctionRepository.save(auctionRequest);
+            auctionRepository.save(auctionRequest);
 
             for (ResourceRequest resourceRequest : auctionRequestReponse.getResourceRequests()){
                 Resources resources = new Resources();
                 resources.setResourceType(ResourceTypes.ResourceType.img);
                 resources.setPath(resourceRequest.getPath());
                 resources.setReferenceType(ResourceTypes.ReferenceType.AUCTION_REQUEST);
-                resources.setAuctionRequestResource(saveAuctionRequest);
+                resources.setAuctionRequestResource(auctionRequest);
                 resources.setAccountResource(accountUtils.getAccountCurrent());
                 resources.setUploadAt(new Date());
                 resourceRepository.save(resources);
 
             }
-        return saveAuctionRequest;
+        return auctionRequest;
     }
 
     public List<AuctionRequest> getAuctionRequest() {
