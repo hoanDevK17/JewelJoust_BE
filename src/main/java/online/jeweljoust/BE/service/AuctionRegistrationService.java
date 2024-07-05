@@ -26,14 +26,19 @@ public class AuctionRegistrationService {
 
     @Autowired
     AccountUtils accountUtils;
+
     @Autowired
     AuctionSessionRepository auctionSessionRepository;
+
     @Autowired
     AuthenticationRepository authenticationRepository;
+
     @Autowired
     WalletRepository walletRepository;
+
     @Autowired
     TransactionService transactionService;
+
     @Autowired
     WalletService walletService;
 

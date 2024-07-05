@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
-
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -21,7 +19,6 @@ public class AuctionRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-
     Date requestdate;
 
     String jewelryname;
@@ -29,6 +26,8 @@ public class AuctionRequest {
     String jewelrydescription;
 
     double jewelryinitialprice;
+
+    Date memberConfirmationDate;
 
     @Enumerated(EnumType.STRING)
     AuctionRequestStatus status;

@@ -98,7 +98,6 @@ public class AuthenticationAPI {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
         Account account = authenticationService.login(loginRequest);
-
         if (account.getStatus().equals(AccountStatus.ACTIVE)){
             return ResponseEntity.ok(account);
         } else {
