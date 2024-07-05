@@ -11,8 +11,6 @@ import online.jeweljoust.BE.respository.ResourceRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -32,8 +30,6 @@ public class AuctionRequestService {
 
     public AuctionRequest requestSale(AuctionRequestReponse auctionRequestReponse){
         AuctionRequest auctionRequest = new AuctionRequest();
-
-
             auctionRequest.setAccountRequest(accountUtils.getAccountCurrent());
             auctionRequest.setRequestdate(new Date());
             auctionRequest.setJewelryname(auctionRequestReponse.getJewelryName());
@@ -41,7 +37,6 @@ public class AuctionRequestService {
             auctionRequest.setJewelryinitialprice(auctionRequestReponse.getInitialPrice());
             auctionRequest.setStatus(AuctionRequestStatus.PENDING);
             auctionRepository.save(auctionRequest);
-
             for (ResourceRequest resourceRequest : auctionRequestReponse.getResourceRequests()){
                 Resources resources = new Resources();
                 resources.setResourceType(ResourceTypes.ResourceType.img);
@@ -51,7 +46,6 @@ public class AuctionRequestService {
                 resources.setAccountResource(accountUtils.getAccountCurrent());
                 resources.setUploadAt(new Date());
                 resourceRepository.save(resources);
-
             }
         return auctionRequest;
     }
@@ -75,7 +69,4 @@ public class AuctionRequestService {
         return auctionRepository.findAll();
     }
 
-//    public List<AuctionRequest> getAllAuctionRequestById() {
-//        return auctionRepository.findByAccountRequestId(accountUtils.getAccountCurrent().getId());
-//    }
 }

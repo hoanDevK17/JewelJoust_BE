@@ -8,7 +8,7 @@ import lombok.ToString;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.enums.InitialValuationsStatus;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -21,7 +21,7 @@ public class InitialValuation {
     Long id;
 
     @Column(nullable = false)
-    LocalDateTime initialdate;
+    Date initialdate;
 
     @Enumerated(EnumType.STRING)
     InitialValuationsStatus status;

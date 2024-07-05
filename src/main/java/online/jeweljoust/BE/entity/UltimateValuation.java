@@ -7,8 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.enums.UltimateValuationsStatus;
-
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity

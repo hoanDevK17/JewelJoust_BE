@@ -21,5 +21,4 @@ public class UpdateProfileRequest {
     String email;
     String phone;
     AccountStatus status;
-
 }

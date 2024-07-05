@@ -13,6 +13,5 @@ import java.util.Date;
 @Getter
 @Setter
 public class AuctionRegistrationRequest {
-
- long auctionSession_id;
+  long auctionSession_id;
 }

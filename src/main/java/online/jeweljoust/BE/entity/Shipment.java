@@ -8,7 +8,7 @@ import lombok.ToString;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.enums.ShipmentStatus;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -21,7 +21,7 @@ public class Shipment {
     Long id;
 
 
-    LocalDateTime receivedDate;
+    Date receivedDate;
 
     @Enumerated(EnumType.STRING)
     ShipmentStatus status;

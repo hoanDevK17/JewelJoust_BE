@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import online.jeweljoust.BE.enums.ResourceTypes;
-
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity

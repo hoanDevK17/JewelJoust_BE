@@ -46,8 +46,6 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     SecurityConfig securityConfig;
 
-
-
     @Autowired
     AccountUtils accountUtils;
 
@@ -111,8 +109,8 @@ public class AuthenticationService implements UserDetailsService {
             accountReponse.setToken(token);
             accountReponse.setWallet(account.getWallet());
             return accountReponse;
-        } catch (AuthenticationException e){
-            throw new BadCredentialsException("Incorrect username or password");
+        } catch (AuthenticationException  e){
+            throw new BadCredentialsException("Incorrect username or password!");
         }
     }
 
