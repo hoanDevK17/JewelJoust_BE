@@ -14,5 +14,4 @@ public interface AuctionSessionRepository extends JpaRepository<AuctionSession, 
     AuctionSession findAuctionSessionById(long id);
     List<AuctionSession> findByNameSession(String name);
     List<AuctionSession> findByStatus(AuctionSessionStatus status);
-
 }

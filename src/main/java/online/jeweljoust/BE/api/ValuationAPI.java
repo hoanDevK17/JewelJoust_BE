@@ -59,7 +59,7 @@ public class ValuationAPI {
 //    public ResponseEntity<List<Shipment>> getAllReceived(@PathVariable("status") AuctionRequestStatus status) {
 //        List<Shipment> shipmentList = valuationService.getAllReceived(status);
 //        return ResponseEntity.ok(shipmentList);
-
+//    }
 
     @PostMapping("/ultimateValuations")
 //    @PreAuthorize("hasAuthority('STAFF')")

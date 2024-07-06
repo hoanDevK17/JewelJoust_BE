@@ -31,7 +31,6 @@ public class AuctionSession {
 
     Date start_time;
 
-
     Date end_time;
 
     @Temporal(TemporalType.DATE)
@@ -46,11 +45,9 @@ public class AuctionSession {
 
     double depositAmount;
 
-
     String description;
 
     Date createAt;
-
 
     @ManyToOne
     @JoinColumn(name="auctionRequest_id")

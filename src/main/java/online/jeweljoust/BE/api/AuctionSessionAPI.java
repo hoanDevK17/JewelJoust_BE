@@ -62,6 +62,12 @@ public class AuctionSessionAPI {
         return ResponseEntity.ok(auctionSessionRepository.findByNameSession(name));
     }
 
+    @PutMapping("/auctionSessions/stop")
+    public ResponseEntity<AuctionSession> stopAuctionSessions(@PathVariable Long id) {
+        AuctionSession auctionSession =  auctionSessionService.stopAuctionSession(id);
+        return ResponseEntity.ok(auctionSession);
+    }
+
 //  mở phiên khi đến giờ ( staff)
 //   kết thúc phiên khi đến giờ (staff)
     // dừng phiên khẩn cấp để tí tiếp tucj lại
