@@ -68,5 +68,8 @@ public class AuctionRequestService {
     public List<AuctionRequest> getAllAuctionRequest() {
         return auctionRepository.findAll();
     }
+    public List<AuctionRequest> getAllAuctionRequestAvailable() {
+        return auctionRepository.findByAccountRequestAvailable();
+    }
 
 }

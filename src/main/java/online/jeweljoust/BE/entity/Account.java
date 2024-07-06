@@ -63,9 +63,9 @@ public class Account implements UserDetails {
     @JsonIgnore
     Set<AuctionRequest> auctionRequests;
 
-    @OneToMany(mappedBy = "managerSession", cascade = CascadeType.ALL)
-    @JsonIgnore
-    Set<AuctionSession> ManagerAuctionSessions;
+//    @OneToMany(mappedBy = "managerSession", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    Set<AuctionSession> ManagerAuctionSessions;
 
     @OneToMany(mappedBy = "staffSession", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -37,9 +37,9 @@ public class AuctionRequest {
     @JoinColumn(name = "member_id")
     Account accountRequest;
 
-    @OneToMany(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "auctionRequest",cascade = CascadeType.ALL)
     @JsonIgnore
-    Set<AuctionSession> auctionSessions;
+    AuctionSession auctionSessions;
 
     @OneToOne(mappedBy = "auctionRequestInitial",cascade = CascadeType.ALL)
     InitialValuation initialValuations;

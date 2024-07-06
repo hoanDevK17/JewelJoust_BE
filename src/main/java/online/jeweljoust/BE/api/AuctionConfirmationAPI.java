@@ -19,14 +19,14 @@ public class AuctionConfirmationAPI {
 
     @PutMapping("/auctionConfirmation/confirmed")
 //    @PreAuthorize("hasAuthority('MEMBER')")
-    public ResponseEntity<AuctionRequest> confirmedAuctionByMember(MemberConfirmRequest memberConfirmRequest) {
+    public ResponseEntity<AuctionRequest> confirmedAuctionByMember(@RequestBody MemberConfirmRequest memberConfirmRequest) {
         AuctionRequest auctionRequest = confirmationService.confirmByMember(memberConfirmRequest);
         return ResponseEntity.ok(auctionRequest);
     }
 
     @PutMapping("/auctionConfirmation/rejected")
 //    @PreAuthorize("hasAuthority('MEMBER')")
-    public ResponseEntity<AuctionRequest> rejectedAuctionByMember(MemberConfirmRequest memberConfirmRequest) {
+    public ResponseEntity<AuctionRequest> rejectedAuctionByMember(@RequestBody MemberConfirmRequest memberConfirmRequest) {
         AuctionRequest auctionRequest = confirmationService.rejectByMember(memberConfirmRequest);
         return ResponseEntity.ok(auctionRequest);
     }

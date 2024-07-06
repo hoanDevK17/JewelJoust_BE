@@ -21,9 +21,9 @@ public class AuctionSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-    @ManyToOne
-    @JoinColumn(name = "manager_id")
-    Account managerSession;
+//    @ManyToOne
+//    @JoinColumn(name = "manager_id")
+//    Account managerSession;
 
     @ManyToOne
     @JoinColumn(name = "staff_id")
@@ -49,7 +49,7 @@ public class AuctionSession {
 
     Date createAt;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name="auctionRequest_id")
 
     AuctionRequest auctionRequest;

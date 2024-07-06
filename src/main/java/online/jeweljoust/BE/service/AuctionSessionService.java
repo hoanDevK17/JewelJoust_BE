@@ -1,5 +1,6 @@
 package online.jeweljoust.BE.service;
 
+import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.AuctionRequest;
 import online.jeweljoust.BE.entity.AuctionSession;
 
@@ -55,14 +56,15 @@ public class AuctionSessionService {
         AuctionRequest auctionRequest = auctionRepository
                 .findAuctionRequestById(auctionSessionRequest.getAuction_request_id());
 
-        if (auctionRequest == null || !auctionRequest.getStatus().equals(AuctionRequestStatus.AGREED)) {
+        if (!auctionRequest.getStatus().equals(AuctionRequestStatus.AGREED)) {
             throw new IllegalStateException("Not support this AuctionRequest");
         }
         else if(auctionRequest.getAuctionSessions() != null){
             throw new IllegalStateException("Session has initial");
         }
         auctionSession.setAuctionRequest(auctionRequest);
-        auctionSession.setManagerSession(accountUtils.getAccountCurrent());
+
+
         auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
         auctionSession.setStart_time(auctionSessionRequest.getStart_time());
         auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
@@ -88,7 +90,7 @@ public class AuctionSessionService {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
         auctionSession.setAuctionRequest(
                 auctionRepository.findAuctionRequestById(auctionSessionRequest.getAuction_request_id()));
-        auctionSession.setManagerSession(accountUtils.getAccountCurrent());
+//        auctionSession.setManagerSession(accountUtils.getAccountCurrent());
         auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
         auctionSession.setStart_time(auctionSessionRequest.getStart_time());
         auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());

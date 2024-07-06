@@ -55,6 +55,12 @@ public class AuctionRequestAPI {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequest();
         return ResponseEntity.ok(auctionRequests);
     }
+    @GetMapping("/auctionRequests/available")
+//    @PreAuthorize("hasAuthority('STAFF')")
+    public ResponseEntity<List<AuctionRequest>> getAllAuctionRequestAvailable() {
+        List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequestAvailable();
+        return ResponseEntity.ok(auctionRequests);
+    }
 
 //    @GetMapping("/auctionRequest/accountCurrent")
 ////    @PreAuthorize("hasAuthority('MEMBER')")
