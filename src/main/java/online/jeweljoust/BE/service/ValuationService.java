@@ -172,18 +172,18 @@ public class ValuationService {
         return initialValuation;
     }
 
-    @Scheduled(cron = "0 44 21 * * ?")
+    @Scheduled(cron = "0 0 0,12 * * ?")
     public void checkMissingShipment() {
         List<InitialValuation> lists = initialRepository.findByStatus(InitialValuationsStatus.CONFIRMED);
         for (InitialValuation iv : lists){
-//            if (iv.getShipment() == null){
+            if (iv.getShipment() == null){
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(iv.getInitialdate());
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
                 Date targetDate = calendar.getTime();
 
                 Date now = new Date();
-                long delay = (now.getTime() - targetDate.getTime()) / (1000 * 60 * 60); // delay tính bằng giây
+                long delay = (now.getTime() - targetDate.getTime()) / 1000; // delay tính bằng giây
 
                 if (delay > 0) {
                     scheduledExecutorService.schedule(() -> {
@@ -197,7 +197,7 @@ public class ValuationService {
                         auctionRepository.save(auctionRequest);
                     }, delay, TimeUnit.SECONDS);
                 }
-//            }
+            }
         }
     }
 
