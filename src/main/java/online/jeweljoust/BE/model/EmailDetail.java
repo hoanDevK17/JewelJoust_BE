@@ -15,4 +15,5 @@ public class EmailDetail {
     private String attachment;
     private String buttonValue;
     private String link;
+    private String valuation;
 }

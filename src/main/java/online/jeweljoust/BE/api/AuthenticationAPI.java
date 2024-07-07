@@ -168,4 +168,9 @@ public class AuthenticationAPI {
         return walletService.refreshBalance();
     }   
 
+//    @GetMapping("/account/paging")
+//    public ResponseEntity<List<Account>> pagingAccount(@PathVariable("id") long id){
+//        authenticationService.deleteAccountById(id);
+//        return ResponseEntity.ok("Deleted successfully!!!");
+//    }
 }
