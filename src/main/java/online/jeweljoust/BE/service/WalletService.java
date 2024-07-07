@@ -1,13 +1,19 @@
 package online.jeweljoust.BE.service;
 
+import jakarta.transaction.Transactional;
 import online.jeweljoust.BE.entity.Account;
+import online.jeweljoust.BE.entity.Transaction;
 import online.jeweljoust.BE.entity.Wallet;
+import online.jeweljoust.BE.enums.TransactionType;
+import online.jeweljoust.BE.model.DepositRequest;
 import online.jeweljoust.BE.model.RechargeRequestDTO;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
+import online.jeweljoust.BE.respository.TransactionRepository;
 import online.jeweljoust.BE.respository.WalletRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
@@ -16,20 +22,20 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class WalletService {
-        @Autowired
-        WalletRepository walletRepository;
-        @Autowired
-        AccountUtils accountUtils;
-        @Autowired
-        AuthenticationRepository authenticationRepository;
-        public Wallet registerWallet(Account account){
+    @Autowired
+    WalletRepository walletRepository;
+    @Autowired
+    AccountUtils accountUtils;
+    @Autowired
+    AuthenticationRepository authenticationRepository;
+    @Autowired
+    TransactionRepository transactionRepository;
+
+    public Wallet registerWallet(Account account) {
         Wallet wallet = new Wallet();
         wallet.setBalance(0.0);
         wallet.setUpdateAt(new Date());
@@ -37,28 +43,61 @@ public class WalletService {
         wallet.setAccountWallet(account);
 //        Wallet resposeWallet = walletRepository.save(wallet);
 //        account.setWallet(resposeWallet);
-        
+
 
 //        wallet.setAccountWallet(account);
         return walletRepository.save(wallet);
     }
-        public Wallet changBalance(Long id,double amount){
-                Wallet wallet = walletRepository.findWalletById(id);
-                double newBalance = wallet.getBalance() + amount;
-                if(newBalance < 0){
-                    throw new IllegalStateException("Insufficient funds in the wallet.");
-                }
-            System.out.println(newBalance);
-                wallet.setBalance(newBalance);
-                return walletRepository.save(wallet);
+
+    @Transactional
+    public Transaction changBalance(Long id, double amount, TransactionType type,String description) {
+        Wallet wallet = walletRepository.findWalletById(id);
+
+        double newBalance = wallet.getBalance() + amount;
+        if (newBalance < 0) {
+            throw new IllegalStateException("Insufficient funds in the wallet.");
         }
-        public double refreshBalance(){
-                Wallet wallet = accountUtils.getAccountCurrent().getWallet();
-                return wallet.getBalance();
-        }
+        System.out.println(newBalance);
+        wallet.setBalance(newBalance);
+        walletRepository.save(wallet);
+        Transaction transaction = new Transaction();
+        transaction.setWallet(wallet);
+        transaction.setAmount(amount);
+        transaction.setTransaction_type(type);
+        transaction.setDate(new Date());
+        transaction.setDescription(description);
+
+        return transactionRepository.save(transaction);
+    }
+    @Transactional
+    public Transaction deposit( DepositRequest depositRequest) {
+//        Wallet wallet = accountUtils.getAccountCurrent().getWallet();
+
+        Transaction transaction = this.changBalance(depositRequest.getWalletId(),depositRequest.getAmount(), TransactionType.DEPOSIT,depositRequest.getDescription());
+        return transaction;
+    }
+
+    public double refreshBalance() {
+        Wallet wallet = accountUtils.getAccountCurrent().getWallet();
+        return wallet.getBalance();
+    }
+    public List<Transaction> getWalletActivityHistory() {
+        List<TransactionType> types = new ArrayList<TransactionType>();
+        types.add(TransactionType.DEPOSIT);
+        types.add(TransactionType.WITHDRAW);
+        List<Transaction> transactions = transactionRepository.findWalletActivityByWalletId(accountUtils.getAccountCurrent().getWallet().getId(),types);
+        return transactions;
+    }
+    public List<Transaction> getTransactionHistory() {
+        List<TransactionType> types = new ArrayList<TransactionType>();
+        types.add(TransactionType.DEPOSIT);
+        types.add(TransactionType.WITHDRAW);
+        List<Transaction> transactions = transactionRepository.findTransactionHistoryByWalletId(accountUtils.getAccountCurrent().getWallet().getId(),types);
+        return transactions;
+    }
 
 
-    public String createUrl(RechargeRequestDTO rechargeRequestDTO) throws NoSuchAlgorithmException, InvalidKeyException, Exception{
+    public String createUrl(RechargeRequestDTO rechargeRequestDTO) throws NoSuchAlgorithmException, InvalidKeyException, Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
         LocalDateTime createDate = LocalDateTime.now();
@@ -66,7 +105,7 @@ public class WalletService {
 
 //        User user = accountUtils.getCurrentUser();
 
-        String orderId = UUID.randomUUID().toString().substring(0,6);
+        String orderId = UUID.randomUUID().toString().substring(0, 6);
 //
 //        Wallet wallet = walletRepository.findWalletByUser_Id(user.getId());
 //
@@ -125,6 +164,7 @@ public class WalletService {
 
         return urlBuilder.toString();
     }
+
     private String generateHMAC(String secretKey, String signData) throws NoSuchAlgorithmException, InvalidKeyException {
         Mac hmacSha512 = Mac.getInstance("HmacSHA512");
         SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA512");

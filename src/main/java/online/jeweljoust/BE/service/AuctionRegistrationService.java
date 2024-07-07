@@ -7,6 +7,7 @@ import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AuctionRegistrationStatus;
 import online.jeweljoust.BE.enums.TransactionStatus;
+import online.jeweljoust.BE.enums.TransactionType;
 import online.jeweljoust.BE.model.AuctionRegistrationRequest;
 import online.jeweljoust.BE.respository.AuctionRegistrationRepository;
 
@@ -53,7 +54,9 @@ public class AuctionRegistrationService {
         if (balance < price) {
             throw new IllegalStateException("You do not have enough funds in your wallet.");
         }
-        walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(),-price);
+
+         walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(),-price, TransactionType.BIDDEPOSIT,
+                "Deposit session" + auctionSession.getNameSession());
         AuctionRegistration auctionRegistration = new AuctionRegistration();
         auctionRegistration.setCreate_at(new Date());
         auctionRegistration.setStatus(AuctionRegistrationStatus.PENDING);
@@ -85,15 +88,15 @@ public class AuctionRegistrationService {
         }
     }
 
-    public AuctionRegistration depositAuctionRegistration(long id) {
-        AuctionRegistration auctionRegistration = auctionRegistrationRepository.findAuctionRegistrationById(id);
-        if (auctionRegistration.getStatus() == AuctionRegistrationStatus.PENDING) {
-            Transaction transaction = transactionService.deposit(auctionRegistration);
-            if (transaction.getStatus() == TransactionStatus.SUCCESSFUL) {
-                auctionRegistration.setStatus(AuctionRegistrationStatus.DEPOSITED);
-            }
-        }
-        return auctionRegistrationRepository.save(auctionRegistration);
-    }
+//    public AuctionRegistration depositAuctionRegistration(long id) {
+//        AuctionRegistration auctionRegistration = auctionRegistrationRepository.findAuctionRegistrationById(id);
+//        if (auctionRegistration.getStatus() == AuctionRegistrationStatus.PENDING) {
+//            Transaction transaction = transactionService.deposit(auctionRegistration);
+//            if (transaction.getStatus() == TransactionStatus.SUCCESSFUL) {
+//                auctionRegistration.setStatus(AuctionRegistrationStatus.DEPOSITED);
+//            }
+//        }
+//        return auctionRegistrationRepository.save(auctionRegistration);
+//    }
 
 }

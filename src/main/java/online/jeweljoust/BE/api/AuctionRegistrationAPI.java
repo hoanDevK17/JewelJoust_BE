@@ -37,10 +37,10 @@ public class AuctionRegistrationAPI {
         AuctionRegistration auctionRegistration = auctionRegistrationService.cancelAuctionRegistration(id);
         return ResponseEntity.ok(auctionRegistration);
     }
-    @PutMapping("/auctionRegistrations/{id}/deposit")
-    public ResponseEntity depositAuctionRegistrations(@PathVariable Long id) {
-        AuctionRegistration auctionRegistration = auctionRegistrationService.depositAuctionRegistration(id);
-        return ResponseEntity.ok(auctionRegistration);
-    }
+//    @PutMapping("/auctionRegistrations/{id}/deposit")
+//    public ResponseEntity depositAuctionRegistrations(@PathVariable Long id) {
+//        AuctionRegistration auctionRegistration = auctionRegistrationService.depositAuctionRegistration(id);
+//        return ResponseEntity.ok(auctionRegistration);
+//    }
 
 }
