@@ -10,5 +10,4 @@ import org.springframework.stereotype.Service;
 public class RejectedInititalPriceRequest {
     long id;
     String reason;
-
 }

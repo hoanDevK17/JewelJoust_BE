@@ -87,4 +87,9 @@ public class ValuationAPI {
         return ResponseEntity.ok(ultimateValuation);
     }
 
+    @GetMapping("/mail-test")
+//    @PreAuthorize("hasAuthority('MANAGER')")
+    public void sendMailNe() {
+        valuationService.sendMailNe();
+    }
 }

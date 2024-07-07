@@ -44,15 +44,16 @@ public class EmailService {
             messagingException.printStackTrace();
         }
     }
-    public void sendMailNotification(EmailDetail emailDetail){
+    public void sendMailNotification(EmailDetail emailDetail, String template){
         try{
             Context context = new Context();
 
             context.setVariable("name", emailDetail.getFullName());
             context.setVariable("link", emailDetail.getLink());
             context.setVariable("button", emailDetail.getButtonValue());
+            context.setVariable("valuation", emailDetail.getValuation());
 
-            String text = templateEngine.process("templateInitalValuation", context);
+            String text = templateEngine.process(template, context);
 
             // Creating a simple mail message
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();

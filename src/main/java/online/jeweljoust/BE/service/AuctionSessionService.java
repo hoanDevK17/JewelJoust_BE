@@ -64,7 +64,6 @@ public class AuctionSessionService {
         }
         auctionSession.setAuctionRequest(auctionRequest);
 
-
         auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
         auctionSession.setStart_time(auctionSessionRequest.getStart_time());
         auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());

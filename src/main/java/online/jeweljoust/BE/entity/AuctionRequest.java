@@ -29,6 +29,8 @@ public class AuctionRequest {
 
     Date memberConfirmationDate;
 
+    String reasonReject;
+
     @Enumerated(EnumType.STRING)
     AuctionRequestStatus status;
 

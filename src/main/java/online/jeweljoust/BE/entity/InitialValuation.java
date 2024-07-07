@@ -26,8 +26,6 @@ public class InitialValuation {
     @Enumerated(EnumType.STRING)
     InitialValuationsStatus status;
 
-    String reason;
-
     double price;
 
     @ManyToOne
