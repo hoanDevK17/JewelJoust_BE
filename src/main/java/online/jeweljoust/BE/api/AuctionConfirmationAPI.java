@@ -21,7 +21,7 @@ public class AuctionConfirmationAPI {
 //    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<AuctionRequest> confirmedAuctionByMember(@RequestBody MemberConfirmRequest memberConfirmRequest) {
         AuctionRequest auctionRequest = confirmationService.confirmByMember(memberConfirmRequest);
-        return ResponseEntity.ok(auctionRequest);
+        return ResponseEntity.ok(auctionRequest)        ;
     }
 
     @PutMapping("/auctionConfirmation/rejected")
