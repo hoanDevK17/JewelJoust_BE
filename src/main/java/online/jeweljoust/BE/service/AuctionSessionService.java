@@ -78,7 +78,7 @@ public class AuctionSessionService {
         auctionSession.setCreateAt(new Date());
         auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
         // Initialized: khởi tạo thành công , chưa tới giờ đấu giá
-        // Bidding: đang được đấu giá
+        // AuctionBid: đang được đấu giá
         // Pending Payment: chờ thanh toán
         // Completed : bán hoàn tất
         // Cancelled : đã hủy

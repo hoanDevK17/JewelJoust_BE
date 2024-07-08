@@ -2,15 +2,19 @@ package online.jeweljoust.BE.service;
 
 import online.jeweljoust.BE.entity.AuctionRequest;
 import online.jeweljoust.BE.entity.Resources;
+import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.enums.ResourceTypes;
 import online.jeweljoust.BE.model.AuctionRequestReponse;
 import online.jeweljoust.BE.model.ResourceRequest;
 import online.jeweljoust.BE.respository.AuctionRequestRepository;
+import online.jeweljoust.BE.respository.AuthenticationRepository;
 import online.jeweljoust.BE.respository.ResourceRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +31,8 @@ public class AuctionRequestService {
 
     @Autowired
     ResourceRepository resourceRepository;
+    @Autowired
+    AuthenticationRepository authenticationRepository;
 
     public AuctionRequest requestSale(AuctionRequestReponse auctionRequestReponse){
         AuctionRequest auctionRequest = new AuctionRequest();
@@ -66,6 +72,9 @@ public class AuctionRequestService {
     }
 
     public List<AuctionRequest> getAllAuctionRequest() {
+       if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.MEMBER)){
+           return new ArrayList<>(authenticationRepository.findAccountById(accountUtils.getAccountCurrent().getId()).getAuctionRequests());
+       }
         return auctionRepository.findAll();
     }
     public List<AuctionRequest> getAllAuctionRequestAvailable() {

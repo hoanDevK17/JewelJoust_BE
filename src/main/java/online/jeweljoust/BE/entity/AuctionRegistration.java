@@ -43,4 +43,7 @@ public class AuctionRegistration {
     @OneToMany(mappedBy = "auctionRegistration",cascade = CascadeType.ALL)
     @JsonIgnore
     Set<Transaction> transactions;
+    @OneToMany(mappedBy = "auctionRegistration",cascade = CascadeType.ALL)
+    @JsonIgnore
+    Set<AuctionBid> auctionBids;
 }

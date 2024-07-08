@@ -56,7 +56,7 @@ public class AuctionRegistrationService {
         }
 
          walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(),-price, TransactionType.BIDDEPOSIT,
-                "Deposit session" + auctionSession.getNameSession());
+                "Deposit session" + auctionSession.getNameSession(),auctionRegistrationRequest.getAuctionSession_id());
         AuctionRegistration auctionRegistration = new AuctionRegistration();
         auctionRegistration.setCreate_at(new Date());
         auctionRegistration.setStatus(AuctionRegistrationStatus.PENDING);

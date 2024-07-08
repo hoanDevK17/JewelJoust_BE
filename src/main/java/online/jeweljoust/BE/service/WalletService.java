@@ -2,11 +2,13 @@ package online.jeweljoust.BE.service;
 
 import jakarta.transaction.Transactional;
 import online.jeweljoust.BE.entity.Account;
+import online.jeweljoust.BE.entity.AuctionRegistration;
 import online.jeweljoust.BE.entity.Transaction;
 import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.enums.TransactionType;
 import online.jeweljoust.BE.model.DepositRequest;
 import online.jeweljoust.BE.model.RechargeRequestDTO;
+import online.jeweljoust.BE.respository.AuctionRegistrationRepository;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
 import online.jeweljoust.BE.respository.TransactionRepository;
 import online.jeweljoust.BE.respository.WalletRepository;
@@ -34,6 +36,8 @@ public class WalletService {
     AuthenticationRepository authenticationRepository;
     @Autowired
     TransactionRepository transactionRepository;
+    @Autowired
+    AuctionRegistrationRepository auctionRegistrationRepository;
 
     public Wallet registerWallet(Account account) {
         Wallet wallet = new Wallet();
@@ -66,8 +70,29 @@ public class WalletService {
         transaction.setTransaction_type(type);
         transaction.setDate(new Date());
         transaction.setDescription(description);
+        System.out.println(transactionRepository.save(transaction));
+        return transaction;
+    }
+    @Transactional
+    public Transaction changBalance(Long id, double amount, TransactionType type,String description,Long id_auctionRegistration) {
+        Wallet wallet = walletRepository.findWalletById(id);
 
-        return transactionRepository.save(transaction);
+        double newBalance = wallet.getBalance() + amount;
+        if (newBalance < 0) {
+            throw new IllegalStateException("Insufficient funds in the wallet.");
+        }
+        System.out.println(newBalance);
+        wallet.setBalance(newBalance);
+        walletRepository.save(wallet);
+        Transaction transaction = new Transaction();
+        transaction.setWallet(wallet);
+        transaction.setAmount(amount);
+        transaction.setTransaction_type(type);
+        transaction.setDate(new Date());
+        transaction.setDescription(description);
+        transaction.setAuctionRegistration(auctionRegistrationRepository.findAuctionRegistrationById(id_auctionRegistration));
+        System.out.println(transactionRepository.save(transaction));
+        return transaction;
     }
     @Transactional
     public Transaction deposit( DepositRequest depositRequest) {

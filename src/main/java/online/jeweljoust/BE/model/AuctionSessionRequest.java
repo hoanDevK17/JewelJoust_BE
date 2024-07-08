@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Data
-@Service
+
 @Getter
 @Setter
 public class AuctionSessionRequest {
