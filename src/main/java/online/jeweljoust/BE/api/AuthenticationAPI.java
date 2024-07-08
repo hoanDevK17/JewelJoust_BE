@@ -166,11 +166,11 @@ public class AuthenticationAPI {
     @GetMapping("/refreshBalance")
     public double refreshBalance() {
         return walletService.refreshBalance();
-    }   
+    }
 
-//    @GetMapping("/account/paging")
-//    public ResponseEntity<List<Account>> pagingAccount(@PathVariable("id") long id){
-//        authenticationService.deleteAccountById(id);
-//        return ResponseEntity.ok("Deleted successfully!!!");
-//    }
+    @GetMapping("/accounts/paging")
+    public PagedAccountResponse getAccounts(@RequestParam int page,
+                                            @RequestParam int size) {
+        return authenticationService.getAllAccounts(page, size);
+    }
 }
