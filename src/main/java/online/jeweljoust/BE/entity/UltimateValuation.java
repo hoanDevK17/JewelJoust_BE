@@ -27,8 +27,6 @@ public class UltimateValuation {
     @Enumerated(EnumType.STRING)
     UltimateValuationsStatus status;
 
-    String reason;
-
     double price;
 
     String description;

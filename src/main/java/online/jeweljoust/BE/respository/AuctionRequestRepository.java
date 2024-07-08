@@ -17,7 +17,6 @@ public interface AuctionRequestRepository extends JpaRepository<AuctionRequest, 
      AuctionRequest findAuctionRequestById(long id);
      List<AuctionRequest> findByAccountRequestId(long userid);
      List<AuctionRequest> findByStatus(AuctionRequestStatus status);
-     InitialValuation findInitialValuationById(long id);
      @Query("SELECT ar FROM AuctionRequest ar LEFT JOIN ar.auctionSessions asess WHERE ar.status = 'AGREED' AND asess IS NULL")
      List<AuctionRequest> findByAccountRequestAvailable();
 }

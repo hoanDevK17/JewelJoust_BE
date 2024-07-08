@@ -1,11 +1,14 @@
 package online.jeweljoust.BE.respository;
 
-
 import online.jeweljoust.BE.entity.Account;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import java.util.List;
 
+@Repository
 public interface AuthenticationRepository extends JpaRepository<Account, Long>
 {
     Account findByUsername(String username);
@@ -13,4 +16,6 @@ public interface AuthenticationRepository extends JpaRepository<Account, Long>
     Account findById(long userid);
     Account findAccountById(long userid);
     List<Account> findByFullnameContaining(String name);
+    @Query("SELECT a FROM Account a")
+    Page<Account> findAllAccounts(Pageable pageable);
 }

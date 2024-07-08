@@ -20,7 +20,6 @@ public class Shipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-
     Date receivedDate;
 
     @Enumerated(EnumType.STRING)

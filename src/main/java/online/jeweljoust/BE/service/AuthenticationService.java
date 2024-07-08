@@ -14,6 +14,9 @@ import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,7 +27,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -250,5 +252,11 @@ public class AuthenticationService implements UserDetailsService {
         else{
             return "Changed password not successfully";
         }
+    }
+
+    public PagedAccountResponse getAllAccounts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Account> accountPage = authenticationRepository.findAllAccounts(pageable);
+        return new PagedAccountResponse(accountPage.getContent(), accountPage.getTotalElements());
     }
 }

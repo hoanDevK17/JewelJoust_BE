@@ -12,9 +12,14 @@ import online.jeweljoust.BE.respository.ShipmentRepository;
 import online.jeweljoust.BE.respository.UltimateRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
@@ -85,16 +90,23 @@ public class ValuationService {
         return  ultimateRepository.save(ultimateValuation);
     }
 
-    public UltimateValuation ultimateValuationReject( RejectUltimateRequest rejectUltimateRequest) {
+    public UltimateValuation ultimateValuationReject(RejectUltimateRequest rejectUltimateRequest) {
             AuctionRequest auctionRequest = auctionRepository.findAuctionRequestById(rejectUltimateRequest.getId_auctionRequest());
             UltimateValuation ultimateValuation = new UltimateValuation();
             if (auctionRequest.getStatus().equals(AuctionRequestStatus.RECEIVED)){
                 ultimateValuation.setUltimatedate(new Date());
                 ultimateValuation.setStatus(UltimateValuationsStatus.UNACCEPTED);
-                ultimateValuation.setReason(rejectUltimateRequest.getReason());
+                auctionRequest.setReasonReject(rejectUltimateRequest.getReason());
                 ultimateValuation.setUltimateStaff(accountUtils.getAccountCurrent());
                 auctionRequest.setStatus(AuctionRequestStatus.UNACCEPTED);
                 ultimateValuation.setAuctionRequestUltimate(auctionRequest);
+                EmailDetail emailDetail = new EmailDetail();
+                    emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
+                    emailDetail.setSubject("Jewelry Auction Request Rejected");
+                    emailDetail.setValuation("Ultimate Valuation");
+                    emailDetail.setProductName(auctionRequest.getJewelryname());
+                    emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+                emailService.sendMailNotification(emailDetail, "templateRequestReject");
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
         }
@@ -122,9 +134,17 @@ public class ValuationService {
             ultimateValuation.setStatus(UltimateValuationsStatus.UNAPPROVED);
             ultimateValuation.setApprovaldanagerdate(new Date());
             ultimateValuation.setUltimateManager(accountUtils.getAccountCurrent());
+            auctionRequest.setReasonReject(reason);
             auctionRequest.setStatus(AuctionRequestStatus.UNAPPROVED);
             ultimateValuation.setAuctionRequestUltimate(auctionRequest);
             ultimateRepository.save(ultimateValuation);
+            EmailDetail emailDetail = new EmailDetail();
+                emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
+                emailDetail.setSubject("Jewelry Auction Request Rejected");
+                emailDetail.setValuation("Ultimate Valuation");
+                emailDetail.setProductName(auctionRequest.getJewelryname());
+                emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+            emailService.sendMailNotification(emailDetail, "templateRequestReject");
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
         }
@@ -146,8 +166,9 @@ public class ValuationService {
             EmailDetail emailDetail = new EmailDetail();
                 emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
                 emailDetail.setSubject("Preliminary Appraisal Complete");
-                emailDetail.setMsgBody("");
-            emailService.sendMailNotification(emailDetail);
+                emailDetail.setProductName(auctionRequest.getJewelryname());
+                emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+            emailService.sendMailNotification(emailDetail, "templateInitalValuation");
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
         }
@@ -161,18 +182,25 @@ public class ValuationService {
             Account account = accountUtils.getAccountCurrent();
             initialValuation.setInitialdate(new Date());
             initialValuation.setStatus(InitialValuationsStatus.REJECTED);
-            initialValuation.setReason(rejectedInititalPriceRequest.getReason());
+            auctionRequest.setReasonReject(rejectedInititalPriceRequest.getReason());
             initialValuation.setAuctionRequestInitial(auctionRequest);
             initialValuation.setAccountInitial(account);
             auctionRequest.setStatus(AuctionRequestStatus.REJECTED);
             initialRepository.save(initialValuation);
+            EmailDetail emailDetail = new EmailDetail();
+                emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
+                emailDetail.setSubject("Jewelry Auction Request Rejected");
+                emailDetail.setValuation("Initial Valuation");
+                emailDetail.setProductName(auctionRequest.getJewelryname());
+                emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+            emailService.sendMailNotification(emailDetail, "templateRequestReject");
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
         }
         return initialValuation;
     }
 
-    @Scheduled(cron = "0 0 0,12 * * ?")
+    @Scheduled(cron = "0 9 11 * * ?")
     public void checkMissingShipment() {
         List<InitialValuation> lists = initialRepository.findByStatus(InitialValuationsStatus.CONFIRMED);
         for (InitialValuation iv : lists){
@@ -185,21 +213,36 @@ public class ValuationService {
                 Date now = new Date();
                 long delay = (now.getTime() - targetDate.getTime()) / 1000; // delay tính bằng giây
 
-                if (delay > 0) {
+//                if (delay > 0) {
                     scheduledExecutorService.schedule(() -> {
                         Shipment shipment = new Shipment();
                         shipment.setStatus(ShipmentStatus.MISSED);
                         AuctionRequest auctionRequest = iv.getAuctionRequestInitial();
                         auctionRequest.setStatus(AuctionRequestStatus.MISSED);
+                        iv.getAuctionRequestInitial().setReasonReject("Overdue for delivery");
                         shipment.setReceivedDate(new Date()); // hiện tại
                         shipment.setInitialShipment(iv);
                         shipmentRepository.save(shipment);
                         auctionRepository.save(auctionRequest);
+                        EmailDetail emailDetail = new EmailDetail();
+                            emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
+                            emailDetail.setSubject("Notice Regarding Your Unreceived Product");
+                            emailDetail.setProductName(auctionRequest.getJewelryname());
+                            emailDetail.setDate(iv.getInitialdate());
+                            emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+                        emailService.sendMailNotification(emailDetail, "templateOver14Days");
                     }, delay, TimeUnit.SECONDS);
-                }
+//                }
             }
         }
     }
 
-
+    public void sendMailNe() {
+        EmailDetail emailDetail = new EmailDetail();
+        emailDetail.setRecipient("phatttse170312@fpt.edu.vn");
+        emailDetail.setSubject("Request for Jewelry Auction Successfully Submitted");
+        emailDetail.setMsgBody("ban da gui yeu cau bay gio hay cho xu ly");
+        emailDetail.setFullName("Phat");
+        emailService.sendMailNotification(emailDetail, "templateMember");
+    }
 }

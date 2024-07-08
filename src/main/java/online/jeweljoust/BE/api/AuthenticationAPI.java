@@ -166,6 +166,11 @@ public class AuthenticationAPI {
     @GetMapping("/refreshBalance")
     public double refreshBalance() {
         return walletService.refreshBalance();
-    }   
+    }
 
+    @GetMapping("/accounts/paging")
+    public PagedAccountResponse getAccounts(@RequestParam int page,
+                                            @RequestParam int size) {
+        return authenticationService.getAllAccounts(page, size);
+    }
 }

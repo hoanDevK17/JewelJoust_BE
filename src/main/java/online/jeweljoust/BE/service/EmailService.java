@@ -44,15 +44,17 @@ public class EmailService {
             messagingException.printStackTrace();
         }
     }
-    public void sendMailNotification(EmailDetail emailDetail){
+    public void sendMailNotification(EmailDetail emailDetail, String template){
         try{
             Context context = new Context();
 
             context.setVariable("name", emailDetail.getFullName());
             context.setVariable("link", emailDetail.getLink());
             context.setVariable("button", emailDetail.getButtonValue());
-
-            String text = templateEngine.process("templateInitalValuation", context);
+            context.setVariable("valuation", emailDetail.getValuation());
+            context.setVariable("productName", emailDetail.getProductName());
+            context.setVariable("date", emailDetail.getDate());
+            String text = templateEngine.process(template, context);
 
             // Creating a simple mail message
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
