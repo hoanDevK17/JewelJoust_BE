@@ -47,6 +47,7 @@ public class AuctionRequestService {
                 Resources resources = new Resources();
                 resources.setResourceType(ResourceTypes.ResourceType.img);
                 resources.setPath(resourceRequest.getPath());
+                resources.setDescription(resourceRequest.getDescription());
                 resources.setReferenceType(ResourceTypes.ReferenceType.AUCTION_REQUEST);
                 resources.setAuctionRequestResource(auctionRequest);
                 resources.setAccountResource(accountUtils.getAccountCurrent());

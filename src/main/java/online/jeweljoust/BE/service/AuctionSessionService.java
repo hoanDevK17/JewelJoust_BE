@@ -1,18 +1,14 @@
 package online.jeweljoust.BE.service;
 
-import online.jeweljoust.BE.entity.Account;
-import online.jeweljoust.BE.entity.AuctionRequest;
-import online.jeweljoust.BE.entity.AuctionSession;
+import online.jeweljoust.BE.entity.*;
 
-import online.jeweljoust.BE.entity.Shipment;
-import online.jeweljoust.BE.enums.AccountRole;
-import online.jeweljoust.BE.enums.AuctionRequestStatus;
-import online.jeweljoust.BE.enums.AuctionSessionStatus;
-import online.jeweljoust.BE.enums.ShipmentStatus;
+import online.jeweljoust.BE.enums.*;
 import online.jeweljoust.BE.model.AuctionSessionRequest;
+import online.jeweljoust.BE.model.ResourceRequest;
 import online.jeweljoust.BE.respository.AuctionRequestRepository;
 import online.jeweljoust.BE.respository.AuctionSessionRepository;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
+import online.jeweljoust.BE.respository.ResourceRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +24,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
+
 public class AuctionSessionService {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
     @Autowired
@@ -38,7 +35,8 @@ public class AuctionSessionService {
     AuthenticationRepository authenticationRepository;
     @Autowired
     AuctionRequestRepository auctionRepository;
-
+    @Autowired
+    ResourceRepository resourceRepository;
     private ExecutorService executorService = Executors.newFixedThreadPool(10); // Sử dụng 10 luồng
 
     public List<AuctionSession> getAllAuctionSessions() {
@@ -76,6 +74,17 @@ public class AuctionSessionService {
         auctionSession.setFeeAmount(0.05);
         auctionSession.setCreateAt(new Date());
         auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
+        for (ResourceRequest resourceRequest : auctionSessionRequest.getResourceSession()){
+            Resources resources = new Resources();
+            resources.setResourceType(ResourceTypes.ResourceType.img);
+            resources.setPath(resourceRequest.getPath());
+            resources.setDescription(resourceRequest.getDescription());
+            resources.setReferenceType(ResourceTypes.ReferenceType.AUCTION_SESSION);
+            resources.setAuctionSessionResource(auctionSession);
+//            resources.setAccountResource(accountUtils.getAccountCurrent());
+            resources.setUploadAt(new Date());
+            resourceRepository.save(resources);
+        }
         // Initialized: khởi tạo thành công , chưa tới giờ đấu giá
         // AuctionBid: đang được đấu giá
         // Pending Payment: chờ thanh toán

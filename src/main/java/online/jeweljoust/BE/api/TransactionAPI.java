@@ -23,4 +23,6 @@ public class TransactionAPI {
         List<Transaction> transactions = transactionService.getAll();
         return ResponseEntity.ok(transactions);
     }
+
+
 }

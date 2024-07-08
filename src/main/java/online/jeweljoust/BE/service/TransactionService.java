@@ -18,9 +18,9 @@ import java.util.List;
 public class TransactionService {
     @Autowired
     TransactionRepository transactionRepository;
-@Autowired
-WalletService walletService;
-@Autowired
+    @Autowired
+    WalletService walletService;
+    @Autowired
     AccountUtils accountUtils;
 
     @Transactional
@@ -32,9 +32,21 @@ WalletService walletService;
         return transactionRepository.save(transaction);
     }
     public List<Transaction> getAll(){
-
         return transactionRepository.findByWalletId(accountUtils.getAccountCurrent().getWallet().getId());
 //        return transactionRepository.findAll();
+    }
+
+    @Transactional
+    public Transaction withdraw(double amountWithDraw){
+        Transaction transaction = new Transaction();
+//        Double amountDeposit = auctionRegistration.getAuctionSession().getDepositAmount();
+        Wallet wallet = accountUtils.getAccountCurrent().getWallet();
+        if (wallet.getBalance() >= amountWithDraw){
+            walletService.changBalance(wallet.getId(), amountWithDraw,TransactionType.WITHDRAW,amountWithDraw + " has been successfully withdrawn");
+        } else {
+            throw new IllegalStateException("The balance is not enough to complete the transaction");
+        }
+        return transactionRepository.save(transaction);
     }
 
 }
