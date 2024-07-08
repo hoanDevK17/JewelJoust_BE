@@ -52,7 +52,8 @@ public class EmailService {
             context.setVariable("link", emailDetail.getLink());
             context.setVariable("button", emailDetail.getButtonValue());
             context.setVariable("valuation", emailDetail.getValuation());
-
+            context.setVariable("productName", emailDetail.getProductName());
+            context.setVariable("date", emailDetail.getDate());
             String text = templateEngine.process(template, context);
 
             // Creating a simple mail message
