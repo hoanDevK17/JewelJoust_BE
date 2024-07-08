@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,4 +18,6 @@ public class EmailDetail {
     private String buttonValue;
     private String link;
     private String valuation;
+    private String productName;
+    private Date date;
 }

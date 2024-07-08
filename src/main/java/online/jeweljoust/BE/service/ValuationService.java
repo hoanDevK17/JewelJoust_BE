@@ -101,9 +101,10 @@ public class ValuationService {
                 auctionRequest.setStatus(AuctionRequestStatus.UNACCEPTED);
                 ultimateValuation.setAuctionRequestUltimate(auctionRequest);
                 EmailDetail emailDetail = new EmailDetail();
-                emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
+                    emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
                     emailDetail.setSubject("Jewelry Auction Request Rejected");
                     emailDetail.setValuation("Ultimate Valuation");
+                    emailDetail.setProductName(auctionRequest.getJewelryname());
                     emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
                 emailService.sendMailNotification(emailDetail, "templateRequestReject");
         } else {
@@ -137,6 +138,13 @@ public class ValuationService {
             auctionRequest.setStatus(AuctionRequestStatus.UNAPPROVED);
             ultimateValuation.setAuctionRequestUltimate(auctionRequest);
             ultimateRepository.save(ultimateValuation);
+            EmailDetail emailDetail = new EmailDetail();
+                emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
+                emailDetail.setSubject("Jewelry Auction Request Rejected");
+                emailDetail.setValuation("Ultimate Valuation");
+                emailDetail.setProductName(auctionRequest.getJewelryname());
+                emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+            emailService.sendMailNotification(emailDetail, "templateRequestReject");
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
         }
@@ -158,7 +166,7 @@ public class ValuationService {
             EmailDetail emailDetail = new EmailDetail();
                 emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
                 emailDetail.setSubject("Preliminary Appraisal Complete");
-                emailDetail.setMsgBody("");
+                emailDetail.setProductName(auctionRequest.getJewelryname());
                 emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
             emailService.sendMailNotification(emailDetail, "templateInitalValuation");
         } else {
@@ -183,6 +191,7 @@ public class ValuationService {
                 emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
                 emailDetail.setSubject("Jewelry Auction Request Rejected");
                 emailDetail.setValuation("Initial Valuation");
+                emailDetail.setProductName(auctionRequest.getJewelryname());
                 emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
             emailService.sendMailNotification(emailDetail, "templateRequestReject");
         } else {
@@ -191,7 +200,7 @@ public class ValuationService {
         return initialValuation;
     }
 
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 9 11 * * ?")
     public void checkMissingShipment() {
         List<InitialValuation> lists = initialRepository.findByStatus(InitialValuationsStatus.CONFIRMED);
         for (InitialValuation iv : lists){
@@ -204,7 +213,7 @@ public class ValuationService {
                 Date now = new Date();
                 long delay = (now.getTime() - targetDate.getTime()) / 1000; // delay tính bằng giây
 
-                if (delay > 0) {
+//                if (delay > 0) {
                     scheduledExecutorService.schedule(() -> {
                         Shipment shipment = new Shipment();
                         shipment.setStatus(ShipmentStatus.MISSED);
@@ -215,8 +224,15 @@ public class ValuationService {
                         shipment.setInitialShipment(iv);
                         shipmentRepository.save(shipment);
                         auctionRepository.save(auctionRequest);
+                        EmailDetail emailDetail = new EmailDetail();
+                            emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
+                            emailDetail.setSubject("Notice Regarding Your Unreceived Product");
+                            emailDetail.setProductName(auctionRequest.getJewelryname());
+                            emailDetail.setDate(iv.getInitialdate());
+                            emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+                        emailService.sendMailNotification(emailDetail, "templateOver14Days");
                     }, delay, TimeUnit.SECONDS);
-                }
+//                }
             }
         }
     }
