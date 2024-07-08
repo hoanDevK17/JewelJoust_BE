@@ -12,4 +12,5 @@ import org.springframework.stereotype.Service;
 
 public class ResourceRequest {
     String path;
+    String description;
 }

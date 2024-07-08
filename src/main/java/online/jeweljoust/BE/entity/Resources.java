@@ -27,6 +27,8 @@ public class Resources {
     @Enumerated(EnumType.STRING)
     ResourceTypes.ReferenceType referenceType;
 
+    String description;
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "request_id")
