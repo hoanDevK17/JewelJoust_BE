@@ -13,6 +13,7 @@ import java.util.List;
 public interface AuctionRegistrationRepository extends JpaRepository<AuctionRegistration, Long> {
     AuctionRegistration findAuctionRegistrationById(long id);
     List<AuctionRegistration> findAuctionRegistrationByAccountRegistrationId(long id);
+    List<AuctionRegistration> findAuctionRegistrationByAuctionSessionId(long id);
     @Query("SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END " +
             "FROM AuctionRegistration  r " +
             "WHERE r.accountRegistration.Id = :accountId AND r.auctionSession.Id = :sessionId ")

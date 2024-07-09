@@ -67,7 +67,6 @@ public class AuthenticationService implements UserDetailsService {
         account.setPhone(registerRequest.getPhone());
         account.setStatus(AccountStatus.ACTIVE);
         account.setRole(AccountRole.MEMBER);
-        account.setCredibility(0);
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         return authenticationRepository.save(account);
     }
@@ -106,7 +105,6 @@ public class AuthenticationService implements UserDetailsService {
             accountReponse.setEmail(account.getEmail());
             accountReponse.setPhone(account.getPhone());
             accountReponse.setRole(account.getRole());
-            accountReponse.setCredibility(account.getCredibility());
             accountReponse.setStatus(account.getStatus());
             accountReponse.setToken(token);
             accountReponse.setWallet(account.getWallet());
@@ -121,9 +119,7 @@ public class AuthenticationService implements UserDetailsService {
         try {
             FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
             String email = firebaseToken.getEmail();
-            System.out.println(email);
             Account account = authenticationRepository.findByEmail(email);
-            System.out.println(account.getId());
             if (account == null){
                 account = new Account();
                 account.setFullname(firebaseToken.getName());
@@ -145,7 +141,6 @@ public class AuthenticationService implements UserDetailsService {
             accountReponse.setEmail(account.getEmail());
             accountReponse.setPhone(account.getPhone());
             accountReponse.setRole(account.getRole());
-            accountReponse.setCredibility(account.getCredibility());
             accountReponse.setStatus(account.getStatus());
             accountReponse.setToken(token);
             accountReponse.setWallet(account.getWallet());
@@ -162,18 +157,13 @@ public class AuthenticationService implements UserDetailsService {
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         Account account =  authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
         if (account == null){
-            try {
-                throw new BadRequestException("Account not found!!!");
-            } catch (BadRequestException e) {
-                throw new RuntimeException(e);
-            }
+            throw new IllegalStateException("Account not found!");
         }
         EmailDetail emailDetail = new EmailDetail();
         emailDetail.setRecipient(account.getEmail());
-        emailDetail.setFullName(accountUtils.getAccountCurrent().getFullname());
+        emailDetail.setFullName(authenticationRepository.findByEmail(forgotPasswordRequest.getEmail()).getFullname());
         emailDetail.setLink("jeweljoust.online");
         emailDetail.setSubject("Reset password for account " + forgotPasswordRequest.getEmail() + "!");
-        emailDetail.setMsgBody("alo");
         emailDetail.setButtonValue("Reset password");
         String token = tokenService.generateToken(account);
         System.out.println(token);
@@ -202,22 +192,22 @@ public class AuthenticationService implements UserDetailsService {
         if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)||accountUtils.getAccountCurrent().getId() == updateProfileRequest.getId())
         {
             Account account = authenticationRepository.findById(updateProfileRequest.getId());
-            if (updateProfileRequest.getFullname() != null) {
+            if (updateProfileRequest.getFullname().trim() != "") {
                 account.setFullname(updateProfileRequest.getFullname());
             }
-            if (updateProfileRequest.getAddress() != null) {
+            if (updateProfileRequest.getAddress().trim() != "") {
                 account.setAddress(updateProfileRequest.getAddress());
             }
             if (updateProfileRequest.getBirthday() != null) {
                 account.setBirthday(updateProfileRequest.getBirthday());
             }
-            if (updateProfileRequest.getEmail() != null) {
+            if (updateProfileRequest.getEmail().trim() != "") {
                 account.setEmail(updateProfileRequest.getEmail());
             }
-            if (updateProfileRequest.getPhone() != null) {
+            if (updateProfileRequest.getPhone().trim() != "") {
                 account.setPhone(updateProfileRequest.getPhone());
                 if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)){
-                        account.setStatus(updateProfileRequest.getStatus());
+                    account.setStatus(updateProfileRequest.getStatus());
                 }
             }
             return authenticationRepository.save(account);

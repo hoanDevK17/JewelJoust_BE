@@ -3,10 +3,12 @@ package online.jeweljoust.BE.api;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
+import online.jeweljoust.BE.entity.AuctionRegistration;
 import online.jeweljoust.BE.entity.AuctionSession;
 import online.jeweljoust.BE.enums.AuctionSessionStatus;
 import online.jeweljoust.BE.model.AuctionSessionDetailResponse;
 import online.jeweljoust.BE.model.AuctionSessionRequest;
+import online.jeweljoust.BE.respository.AuctionRegistrationRepository;
 import online.jeweljoust.BE.respository.AuctionSessionRepository;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
 import online.jeweljoust.BE.service.AuctionSessionService;
@@ -14,7 +16,6 @@ import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 
 import java.util.List;
 
@@ -22,13 +23,15 @@ import java.util.List;
 @RequestMapping("api")
 @SecurityRequirement(name = "api")
 public class AuctionSessionAPI {
-@Autowired
+    @Autowired
     AuthenticationRepository authenticationRepository;
     AuctionSessionRepository auctionSessionRepository;
     @Autowired
     AuctionSessionService auctionSessionService;
     @Autowired
     AccountUtils accountUtils;
+    @Autowired
+    AuctionRegistrationRepository auctionRegistrationRepository;
     @PostMapping("/auctionSessions")
     public ResponseEntity<AuctionSession> createAuctionsSession(@RequestBody AuctionSessionRequest auctionSessionRequest) {
 
@@ -76,5 +79,10 @@ public class AuctionSessionAPI {
 //  mở phiên khi đến giờ ( staff)
 //   kết thúc phiên khi đến giờ (staff)
     // dừng phiên khẩn cấp để tí tiếp tucj lại
+
+//    @GetMapping("/abc/{id}")
+//    public ResponseEntity<List<AuctionRegistration>> abc(@PathVariable long id) {
+//        return ResponseEntity.ok(auctionRegistrationRepository.findAuctionRegistrationByAuctionSessionId(id));
+//    }
 
 }

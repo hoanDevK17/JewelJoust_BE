@@ -4,10 +4,7 @@ import online.jeweljoust.BE.entity.*;
 
 import online.jeweljoust.BE.enums.*;
 import online.jeweljoust.BE.mapper.AuctionSessionMapper;
-import online.jeweljoust.BE.model.AuctionSessionDetailResponse;
-import online.jeweljoust.BE.model.AuctionSessionReponse;
-import online.jeweljoust.BE.model.AuctionSessionRequest;
-import online.jeweljoust.BE.model.ResourceRequest;
+import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.respository.*;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.checkerframework.checker.units.qual.A;
@@ -16,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -44,6 +42,8 @@ public class AuctionSessionService {
     AuctionRegistrationRepository auctionRegistrationRepository;
     @Autowired
     AuctionSessionMapper auctionSessionMapper;
+    @Autowired
+    EmailService emailService;
     private ExecutorService executorService = Executors.newFixedThreadPool(10); // Sử dụng 10 luồng
 
     public List<AuctionSession> getAllAuctionSessions() {
@@ -117,18 +117,43 @@ public class AuctionSessionService {
     public AuctionSession updateAuctionSession(long id, AuctionSessionRequest auctionSessionRequest) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
 //        auctionSession.setManagerSession(accountUtils.getAccountCurrent());
-        auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
-        auctionSession.setStart_time(auctionSessionRequest.getStart_time());
-        auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
-        auctionSession.setMinStepPrice(auctionSessionRequest.getMin_stepPrice());
-        auctionSession.setDepositAmount(auctionSessionRequest.getDeposit_amount());
-        auctionSession.setNameSession(auctionSessionRequest.getName_session());
-        auctionSession.setNameJewelry(auctionSessionRequest.getName_jewelry());
-        auctionSession.setDescription(auctionSessionRequest.getDescription());
-        // auctionSession.setFeeAmount(auctionSessionRequest.getFee_amount());
-        // auctionSession.setCreateAt(new Date());
-        auctionSession.setStatus(auctionSessionRequest.getStatus());
-        return auctionSessionRepository.save(auctionSession);
+        if (auctionSession.getStatus().equals(AuctionSessionStatus.INITIALIZED) || auctionSession.getStatus().equals(AuctionSessionStatus.STOP) || auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)){
+            auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
+            auctionSession.setStart_time(auctionSessionRequest.getStart_time());
+            auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
+            auctionSession.setMinStepPrice(auctionSessionRequest.getMin_stepPrice());
+            auctionSession.setDepositAmount(auctionSessionRequest.getDeposit_amount());
+            auctionSession.setNameSession(auctionSessionRequest.getName_session());
+            auctionSession.setNameJewelry(auctionSessionRequest.getName_jewelry());
+            auctionSession.setDescription(auctionSessionRequest.getDescription());
+            // auctionSession.setFeeAmount(auctionSessionRequest.getFee_amount());
+            // auctionSession.setCreateAt(new Date());
+            Date now = new Date();
+            Date start = auctionSession.getStart_time();
+            Date end = auctionSession.getEnd_time();
+
+            if (now.after(start) && (now.before(end))){
+                auctionSession.setStatus(AuctionSessionStatus.BIDDING);
+            } else if (now.after(end)){
+                auctionSession.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
+            } else if (now.before(start)){
+                auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
+            }
+
+            List<AuctionRegistration> allRegister = auctionRegistrationRepository.findAuctionRegistrationByAuctionSessionId(id);
+            for (AuctionRegistration registration : allRegister){
+                Account account = registration.getAccountRegistration();
+                EmailDetail emailDetail = new EmailDetail();
+                emailDetail.setRecipient(account.getEmail());
+                emailDetail.setSubject("Preliminary Appraisal Complete");
+                emailDetail.setProductName(registration.getAuctionSession().getNameJewelry());
+                emailDetail.setFullName(account.getFullname());
+                emailService.sendMailNotificationSession(emailDetail, "templateUpdateSession");
+            }
+            return auctionSessionRepository.save(auctionSession);
+        } else {
+            throw new IllegalStateException("The auction has been completed, you can no longer modify it");
+        }
     }
 
     @Scheduled(cron = "0 * * * * ?")
