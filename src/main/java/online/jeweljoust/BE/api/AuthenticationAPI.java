@@ -81,8 +81,6 @@ public class AuthenticationAPI {
         return ResponseEntity.ok(accounts);
     }
 
-
-
     @PutMapping("/account/changePassword")
 //    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
@@ -108,7 +106,7 @@ public class AuthenticationAPI {
     @PostMapping("/login-google")
     public ResponseEntity<AccountReponse> loginGoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
         AccountReponse accountReponse = authenticationService.loginGoogle(loginGoogleRequest);
-        System.out.println(accountReponse.getUsername());
+//        System.out.println(accountReponse.getUsername());
         return ResponseEntity.ok(accountReponse);
     }
 
@@ -124,13 +122,13 @@ public class AuthenticationAPI {
 
     @PutMapping("/account")
     public ResponseEntity<Account> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest){
-        String role = accountUtils.getAccountCurrent().getRole().name();
-            long id = accountUtils.getAccountCurrent().getId();
-        Account account = new Account();
-        if (role.equalsIgnoreCase("MEMBER")){
-            updateProfileRequest.setId(id);
-        }
-        account = authenticationService.updateProfile(updateProfileRequest);
+//        String role = accountUtils.getAccountCurrent().getRole().name();
+//            long id = accountUtils.getAccountCurrent().getId();
+//        Account account = new Account();
+//        if (role.equalsIgnoreCase("MEMBER")){
+//            updateProfileRequest.setId(id);
+//        }
+        Account account = authenticationService.updateProfile(updateProfileRequest);
         return ResponseEntity.ok(account);
     }
 

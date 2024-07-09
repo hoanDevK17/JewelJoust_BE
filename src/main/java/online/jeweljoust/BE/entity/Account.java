@@ -46,8 +46,6 @@ public class Account implements UserDetails {
     @Enumerated(EnumType.STRING)
     AccountRole role;
 
-    int credibility;
-
     @Enumerated(EnumType.STRING)
     AccountStatus status;
 
