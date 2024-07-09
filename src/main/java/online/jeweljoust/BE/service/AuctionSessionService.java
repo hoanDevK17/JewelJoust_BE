@@ -3,18 +3,21 @@ package online.jeweljoust.BE.service;
 import online.jeweljoust.BE.entity.*;
 
 import online.jeweljoust.BE.enums.*;
+import online.jeweljoust.BE.mapper.AuctionSessionMapper;
+import online.jeweljoust.BE.model.AuctionSessionDetailResponse;
+import online.jeweljoust.BE.model.AuctionSessionReponse;
 import online.jeweljoust.BE.model.AuctionSessionRequest;
 import online.jeweljoust.BE.model.ResourceRequest;
-import online.jeweljoust.BE.respository.AuctionRequestRepository;
-import online.jeweljoust.BE.respository.AuctionSessionRepository;
-import online.jeweljoust.BE.respository.AuthenticationRepository;
-import online.jeweljoust.BE.respository.ResourceRepository;
+import online.jeweljoust.BE.respository.*;
 import online.jeweljoust.BE.utils.AccountUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
@@ -37,6 +40,10 @@ public class AuctionSessionService {
     AuctionRequestRepository auctionRepository;
     @Autowired
     ResourceRepository resourceRepository;
+    @Autowired
+    AuctionRegistrationRepository auctionRegistrationRepository;
+    @Autowired
+    AuctionSessionMapper auctionSessionMapper;
     private ExecutorService executorService = Executors.newFixedThreadPool(10); // Sử dụng 10 luồng
 
     public List<AuctionSession> getAllAuctionSessions() {
@@ -45,8 +52,21 @@ public class AuctionSessionService {
     public List<AuctionSession> getAuctionSessionsByStatus(AuctionSessionStatus status) {
         return auctionSessionRepository.findByStatus(status);
     }
-    public AuctionSession getAuctionSessionByID(long id) {
-        return auctionSessionRepository.findAuctionSessionById(id);
+    public AuctionSessionDetailResponse getAuctionSessionByID(long id,long idUser) {
+        AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
+        if(auctionSession == null) {
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found: " + id);
+        }
+        boolean isRegistered;
+        if(idUser >0 ){
+            isRegistered = auctionRegistrationRepository.existsByAccountIdAndSessionId(idUser, id);
+        }
+        else{ isRegistered = false;}
+        AuctionSessionReponse auctionSessionReponse = new AuctionSessionReponse();
+
+        AuctionSessionDetailResponse auctionSessionDetailResponse = auctionSessionMapper.toResponse(auctionSession);
+        auctionSessionDetailResponse.setRegister(isRegistered);
+        return auctionSessionDetailResponse;
     }
     public AuctionSession addAuctionSessions(AuctionSessionRequest auctionSessionRequest) {
 
@@ -65,7 +85,6 @@ public class AuctionSessionService {
         auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
         auctionSession.setStart_time(auctionSessionRequest.getStart_time());
         auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
-        auctionSession.setInitialPrice(auctionRequest.getUltimateValuation().getPrice());
         auctionSession.setMinStepPrice(auctionSessionRequest.getMin_stepPrice());
         auctionSession.setDepositAmount(auctionSessionRequest.getDeposit_amount());
         auctionSession.setNameSession(auctionSessionRequest.getName_session());
@@ -74,6 +93,7 @@ public class AuctionSessionService {
         auctionSession.setFeeAmount(0.05);
         auctionSession.setCreateAt(new Date());
         auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
+
         for (ResourceRequest resourceRequest : auctionSessionRequest.getResourceSession()){
             Resources resources = new Resources();
             resources.setResourceType(ResourceTypes.ResourceType.img);
@@ -96,13 +116,10 @@ public class AuctionSessionService {
 
     public AuctionSession updateAuctionSession(long id, AuctionSessionRequest auctionSessionRequest) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
-        auctionSession.setAuctionRequest(
-                auctionRepository.findAuctionRequestById(auctionSessionRequest.getAuction_request_id()));
 //        auctionSession.setManagerSession(accountUtils.getAccountCurrent());
         auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
         auctionSession.setStart_time(auctionSessionRequest.getStart_time());
         auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
-        auctionSession.setInitialPrice(auctionSession.getAuctionRequest().getUltimateValuation().getPrice());
         auctionSession.setMinStepPrice(auctionSessionRequest.getMin_stepPrice());
         auctionSession.setDepositAmount(auctionSessionRequest.getDeposit_amount());
         auctionSession.setNameSession(auctionSessionRequest.getName_session());
@@ -110,7 +127,7 @@ public class AuctionSessionService {
         auctionSession.setDescription(auctionSessionRequest.getDescription());
         // auctionSession.setFeeAmount(auctionSessionRequest.getFee_amount());
         // auctionSession.setCreateAt(new Date());
-        auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
+        auctionSession.setStatus(auctionSessionRequest.getStatus());
         return auctionSessionRepository.save(auctionSession);
     }
 
@@ -144,5 +161,8 @@ public class AuctionSessionService {
             auctionSessionRepository.save(auctionSession);
         }
         return auctionSession;
+    }
+    public void deleteSession(Long id) {
+         auctionSessionRepository.deleteById(id);
     }
 }

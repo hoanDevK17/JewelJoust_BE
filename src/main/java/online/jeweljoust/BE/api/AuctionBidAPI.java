@@ -22,6 +22,6 @@ public class AuctionBidAPI {
 //    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<AuctionBid> addBid(@RequestBody AuctionBidRequest auctionBidRequest) {
         AuctionBid auctionBid = auctionBidService.addAuctionBid(auctionBidRequest);
-        return ResponseEntity.ok(auctionBid)        ;
+        return ResponseEntity.ok(auctionBid);
     }
 }

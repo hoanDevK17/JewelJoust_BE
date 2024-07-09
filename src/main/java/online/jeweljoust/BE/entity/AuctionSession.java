@@ -38,7 +38,7 @@ public class AuctionSession {
     String nameSession;
 
     String nameJewelry;
-    double initialPrice;
+
 
     double minStepPrice;
     double FeeAmount;

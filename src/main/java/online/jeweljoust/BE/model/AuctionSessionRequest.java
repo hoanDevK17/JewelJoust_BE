@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import online.jeweljoust.BE.enums.AuctionSessionStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -31,4 +32,6 @@ public class AuctionSessionRequest {
     String description;
 
     List<ResourceRequest> resourceSession;
+    @Enumerated(EnumType.STRING)
+    AuctionSessionStatus status;
 }

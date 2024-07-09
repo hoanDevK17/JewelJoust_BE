@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import online.jeweljoust.BE.entity.AuctionSession;
 import online.jeweljoust.BE.enums.AuctionSessionStatus;
+import online.jeweljoust.BE.model.AuctionSessionDetailResponse;
 import online.jeweljoust.BE.model.AuctionSessionRequest;
 import online.jeweljoust.BE.respository.AuctionSessionRepository;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
@@ -46,9 +47,9 @@ public class AuctionSessionAPI {
         List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
         return ResponseEntity.ok(auctionSession);
     }
-    @GetMapping("/auctionSessions/id/{id}")
-    public ResponseEntity<AuctionSession> getAuctionSessionByID(@PathVariable long id) {
-        AuctionSession auctionSession = auctionSessionService.getAuctionSessionByID(id);
+    @GetMapping("/auctionSessions/detail/{id}")
+    public ResponseEntity<AuctionSessionDetailResponse> getAuctionSessionByID(@PathVariable long id,@RequestParam(required = false) Long idUser) {
+        AuctionSessionDetailResponse auctionSession = auctionSessionService.getAuctionSessionByID(id,idUser);
         return ResponseEntity.ok(auctionSession);
     }
 //    update
@@ -67,7 +68,11 @@ public class AuctionSessionAPI {
         AuctionSession auctionSession =  auctionSessionService.stopAuctionSession(id);
         return ResponseEntity.ok(auctionSession);
     }
-
+    @DeleteMapping("/auctionSessions/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        auctionSessionService.deleteSession(id);
+        return ResponseEntity.noContent().build(); // Trả về HTTP 204 No Content
+    }
 //  mở phiên khi đến giờ ( staff)
 //   kết thúc phiên khi đến giờ (staff)
     // dừng phiên khẩn cấp để tí tiếp tucj lại

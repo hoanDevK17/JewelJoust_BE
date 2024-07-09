@@ -1,6 +1,9 @@
 package online.jeweljoust.BE.enums;
 
 public enum TransactionStatus {
-    SUCCESSFUL,
-    FAILED
+    PENDING,
+    COMPLETED,
+    FAILED,
+    CANCELLED,
+    REFUNDED
 }

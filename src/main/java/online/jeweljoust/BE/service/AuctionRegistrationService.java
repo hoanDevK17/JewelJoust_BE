@@ -1,19 +1,11 @@
 package online.jeweljoust.BE.service;
 
-import online.jeweljoust.BE.entity.AuctionRegistration;
-import online.jeweljoust.BE.entity.AuctionSession;
-import online.jeweljoust.BE.entity.Transaction;
-import online.jeweljoust.BE.entity.Wallet;
-import online.jeweljoust.BE.enums.AccountRole;
-import online.jeweljoust.BE.enums.AuctionRegistrationStatus;
-import online.jeweljoust.BE.enums.TransactionStatus;
-import online.jeweljoust.BE.enums.TransactionType;
+import jakarta.transaction.Transactional;
+import online.jeweljoust.BE.entity.*;
+import online.jeweljoust.BE.enums.*;
 import online.jeweljoust.BE.model.AuctionRegistrationRequest;
-import online.jeweljoust.BE.respository.AuctionRegistrationRepository;
+import online.jeweljoust.BE.respository.*;
 
-import online.jeweljoust.BE.respository.AuctionSessionRepository;
-import online.jeweljoust.BE.respository.AuthenticationRepository;
-import online.jeweljoust.BE.respository.WalletRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,26 +34,37 @@ public class AuctionRegistrationService {
 
     @Autowired
     WalletService walletService;
+    @Autowired
+    AuctionBidService auctionBidService;
 
+
+    @Transactional
     public AuctionRegistration addAuctionRegistration(AuctionRegistrationRequest auctionRegistrationRequest) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(auctionRegistrationRequest.getAuctionSession_id());
         if (auctionRegistrationRepository.existsByAccountIdAndSessionId(accountUtils.getAccountCurrent().getId(), auctionSession.getId())) {
             throw new IllegalStateException("You are already registered for this auction session");
 
         }
+        double price =auctionRegistrationRequest.getPrice();
+        if(price<auctionSession.getAuctionRequest().getUltimateValuation().getPrice()){
+            throw new IllegalStateException("Bid amount must higher start price");
+        }
         double balance =  accountUtils.getAccountCurrent().getWallet().getBalance();
-        double price = auctionSession.getAuctionRequest().getUltimateValuation().getPrice();
         if (balance < price) {
             throw new IllegalStateException("You do not have enough funds in your wallet.");
         }
-
-         walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(),-price, TransactionType.BIDDEPOSIT,
-                "Deposit session" + auctionSession.getNameSession(),auctionRegistrationRequest.getAuctionSession_id());
         AuctionRegistration auctionRegistration = new AuctionRegistration();
         auctionRegistration.setCreate_at(new Date());
         auctionRegistration.setStatus(AuctionRegistrationStatus.PENDING);
         auctionRegistration.setAuctionSession(auctionSessionRepository.findAuctionSessionById(auctionRegistrationRequest.getAuctionSession_id()));
         auctionRegistration.setAccountRegistration((accountUtils.getAccountCurrent()));
+        Set<AuctionBid> auctionBids = new HashSet<AuctionBid>();
+        auctionBids.add(auctionBidService.handleNewBidTransaction(accountUtils.getAccountCurrent().getWallet().getId(),price,auctionRegistration.getId()));
+        auctionRegistration.setAuctionBids(auctionBids);
+//         walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(),-price, TransactionType.BIDDING,
+//                "Deposit session" + auctionSession.getNameSession(),auctionRegistrationRequest.getAuctionSession_id());
+
+        auctionRegistration.setStatus(AuctionRegistrationStatus.INITIALIZED);
         return auctionRegistrationRepository.save(auctionRegistration);
 //walletService
     }
@@ -77,9 +80,7 @@ public class AuctionRegistrationService {
         AuctionRegistration auctionRegistration = auctionRegistrationRepository.findAuctionRegistrationById(id);
         if (auctionRegistration.getStatus() != AuctionRegistrationStatus.CANCELLED) {
             if (auctionRegistration.getStatus() != AuctionRegistrationStatus.PENDING) {
-
                 Transaction transaction = transactionService.refundRegistration(auctionRegistration);
-
             }
             auctionRegistration.setStatus(AuctionRegistrationStatus.CANCELLED);
             return auctionRegistrationRepository.save(auctionRegistration);

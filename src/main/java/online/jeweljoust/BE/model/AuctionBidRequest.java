@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AuctionBidRequest {
-    long registration_id;
+    long id_session;
     double price;
 }

@@ -34,9 +34,9 @@ public class AuctionRegistration {
     @JsonIgnore
     AuctionSession auctionSession;
     @JsonProperty("auctionSession_id")
-    public Long getAuctionSessionId() {
-        return auctionSession != null ? auctionSession.getId() : null;
-    }
+//    public Long getAuctionSessionId() {
+//        return auctionSession != null ? auctionSession.getId() : null;
+//    }
     @ManyToOne
     @JoinColumn(name="member_id")
     Account accountRegistration;

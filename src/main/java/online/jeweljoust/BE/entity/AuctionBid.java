@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import online.jeweljoust.BE.enums.AuctionBidStatus;
+import online.jeweljoust.BE.enums.TransactionStatus;
 
 import java.util.Date;
 
@@ -21,4 +23,6 @@ public class AuctionBid {
     AuctionRegistration auctionRegistration;
     @Temporal(TemporalType.DATE)
     Date bid_time;
+    @Enumerated(EnumType.STRING)
+    AuctionBidStatus status;
 }

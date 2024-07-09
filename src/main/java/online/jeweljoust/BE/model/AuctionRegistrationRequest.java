@@ -14,4 +14,5 @@ import java.util.Date;
 @Setter
 public class AuctionRegistrationRequest {
   long auctionSession_id;
+  double price;
 }
