@@ -38,6 +38,4 @@ public class InitialValuation {
     @JoinColumn(name = "request_id")
     AuctionRequest auctionRequestInitial;
 
-    @OneToOne(mappedBy = "initialShipment",cascade = CascadeType.ALL)
-    Shipment shipment;
 }

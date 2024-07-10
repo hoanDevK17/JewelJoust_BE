@@ -51,4 +51,7 @@ public class AuctionRequest {
 
     @OneToMany(mappedBy = "auctionRequestResource",cascade = CascadeType.ALL)
     Set<Resources> resources;
+
+    @OneToMany(mappedBy = "auctionRequestShipment",cascade = CascadeType.ALL)
+    Set<Shipment> shipment;
 }
