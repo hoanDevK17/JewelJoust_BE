@@ -92,4 +92,10 @@ public class ValuationAPI {
     public void sendMailNe() {
         valuationService.sendMailNe();
     }
+
+    @PutMapping("/shipment/{id}/return")
+//    @PreAuthorize("hasAuthority('MANAGER')")
+    public ResponseEntity<Shipment> returnShipment(@PathVariable("id") long id) {
+        return ResponseEntity.ok(valuationService.returnShipment(id));
+    }
 }

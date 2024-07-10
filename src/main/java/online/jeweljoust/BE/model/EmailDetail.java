@@ -20,4 +20,5 @@ public class EmailDetail {
     private String valuation;
     private String productName;
     private Date date;
+    private long auctionId;
 }
