@@ -36,12 +36,13 @@ public class AuctionRegistrationService {
     WalletService walletService;
     @Autowired
     AuctionBidService auctionBidService;
-
+    @Autowired
+    AuctionBidRepository auctionBidRepository;
 
     @Transactional
     public AuctionRegistration addAuctionRegistration(AuctionRegistrationRequest auctionRegistrationRequest) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(auctionRegistrationRequest.getAuctionSession_id());
-        if (auctionRegistrationRepository.existsByAccountIdAndSessionId(accountUtils.getAccountCurrent().getId(), auctionSession.getId())) {
+        if (auctionRegistrationRepository.existsByAccountIdAndSessionId(accountUtils.getAccountCurrent().getId(), auctionSession.getId()) ) {
             throw new IllegalStateException("You are already registered for this auction session");
 
         }
@@ -58,13 +59,18 @@ public class AuctionRegistrationService {
         auctionRegistration.setStatus(AuctionRegistrationStatus.PENDING);
         auctionRegistration.setAuctionSession(auctionSessionRepository.findAuctionSessionById(auctionRegistrationRequest.getAuctionSession_id()));
         auctionRegistration.setAccountRegistration((accountUtils.getAccountCurrent()));
-        Set<AuctionBid> auctionBids = new HashSet<AuctionBid>();
-        auctionBids.add(auctionBidService.handleNewBidTransaction(accountUtils.getAccountCurrent().getWallet().getId(),price,auctionRegistration.getId()));
-        auctionRegistration.setAuctionBids(auctionBids);
+        auctionRegistration=auctionRegistrationRepository.save(auctionRegistration);
+
 //         walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(),-price, TransactionType.BIDDING,
 //                "Deposit session" + auctionSession.getNameSession(),auctionRegistrationRequest.getAuctionSession_id());
+        AuctionBid auctionBid = auctionBidService.handleNewBidTransaction(accountUtils.getAccountCurrent().getWallet().getId(),price,auctionRegistration.getId());
+//        auctionBid.setAuctionRegistration(auctionRegistration);
+//        Set<AuctionBid> auctionBids = new HashSet<AuctionBid>();
+//        auctionBids.add(auctionBidService.handleNewBidTransaction(accountUtils.getAccountCurrent().getWallet().getId(),price,auctionRegistration.getId()));
+//        auctionRegistration.setAuctionBids(auctionBids);
 
         auctionRegistration.setStatus(AuctionRegistrationStatus.INITIALIZED);
+
         return auctionRegistrationRepository.save(auctionRegistration);
 //walletService
     }
@@ -81,6 +87,10 @@ public class AuctionRegistrationService {
         if (auctionRegistration.getStatus() != AuctionRegistrationStatus.CANCELLED) {
             if (auctionRegistration.getStatus() != AuctionRegistrationStatus.PENDING) {
                 Transaction transaction = transactionService.refundRegistration(auctionRegistration);
+
+            }
+            else {
+                throw new IllegalStateException("CAN NOT CANCEL REGISTRATION FOR SESSION IS BIDDING");
             }
             auctionRegistration.setStatus(AuctionRegistrationStatus.CANCELLED);
             return auctionRegistrationRepository.save(auctionRegistration);

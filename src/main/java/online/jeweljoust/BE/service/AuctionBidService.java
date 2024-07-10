@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import online.jeweljoust.BE.entity.*;
 import online.jeweljoust.BE.enums.AuctionBidStatus;
 import online.jeweljoust.BE.enums.AuctionRegistrationStatus;
+import online.jeweljoust.BE.enums.AuctionSessionStatus;
 import online.jeweljoust.BE.enums.TransactionType;
 import online.jeweljoust.BE.model.AuctionBidRequest;
 import online.jeweljoust.BE.model.AuctionRegistrationRequest;
@@ -38,7 +39,10 @@ public class AuctionBidService {
 
 
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(auctionBidRequest.getId_session());
-
+        if(!auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)){
+            throw new
+                    IllegalStateException("Cannot bid for this session. The session is not in the bidding phase.");
+        }
 
         AuctionBid highestBid = auctionBidRepository.findHighestBidBySessionId(auctionSession.getId()).orElse(new AuctionBid());
 
@@ -47,11 +51,15 @@ public class AuctionBidService {
         }
         AuctionBid highestBidOfUser = auctionBidRepository.findHighestBidByUserAndSessionAndStatus(accountUtils.getAccountCurrent().getId(),auctionSession.getId()).orElse(new AuctionBid());
 
-        highestBidOfUser.setStatus(AuctionBidStatus.NONACTIVE);
+
+
         double price = auctionBidRequest.getPrice() - highestBidOfUser.getBid_price();
         AuctionBid auctionBid = this.handleNewBidTransaction(accountUtils.getAccountCurrent().getWallet().getId(),price,auctionBidRequest.getId_session());
-        return auctionBidRepository.save(auctionBid);
+        highestBidOfUser.setStatus(AuctionBidStatus.NONACTIVE);
+//        auctionBidRepository.save(highestBidOfUser);
+//        return auctionBidRepository.save(auctionBid);
 
+        return auctionBid;
 //walletService
     }
     @Transactional

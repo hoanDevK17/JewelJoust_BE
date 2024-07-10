@@ -39,19 +39,15 @@ public class WalletService {
     @Autowired
     AuctionRegistrationRepository auctionRegistrationRepository;
 
-    public Wallet registerWallet(Account account) {
-        Wallet wallet = new Wallet();
-        wallet.setBalance(0.0);
-        wallet.setUpdateAt(new Date());
-        wallet.setCreateAt(new Date());
-        wallet.setAccountWallet(account);
-//        Wallet resposeWallet = walletRepository.save(wallet);
-//        account.setWallet(resposeWallet);
+//    public Wallet registerWallet(Account account) {
 
-
-//        wallet.setAccountWallet(account);
-        return walletRepository.save(wallet);
-    }
+////        Wallet resposeWallet = walletRepository.save(wallet);
+////        account.setWallet(resposeWallet);
+//
+//
+////        wallet.setAccountWallet(account);
+//        return walletRepository.save(wallet);
+//    }
 
     @Transactional
     public Transaction changBalance(Long id, double amount, TransactionType type,String description) {

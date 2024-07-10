@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import online.jeweljoust.BE.config.SecurityConfig;
 import online.jeweljoust.BE.entity.Account;
+import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AccountStatus;
 import online.jeweljoust.BE.exception.AuthException;
@@ -27,6 +28,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -57,7 +60,7 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     WalletService walletService;
 
-    public Account register(RegisterRequest registerRequest){
+    public Account register(RegisterRequest registerRequest) {
         Account account = new Account();
         account.setUsername(registerRequest.getUsername());
         account.setFullname(registerRequest.getFullname());
@@ -68,24 +71,34 @@ public class AuthenticationService implements UserDetailsService {
         account.setStatus(AccountStatus.ACTIVE);
         account.setRole(AccountRole.MEMBER);
         account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        Wallet wallet = new Wallet();
+        wallet.setBalance(0.0);
+        wallet.setCreateAt(new Date());
+        wallet.setAccountWallet(account);
+        account.setWallet(wallet);
         return authenticationRepository.save(account);
     }
 
-    public Account registerHaveRole(RegisterRequest registerRequest) throws AuthenticationServiceException{
+    public Account registerHaveRole(RegisterRequest registerRequest) throws AuthenticationServiceException {
         Account account = new Account();
-            account.setRole(registerRequest.getRole());
-            account.setUsername(registerRequest.getUsername());
-            account.setFullname(registerRequest.getFullname());
-            account.setAddress(registerRequest.getAddress());
-            account.setBirthday(registerRequest.getBirthday());
-            account.setEmail(registerRequest.getEmail());
-            account.setPhone(registerRequest.getPhone());
-            account.setStatus(AccountStatus.ACTIVE);
-            account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        account.setRole(registerRequest.getRole());
+        account.setUsername(registerRequest.getUsername());
+        account.setFullname(registerRequest.getFullname());
+        account.setAddress(registerRequest.getAddress());
+        account.setBirthday(registerRequest.getBirthday());
+        account.setEmail(registerRequest.getEmail());
+        account.setPhone(registerRequest.getPhone());
+        account.setStatus(AccountStatus.ACTIVE);
+        account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        Wallet wallet = new Wallet();
+        wallet.setBalance(0.0);
+        wallet.setCreateAt(new Date());
+        wallet.setAccountWallet(account);
+        account.setWallet(wallet);
         return authenticationRepository.save(account);
     }
 
-    public AccountReponse login(LoginRequest loginRequest){
+    public AccountReponse login(LoginRequest loginRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     loginRequest.getUsername(),
@@ -109,28 +122,31 @@ public class AuthenticationService implements UserDetailsService {
             accountReponse.setToken(token);
             accountReponse.setWallet(account.getWallet());
             return accountReponse;
-        } catch (AuthenticationException  e){
+        } catch (AuthenticationException e) {
             throw new BadCredentialsException("Incorrect username or password!");
         }
     }
 
-    public AccountReponse loginGoogle(LoginGoogleRequest loginGoogleRequest){
+    public AccountReponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
         AccountReponse accountReponse = new AccountReponse();
         try {
             FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
             String email = firebaseToken.getEmail();
             Account account = authenticationRepository.findByEmail(email);
-            if (account == null){
+            if (account == null) {
                 account = new Account();
                 account.setFullname(firebaseToken.getName());
                 account.setEmail(firebaseToken.getEmail());
                 account.setRole(AccountRole.MEMBER);
                 account.setStatus(AccountStatus.ACTIVE);
                 account.setUsername(email);
+                Wallet wallet = new Wallet();
+                wallet.setBalance(0.0);
+                wallet.setCreateAt(new Date());
+                wallet.setAccountWallet(account);
+                account.setWallet(wallet);
                 account = authenticationRepository.save(account);
-                if(account.getId()!=null){
-                    account.setWallet(walletService.registerWallet(account));
-                }
+
             }
             String token = tokenService.generateToken(account);
             accountReponse.setUsername(account.getUsername());
@@ -144,19 +160,19 @@ public class AuthenticationService implements UserDetailsService {
             accountReponse.setStatus(account.getStatus());
             accountReponse.setToken(token);
             accountReponse.setWallet(account.getWallet());
-        } catch (Exception e){
+        } catch (Exception e) {
             e.getMessage();
         }
         return accountReponse;
     }
 
-    public List<Account> getAllAccount(){
+    public List<Account> getAllAccount() {
         return authenticationRepository.findAll();
     }
 
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-        Account account =  authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
-        if (account == null){
+        Account account = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
+        if (account == null) {
             throw new IllegalStateException("Account not found!");
         }
         EmailDetail emailDetail = new EmailDetail();
@@ -178,9 +194,9 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
-            Account account = accountUtils.getAccountCurrent();
-            account.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword()));
-            authenticationRepository.save(account);
+        Account account = accountUtils.getAccountCurrent();
+        account.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword()));
+        authenticationRepository.save(account);
     }
 
     @Override
@@ -189,8 +205,7 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public Account updateProfile(UpdateProfileRequest updateProfileRequest) {
-        if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)||accountUtils.getAccountCurrent().getId() == updateProfileRequest.getId())
-        {
+        if (accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN) || accountUtils.getAccountCurrent().getId() == updateProfileRequest.getId()) {
             Account account = authenticationRepository.findById(updateProfileRequest.getId());
             if (updateProfileRequest.getFullname().trim() != "") {
                 account.setFullname(updateProfileRequest.getFullname());
@@ -206,20 +221,19 @@ public class AuthenticationService implements UserDetailsService {
             }
             if (updateProfileRequest.getPhone().trim() != "") {
                 account.setPhone(updateProfileRequest.getPhone());
-                if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)){
+                if (accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)) {
                     account.setStatus(updateProfileRequest.getStatus());
                 }
             }
             return authenticationRepository.save(account);
-        }
-        else{
+        } else {
             throw new AuthException("Can't access to edit");
         }
 
     }
 
     public List<Account> getAccountByName(String name) {
-        return authenticationRepository.findByFullnameContaining(name) ;
+        return authenticationRepository.findByFullnameContaining(name);
     }
 
     public void blockAccount(long id, AccountStatus status) {
@@ -238,8 +252,7 @@ public class AuthenticationService implements UserDetailsService {
             account.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             authenticationRepository.save(account);
             return "Change password Succesfully";
-        }
-        else{
+        } else {
             return "Changed password not successfully";
         }
     }

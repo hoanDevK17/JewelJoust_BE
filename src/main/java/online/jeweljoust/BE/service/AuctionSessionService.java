@@ -93,7 +93,7 @@ public class AuctionSessionService {
         auctionSession.setFeeAmount(0.05);
         auctionSession.setCreateAt(new Date());
         auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
-
+        auctionSessionRepository.save(auctionSession);
         for (ResourceRequest resourceRequest : auctionSessionRequest.getResourceSession()){
             Resources resources = new Resources();
             resources.setResourceType(ResourceTypes.ResourceType.img);
@@ -101,7 +101,7 @@ public class AuctionSessionService {
             resources.setDescription(resourceRequest.getDescription());
             resources.setReferenceType(ResourceTypes.ReferenceType.AUCTION_SESSION);
             resources.setAuctionSessionResource(auctionSession);
-//            resources.setAccountResource(accountUtils.getAccountCurrent());
+            resources.setAccountResource(accountUtils.getAccountCurrent());
             resources.setUploadAt(new Date());
             resourceRepository.save(resources);
         }
@@ -111,7 +111,7 @@ public class AuctionSessionService {
         // Completed : bán hoàn tất
         // Cancelled : đã hủy
 
-        return auctionSessionRepository.save(auctionSession);
+        return auctionSession;
     }
 
     public AuctionSession updateAuctionSession(long id, AuctionSessionRequest auctionSessionRequest) {

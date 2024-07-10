@@ -48,9 +48,10 @@ public class Filter extends OncePerRequestFilter {
             "/api/auctionSessions/*/*"
 
     );
-    private boolean isPermitted(String uri){
-        AntPathMatcher pathMatcher= new AntPathMatcher();
-        return AUTH_PERMISSION.stream().anyMatch(pattern -> pathMatcher.match(pattern,uri));
+
+    private boolean isPermitted(String uri) {
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+        return AUTH_PERMISSION.stream().anyMatch(pattern -> pathMatcher.match(pattern, uri));
     }
 
     @Override
@@ -59,6 +60,27 @@ public class Filter extends OncePerRequestFilter {
 //        System.out.println(uri);
         if (isPermitted(uri)) {
             // yêu cầu truy cập 1 api => ai cũng truy cập đc
+            String token = getToken(request);
+            if (token != null) {
+                Account account;
+                try {
+                    // từ token tìm ra thằng đó là ai
+                    account = tokenService.extractAccount(token);
+                } catch (ExpiredJwtException expiredJwtException) {
+                    // token het han
+                    resolver.resolveException(request, response, null, new AuthException("Expired Token!"));
+                    return;
+                } catch (MalformedJwtException malformedJwtException) {
+                    resolver.resolveException(request, response, null, new AuthException("Invalid Token!"));
+                    return;
+                }
+                // token dung
+                UsernamePasswordAuthenticationToken
+                        authenToken =
+                        new UsernamePasswordAuthenticationToken(account, token, account.getAuthorities());
+                authenToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authenToken);
+            }
             filterChain.doFilter(request, response); // cho phép truy cập vô controller
         } else {
             String token = getToken(request);

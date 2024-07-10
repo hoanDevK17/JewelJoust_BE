@@ -49,7 +49,7 @@ public class Account implements UserDetails {
     @Enumerated(EnumType.STRING)
     AccountStatus status;
 
-    @OneToOne(mappedBy = "accountWallet", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "accountWallet")
     // @JsonIgnore
     Wallet wallet;
 

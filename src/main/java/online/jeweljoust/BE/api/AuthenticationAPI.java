@@ -57,13 +57,8 @@ public class AuthenticationAPI {
     // }
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
-        Shipment shipment = new Shipment();
+
         Account account = authenticationService.register(registerRequest);
-        if(account!=null){
-            System.out.println(account);
-             Wallet wallet = walletService.registerWallet(account);
-             account.setWallet(wallet);
-        }
         return ResponseEntity.ok(account);
     }
 

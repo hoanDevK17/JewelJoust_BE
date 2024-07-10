@@ -26,9 +26,6 @@ public class Wallet {
 
     @Temporal(TemporalType.DATE)
     Date createAt;
-
-    @Temporal(TemporalType.DATE)
-    Date updateAt;
     @OneToMany(mappedBy = "wallet",cascade = CascadeType.ALL)
     @JsonIgnore
     Set<Transaction> transactions;
