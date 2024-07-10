@@ -13,7 +13,8 @@ public enum AuctionRequestStatus {
         UNAPPROVED,     //quản lý không phê duyệt
         APPROVED,       //quản lý phê duyệt
         AGREED,         //member đồng ý định giá cuối
-        DECLINED        //member từ chối định giá cuối
+        DECLINED,        //member từ chối định giá cuối
+        RETURN          //không được chấp nhận, trả hàng
 }
 
 //1.tao don + dinh gia (row)

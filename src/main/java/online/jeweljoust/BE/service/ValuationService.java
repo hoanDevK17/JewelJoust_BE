@@ -12,15 +12,10 @@ import online.jeweljoust.BE.respository.ShipmentRepository;
 import online.jeweljoust.BE.respository.UltimateRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Executors;
@@ -57,12 +52,19 @@ public class ValuationService {
         AuctionRequest auctionRequest = initialValuation.getAuctionRequestInitial();
         Shipment shipment = new Shipment();
         if (initialValuation.getStatus().equals(InitialValuationsStatus.CONFIRMED)){
-            shipment.setReceivedDate(new Date());
+            shipment.setDate(new Date());
             shipment.setStatus(ShipmentStatus.RECEIVED);
             shipment.setAccountShipment(accountUtils.getAccountCurrent());
-            shipment.setInitialShipment(initialValuation);
+            shipment.setAuctionRequestShipment(auctionRequest);
             auctionRequest.setStatus(AuctionRequestStatus.RECEIVED);
             shipmentRepository.save(shipment);
+            EmailDetail emailDetail = new EmailDetail();
+                emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
+                emailDetail.setSubject("Notice Regarding Your Received Product");
+                emailDetail.setProductName(auctionRequest.getJewelryname());
+                emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+                emailDetail.setAuctionId(auctionRequest.getId());
+                emailService.sendMailNotification(emailDetail, "templateReceived");
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
         }
@@ -200,14 +202,14 @@ public class ValuationService {
         return initialValuation;
     }
 
-    @Scheduled(cron = "0 9 11 * * ?")
+    @Scheduled(cron = "0 0 12,0 * * ?")
     public void checkMissingShipment() {
-        List<InitialValuation> lists = initialRepository.findByStatus(InitialValuationsStatus.CONFIRMED);
-        for (InitialValuation iv : lists){
-            if (iv.getShipment() == null){
+        List<AuctionRequest> lists = auctionRepository.findByStatus(AuctionRequestStatus.CONFIRMED);
+        for (AuctionRequest a : lists){
+            if (a.getShipment() == null){
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(iv.getInitialdate());
-                calendar.add(Calendar.DAY_OF_YEAR, 1);
+                calendar.setTime(a.getInitialValuations().getInitialdate());
+                calendar.add(Calendar.DAY_OF_YEAR, 14);
                 Date targetDate = calendar.getTime();
 
                 Date now = new Date();
@@ -217,19 +219,18 @@ public class ValuationService {
                     scheduledExecutorService.schedule(() -> {
                         Shipment shipment = new Shipment();
                         shipment.setStatus(ShipmentStatus.MISSED);
-                        AuctionRequest auctionRequest = iv.getAuctionRequestInitial();
-                        auctionRequest.setStatus(AuctionRequestStatus.MISSED);
-                        iv.getAuctionRequestInitial().setReasonReject("Overdue for delivery");
-                        shipment.setReceivedDate(new Date()); // hiện tại
-                        shipment.setInitialShipment(iv);
+                        a.setStatus(AuctionRequestStatus.MISSED);
+                        a.setReasonReject("Overdue for delivery");
+                        shipment.setDate(new Date());
+                        shipment.setAuctionRequestShipment(a);
                         shipmentRepository.save(shipment);
-                        auctionRepository.save(auctionRequest);
+                        auctionRepository.save(a);
                         EmailDetail emailDetail = new EmailDetail();
-                            emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
+                            emailDetail.setRecipient(a.getAccountRequest().getEmail());
                             emailDetail.setSubject("Notice Regarding Your Unreceived Product");
-                            emailDetail.setProductName(auctionRequest.getJewelryname());
-                            emailDetail.setDate(iv.getInitialdate());
-                            emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+                            emailDetail.setProductName(a.getJewelryname());
+                            emailDetail.setDate(a.getInitialValuations().getInitialdate());
+                            emailDetail.setFullName(a.getAccountRequest().getFullname());
                         emailService.sendMailNotification(emailDetail, "templateOver14Days");
                     }, delay, TimeUnit.SECONDS);
 //                }
@@ -244,5 +245,22 @@ public class ValuationService {
         emailDetail.setMsgBody("ban da gui yeu cau bay gio hay cho xu ly");
         emailDetail.setFullName("Phat");
         emailService.sendMailNotification(emailDetail, "templateMember");
+    }
+
+    public Shipment returnShipment(long id) {
+        AuctionRequest auctionRequest = auctionRepository.findAuctionRequestById(id);
+        if (auctionRequest.getStatus().equals(AuctionRequestStatus.UNACCEPTED) || auctionRequest.getStatus().equals(AuctionRequestStatus.UNAPPROVED) || auctionRequest.getStatus().equals(AuctionRequestStatus.DECLINED)){
+            Shipment shipment = new Shipment();
+            shipment.setStatus(ShipmentStatus.RETURN);
+            shipment.setAccountShipment(accountUtils.getAccountCurrent());
+            shipment.setDate(new Date());
+            shipment.setAuctionRequestShipment(auctionRequest);
+            shipmentRepository.save(shipment);
+            auctionRequest.getShipment().add(shipment);
+            auctionRepository.save(auctionRequest);
+            return shipment;
+        } else {
+            throw new IllegalStateException("Incorrect status for return shipment");
+        }
     }
 }
