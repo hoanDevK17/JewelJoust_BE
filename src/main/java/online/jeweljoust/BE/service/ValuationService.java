@@ -256,6 +256,7 @@ public class ValuationService {
             shipment.setDate(new Date());
             shipment.setAuctionRequestShipment(auctionRequest);
             shipmentRepository.save(shipment);
+            auctionRequest.setStatus(AuctionRequestStatus.RETURN);
             auctionRequest.getShipment().add(shipment);
             auctionRepository.save(auctionRequest);
             return shipment;
