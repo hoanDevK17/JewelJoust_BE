@@ -71,6 +71,7 @@ public class AuctionSessionAPI {
         AuctionSession auctionSession =  auctionSessionService.stopAuctionSession(id);
         return ResponseEntity.ok(auctionSession);
     }
+
 //    @DeleteMapping("/auctionSessions/{id}")
 //    public ResponseEntity<Void> delete(@PathVariable Long id) {
 //        auctionSessionService.deleteSession(id);

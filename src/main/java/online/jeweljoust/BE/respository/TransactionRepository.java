@@ -16,4 +16,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT t FROM Transaction t WHERE t.wallet.id = :walletId AND t.transaction_type NOT IN (:types)")
     List<Transaction> findTransactionHistoryByWalletId(@Param("walletId")Long walletId ,@Param("types") List<TransactionType> types);
     List<Transaction> findByWalletId (long id);
+    Transaction findByTxnRef(String tsnRef);
 }
