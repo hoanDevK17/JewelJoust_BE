@@ -1,5 +1,6 @@
 package online.jeweljoust.BE.service;
 
+import jakarta.transaction.Transactional;
 import online.jeweljoust.BE.entity.*;
 
 import online.jeweljoust.BE.enums.*;
@@ -25,7 +26,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
-
 public class AuctionSessionService {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
     @Autowired
@@ -43,31 +43,41 @@ public class AuctionSessionService {
     @Autowired
     AuctionSessionMapper auctionSessionMapper;
     @Autowired
+    AuctionBidRepository auctionBidRepository;
+    @Autowired
     EmailService emailService;
+    @Autowired
+    WalletService walletService;
     private ExecutorService executorService = Executors.newFixedThreadPool(10); // Sử dụng 10 luồng
 
     public List<AuctionSession> getAllAuctionSessions() {
         return auctionSessionRepository.findAll();
     }
+
     public List<AuctionSession> getAuctionSessionsByStatus(AuctionSessionStatus status) {
         return auctionSessionRepository.findByStatus(status);
     }
-    public AuctionSessionDetailResponse getAuctionSessionByID(long id,long idUser) {
+
+    public AuctionSessionDetailResponse getAuctionSessionByID(long id, long idUser) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
-        if(auctionSession == null) {
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found: " + id);
+        if (auctionSession == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found: " + id);
         }
         boolean isRegistered;
-        if(idUser >0 ){
+        if (idUser > 0) {
             isRegistered = auctionRegistrationRepository.existsByAccountIdAndSessionId(idUser, id);
+        } else {
+            isRegistered = false;
         }
-        else{ isRegistered = false;}
         AuctionSessionReponse auctionSessionReponse = new AuctionSessionReponse();
 
         AuctionSessionDetailResponse auctionSessionDetailResponse = auctionSessionMapper.toResponse(auctionSession);
         auctionSessionDetailResponse.setRegister(isRegistered);
+        AuctionBid highestBid = auctionBidRepository.findHighestBidBySessionId(auctionSession.getId()).orElse(new AuctionBid());
+        auctionSessionDetailResponse.setHighestPrice(highestBid.getBid_price());
         return auctionSessionDetailResponse;
     }
+
     public AuctionSession addAuctionSessions(AuctionSessionRequest auctionSessionRequest) {
 
         AuctionSession auctionSession = new AuctionSession();
@@ -76,8 +86,7 @@ public class AuctionSessionService {
 
         if (!auctionRequest.getStatus().equals(AuctionRequestStatus.AGREED)) {
             throw new IllegalStateException("Not support this AuctionRequest");
-        }
-        else if(auctionRequest.getAuctionSessions() != null){
+        } else if (auctionRequest.getAuctionSessions() != null) {
             throw new IllegalStateException("Session has initial");
         }
         auctionSession.setAuctionRequest(auctionRequest);
@@ -94,7 +103,7 @@ public class AuctionSessionService {
         auctionSession.setCreateAt(new Date());
         auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
         auctionSessionRepository.save(auctionSession);
-        for (ResourceRequest resourceRequest : auctionSessionRequest.getResourceSession()){
+        for (ResourceRequest resourceRequest : auctionSessionRequest.getResourceSession()) {
             Resources resources = new Resources();
             resources.setResourceType(ResourceTypes.ResourceType.img);
             resources.setPath(resourceRequest.getPath());
@@ -117,7 +126,7 @@ public class AuctionSessionService {
     public AuctionSession updateAuctionSession(long id, AuctionSessionRequest auctionSessionRequest) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
 //        auctionSession.setManagerSession(accountUtils.getAccountCurrent());
-        if (auctionSession.getStatus().equals(AuctionSessionStatus.INITIALIZED) || auctionSession.getStatus().equals(AuctionSessionStatus.STOP) || auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)){
+        if (auctionSession.getStatus().equals(AuctionSessionStatus.INITIALIZED) || auctionSession.getStatus().equals(AuctionSessionStatus.STOP) || auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)) {
             auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
             auctionSession.setStart_time(auctionSessionRequest.getStart_time());
             auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
@@ -132,16 +141,16 @@ public class AuctionSessionService {
             Date start = auctionSession.getStart_time();
             Date end = auctionSession.getEnd_time();
 
-            if (now.after(start) && (now.before(end))){
+            if (now.after(start) && (now.before(end))) {
                 auctionSession.setStatus(AuctionSessionStatus.BIDDING);
-            } else if (now.after(end)){
+            } else if (now.after(end)) {
                 auctionSession.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
-            } else if (now.before(start)){
+            } else if (now.before(start)) {
                 auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
             }
 
             List<AuctionRegistration> allRegister = auctionRegistrationRepository.findAuctionRegistrationByAuctionSessionId(id);
-            for (AuctionRegistration registration : allRegister){
+            for (AuctionRegistration registration : allRegister) {
                 Account account = registration.getAccountRegistration();
                 EmailDetail emailDetail = new EmailDetail();
                 emailDetail.setRecipient(account.getEmail());
@@ -157,20 +166,20 @@ public class AuctionSessionService {
     }
 
     @Scheduled(cron = "0 * * * * ?")
-    public void checkTimeSessionStart(){
+    public void checkTimeSessionStart() {
         List<AuctionSession> startSesion = auctionSessionRepository.findByStatus(AuctionSessionStatus.INITIALIZED);
         List<AuctionSession> endSesion = auctionSessionRepository.findByStatus(AuctionSessionStatus.BIDDING);
         Date now = new Date();
-        for (AuctionSession s: startSesion){
-            if (now.equals(s.getStart_time()) || now.after(s.getStart_time())){
+        for (AuctionSession s : startSesion) {
+            if (now.equals(s.getStart_time()) || now.after(s.getStart_time())) {
                 executorService.submit(() -> {
                     s.setStatus(AuctionSessionStatus.BIDDING);
                     auctionSessionRepository.save(s);
                 });
             }
         }
-        for (AuctionSession s: endSesion){
-            if (now.equals(s.getEnd_time()) || now.after(s.getEnd_time())){
+        for (AuctionSession s : endSesion) {
+            if (now.equals(s.getEnd_time()) || now.after(s.getEnd_time())) {
                 executorService.submit(() -> {
                     s.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
                     auctionSessionRepository.save(s);
@@ -181,13 +190,37 @@ public class AuctionSessionService {
 
     public AuctionSession stopAuctionSession(Long id) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
-        if (auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)){
+        if (auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)) {
             auctionSession.setStatus(AuctionSessionStatus.STOP);
             auctionSessionRepository.save(auctionSession);
         }
         return auctionSession;
     }
-    public void deleteSession(Long id) {
-         auctionSessionRepository.deleteById(id);
+
+    //    public void deleteSession(Long id) {
+//         auctionSessionRepository.deleteById(id);
+//    }
+    @Transactional
+    public void finishSession(Long sessionId) {
+        AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(sessionId);
+        auctionSession.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
+        auctionSessionRepository.save(auctionSession);
+        AuctionBid auctionBidHighest = auctionBidRepository.findHighestBidBySessionId(sessionId).orElse(new AuctionBid());
+        auctionBidHighest.setStatus(AuctionBidStatus.PENDINGPAYMENT);
+        auctionBidRepository.save(auctionBidHighest);
+        if(auctionBidHighest == null){
+            throw new IllegalStateException("Không có lệnh chiến thắng");
+        }
+
+        List<AuctionBid> activeBids = auctionBidRepository.findActiveBidsBySessionId(sessionId);
+        for (AuctionBid bid : activeBids) {
+            walletService.changBalance(bid.getAuctionRegistration().getAccountRegistration().getWallet().getId(), bid.getBid_price(),TransactionType.REFUND,"RefundBidding amount" + bid.getBid_price() );
+            bid.setStatus(AuctionBidStatus.REFUND);
+            auctionBidRepository.save(bid);
+        }
+        walletService.changBalance( auctionSession.getAuctionRequest().getAccountRequest().getWallet().getId(), auctionBidHighest.getBid_price(), TransactionType.SELLING,"Sell successfully product with id request" + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price() );
+
+        auctionSession.setStatus(AuctionSessionStatus.COMPLETED);
+
     }
 }

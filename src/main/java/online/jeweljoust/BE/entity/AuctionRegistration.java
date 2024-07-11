@@ -30,7 +30,7 @@ public class AuctionRegistration {
 //Pending,Deposited,Cancelled,WaitingForPayment(chờ thanh toán tiền),
 // Refunded,Completed(khi thanh toán thành công, và kết thúc đấu giá)
     @ManyToOne
-    @JoinColumn(name="auctionSession")
+    @JoinColumn(name="auctionSession_id")
     @JsonIgnore
     AuctionSession auctionSession;
 //    @JsonProperty("auctionSession_id")

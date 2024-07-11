@@ -3,7 +3,8 @@ package online.jeweljoust.BE.enums;
 public enum AuctionBidStatus {
     ACTIVE,
     NONACTIVE,
-    COMPLETED,
+    WON,
+    PENDINGPAYMENT,
     REFUND,
     CANCEL
 //    only cancel when bidding is INITIALIZED

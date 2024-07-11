@@ -50,6 +50,7 @@ public class AuctionRegistrationService {
         if(price<auctionSession.getAuctionRequest().getUltimateValuation().getPrice()){
             throw new IllegalStateException("Bid amount must higher start price");
         }
+        System.out.println(accountUtils.getAccountCurrent());
         double balance =  accountUtils.getAccountCurrent().getWallet().getBalance();
         if (balance < price) {
             throw new IllegalStateException("You do not have enough funds in your wallet.");
@@ -59,16 +60,17 @@ public class AuctionRegistrationService {
         auctionRegistration.setStatus(AuctionRegistrationStatus.PENDING);
         auctionRegistration.setAuctionSession(auctionSessionRepository.findAuctionSessionById(auctionRegistrationRequest.getAuctionSession_id()));
         auctionRegistration.setAccountRegistration((accountUtils.getAccountCurrent()));
-        auctionRegistration=auctionRegistrationRepository.save(auctionRegistration);
-
+//        auctionRegistration=
+                auctionRegistrationRepository.save(auctionRegistration);
 //         walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(),-price, TransactionType.BIDDING,
 //                "Deposit session" + auctionSession.getNameSession(),auctionRegistrationRequest.getAuctionSession_id());
-        AuctionBid auctionBid = auctionBidService.handleNewBidTransaction(accountUtils.getAccountCurrent().getWallet().getId(),price,auctionRegistration.getId());
+        AuctionBid auctionBid = auctionBidService.handleNewBidTransaction(price,auctionRegistration.getId());
+        walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(), -price,TransactionType.BIDDING,"Bidding" + price );
 //        auctionBid.setAuctionRegistration(auctionRegistration);
 //        Set<AuctionBid> auctionBids = new HashSet<AuctionBid>();
 //        auctionBids.add(auctionBidService.handleNewBidTransaction(accountUtils.getAccountCurrent().getWallet().getId(),price,auctionRegistration.getId()));
 //        auctionRegistration.setAuctionBids(auctionBids);
-
+        auctionBidRepository.save(auctionBid);
         auctionRegistration.setStatus(AuctionRegistrationStatus.INITIALIZED);
 
         return auctionRegistrationRepository.save(auctionRegistration);

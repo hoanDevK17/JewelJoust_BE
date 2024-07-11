@@ -71,11 +71,11 @@ public class AuctionSessionAPI {
         AuctionSession auctionSession =  auctionSessionService.stopAuctionSession(id);
         return ResponseEntity.ok(auctionSession);
     }
-    @DeleteMapping("/auctionSessions/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        auctionSessionService.deleteSession(id);
-        return ResponseEntity.noContent().build(); // Trả về HTTP 204 No Content
-    }
+//    @DeleteMapping("/auctionSessions/{id}")
+//    public ResponseEntity<Void> delete(@PathVariable Long id) {
+//        auctionSessionService.deleteSession(id);
+//        return ResponseEntity.noContent().build(); // Trả về HTTP 204 No Content
+//    }
 //  mở phiên khi đến giờ ( staff)
 //   kết thúc phiên khi đến giờ (staff)
     // dừng phiên khẩn cấp để tí tiếp tucj lại

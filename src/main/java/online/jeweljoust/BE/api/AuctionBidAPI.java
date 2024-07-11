@@ -24,4 +24,11 @@ public class AuctionBidAPI {
         AuctionBid auctionBid = auctionBidService.addAuctionBid(auctionBidRequest);
         return ResponseEntity.ok(auctionBid);
     }
+//    @GetMapping
+//    //    @PreAuthorize("hasAuthority('MEMBER')")
+//    public ResponseEntity getAllBid(@RequestBody AuctionBidRequest auctionBidRequest) {
+//        AuctionBid auctionBid = auctionBidService.addAuctionBid(auctionBidRequest);
+//        return ResponseEntity.ok(auctionBid);
+//    }
+
 }

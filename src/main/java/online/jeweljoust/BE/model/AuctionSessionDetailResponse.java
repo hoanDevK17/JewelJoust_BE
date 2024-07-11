@@ -10,5 +10,6 @@ import online.jeweljoust.BE.entity.AuctionSession;
 @Setter
 public class AuctionSessionDetailResponse extends AuctionSession {
     boolean isRegister;
+    double highestPrice;
 
 }

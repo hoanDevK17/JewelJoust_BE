@@ -5,6 +5,8 @@ public enum TransactionType {
     WITHDRAW,
     BIDDEPOSIT,
     REFUND,
-    BIDDING;
+    BIDDING,
+    SELLING;
+
 
 }
