@@ -137,6 +137,8 @@ public class AuctionSessionService {
             auctionSession.setDescription(auctionSessionRequest.getDescription());
             // auctionSession.setFeeAmount(auctionSessionRequest.getFee_amount());
             // auctionSession.setCreateAt(new Date());
+//            List<Resources> resources = resourceRepository.findByAuctionSessionId(auctionSession.getId());
+
             Date now = new Date();
             Date start = auctionSession.getStart_time();
             Date end = auctionSession.getEnd_time();

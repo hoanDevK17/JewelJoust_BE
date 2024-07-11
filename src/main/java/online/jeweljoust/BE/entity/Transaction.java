@@ -16,7 +16,6 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-
     double amount;
     @ManyToOne
     @JoinColumn(name="registration_id")
@@ -32,6 +31,5 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     TransactionStatus status;
 
-
-
+    String txnRef;
 }

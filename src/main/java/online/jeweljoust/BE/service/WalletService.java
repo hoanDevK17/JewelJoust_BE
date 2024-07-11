@@ -2,9 +2,9 @@ package online.jeweljoust.BE.service;
 
 import jakarta.transaction.Transactional;
 import online.jeweljoust.BE.entity.Account;
-import online.jeweljoust.BE.entity.AuctionRegistration;
 import online.jeweljoust.BE.entity.Transaction;
 import online.jeweljoust.BE.entity.Wallet;
+import online.jeweljoust.BE.enums.TransactionStatus;
 import online.jeweljoust.BE.enums.TransactionType;
 import online.jeweljoust.BE.model.DepositRequest;
 import online.jeweljoust.BE.model.RechargeRequestDTO;
@@ -18,12 +18,13 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -119,15 +120,15 @@ public class WalletService {
 
 
     public String createUrl(RechargeRequestDTO rechargeRequestDTO) throws NoSuchAlgorithmException, InvalidKeyException, Exception {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
 
-        LocalDateTime createDate = LocalDateTime.now();
-        String formattedCreateDate = createDate.format(formatter);
+        Date createDate = new Date();
+        String formattedCreateDate = formatter.format(createDate);
 
-//        User user = accountUtils.getCurrentUser();
+        Account account = accountUtils.getAccountCurrent();
 
         String orderId = UUID.randomUUID().toString().substring(0, 6);
-//
+
 //        Wallet wallet = walletRepository.findWalletByUser_Id(user.getId());
 //
 //        Transaction transaction = new Transaction();
@@ -138,6 +139,17 @@ public class WalletService {
 //        transaction.setTransactionDate(formattedCreateDate);
 //        transaction.setDescription("Recharge");
 //        Transaction transactionReturn = transactionRepository.save(transaction);
+
+        Wallet wallet = walletRepository.findWallelByAccountWalletId(account.getId());
+        Transaction transaction = new Transaction();
+        transaction.setAmount(Double.parseDouble(rechargeRequestDTO.getAmount()));
+        transaction.setTransaction_type(TransactionType.RECHARGE);
+        transaction.setWallet(wallet);
+        transaction.setDate(createDate);
+        transaction.setDescription("Recharge");
+        transaction.setStatus(TransactionStatus.PENDING);
+        transaction.setTxnRef(orderId);
+        transactionRepository.save(transaction);
 
         String tmnCode = "BOKXIUP2";
         String secretKey = "XQ4J4XZWOHQE7CXBH1LTGOSAYDPEJ22C";
@@ -184,6 +196,52 @@ public class WalletService {
         urlBuilder.deleteCharAt(urlBuilder.length() - 1); // Remove last '&'
 
         return urlBuilder.toString();
+    }
+
+    public String handleVnpayResponse(String url) throws Exception {
+        Map<String, String> params = extractParamsFromUrl(url);
+
+        String vnp_ResponseCode = params.get("vnp_ResponseCode");
+        String vnp_TxnRef = params.get("vnp_TxnRef");
+
+        // Kiểm tra mã phản hồi từ VNPAY
+        if ("00".equals(vnp_ResponseCode)) {
+            // Tìm giao dịch bằng mã tham chiếu
+            Transaction foundTransaction = transactionRepository.findByTxnRef(vnp_TxnRef);
+            if (foundTransaction != null && TransactionStatus.PENDING.equals(foundTransaction.getStatus())) {
+                // Cập nhật số dư ví của khách hàng
+                Wallet foundWallet = foundTransaction.getWallet();
+                double amount = foundTransaction.getAmount();
+                foundWallet.setBalance(foundWallet.getBalance() + amount);
+                walletRepository.save(foundWallet);
+
+                // Cập nhật trạng thái giao dịch thành COMPLETED
+                foundTransaction.setStatus(TransactionStatus.COMPLETED);
+                transactionRepository.save(foundTransaction);
+
+                return "VNPAY response processed successfully";
+            } else {
+                return "Transaction not found or already processed";
+            }
+        } else {
+            return "VNPAY response code indicates failure";
+        }
+    }
+
+    private Map<String, String> extractParamsFromUrl(String url) throws UnsupportedEncodingException {
+        Map<String, String> params = new HashMap<>();
+        String[] urlParts = url.split("\\?");
+        if (urlParts.length > 1) {
+            String query = urlParts[1];
+            String[] queryParams = query.split("&");
+            for (String param : queryParams) {
+                String[] keyValue = param.split("=");
+                String key = URLDecoder.decode(keyValue[0], "UTF-8");
+                String value = URLDecoder.decode(keyValue[1], "UTF-8");
+                params.put(key, value);
+            }
+        }
+        return params;
     }
 
     private String generateHMAC(String secretKey, String signData) throws NoSuchAlgorithmException, InvalidKeyException {
