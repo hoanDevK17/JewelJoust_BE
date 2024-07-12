@@ -260,6 +260,7 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public PagedAccountResponse getAllAccounts(int page, int size) {
+        System.out.println("oke roi nè "+page+size);
         Pageable pageable = PageRequest.of(page, size);
         Page<Account> accountPage = authenticationRepository.findAllAccounts(pageable);
         return new PagedAccountResponse(accountPage.getContent(), accountPage.getTotalElements());

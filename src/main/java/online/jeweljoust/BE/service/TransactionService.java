@@ -31,10 +31,24 @@ public class TransactionService {
         walletService.changBalance(wallet.getId(), amountDeposit,TransactionType.REFUND,"Refund deposit and bidding for the session" + auctionRegistration.getAuctionSession().getNameSession());
         return transactionRepository.save(transaction);
     }
+
     public List<Transaction> getAll(){
         return transactionRepository.findByWalletId(accountUtils.getAccountCurrent().getWallet().getId());
 //        return transactionRepository.findAll();
     }
+    public List<Transaction> getAllWithDrawRequest(){
+        return transactionRepository.findAllWithDrawRequest();
+//        return transactionRepository.findAll();
+    }
+    public Transaction confirmWithDraw(long id){
+        Transaction transaction = transactionRepository.findTransactionById(id);
+        if(transaction.getStatus().equals(TransactionStatus.PENDING)){
+            transaction.setStatus(TransactionStatus.COMPLETED);
+        }
+        return transaction;
+//        return transactionRepository.findAll();
+    }
+
 
     @Transactional
     public Transaction withdraw(double amountWithDraw){
