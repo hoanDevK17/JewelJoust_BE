@@ -9,6 +9,7 @@ import online.jeweljoust.BE.respository.AuctionBidRepository;
 import online.jeweljoust.BE.service.AuctionBidService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,8 +19,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuctionBidAPI {
     @Autowired
     AuctionBidService auctionBidService;
+
     @PostMapping("/auctionBid")
-//    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<AuctionBid> addBid(@RequestBody AuctionBidRequest auctionBidRequest) {
         AuctionBid auctionBid = auctionBidService.addAuctionBid(auctionBidRequest);
         return ResponseEntity.ok(auctionBid);

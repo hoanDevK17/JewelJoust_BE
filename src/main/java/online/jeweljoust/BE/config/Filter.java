@@ -45,6 +45,7 @@ public class Filter extends OncePerRequestFilter {
             "/api/auctionSessions",
             "/api/auctionSessions/detail/*",
             "/api/auctionSessions/{status}",
+            "/api/auctionSessions/3days",
             "/api/auctionSessions/*/*",
             "/websocket/**"
     );

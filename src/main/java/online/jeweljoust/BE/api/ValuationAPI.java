@@ -13,6 +13,7 @@ import online.jeweljoust.BE.model.UltimateRequest;
 import online.jeweljoust.BE.service.ValuationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,21 +35,21 @@ public class ValuationAPI {
 //    }
 
     @PostMapping("/initialValuations/comfirmed")
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<InitialValuation> confirmedInitial(@RequestBody ConfirmedInititalRequest confirmedInititalRequest) {
         InitialValuation initialValuation = valuationService.comfirmedInitial(confirmedInititalRequest);
         return ResponseEntity.ok(initialValuation);
     }
 
     @PostMapping("/initialValuations/rejected")
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<InitialValuation> rejectedInitial(@RequestBody RejectedInititalPriceRequest rejectedInititalPriceRequest) {
         InitialValuation initialValuation = valuationService.rejectedInitial(rejectedInititalPriceRequest);
         return ResponseEntity.ok(initialValuation);
     }
 
     @PostMapping("/shipments/{id}")
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<AuctionRequest> deliveryStatusById(@PathVariable("id") long id) {
         AuctionRequest auctionRequest = valuationService.deliveryStatusById(id);
         return ResponseEntity.ok(auctionRequest);
@@ -62,26 +63,26 @@ public class ValuationAPI {
 //    }
 
     @PostMapping("/ultimateValuations")
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<UltimateValuation> ultimateValuation(@RequestBody UltimateRequest ultimateRequest) {
         UltimateValuation ultimateValuation = valuationService.ultimateValuation( ultimateRequest);
         return ResponseEntity.ok(ultimateValuation);
     }
     @PostMapping("/ultimateValuations/rejected")
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<UltimateValuation> ultimateValuationReject(@RequestBody RejectUltimateRequest rejectUltimateRequest) {
         UltimateValuation ultimateValuation = valuationService.ultimateValuationReject( rejectUltimateRequest);
         return ResponseEntity.ok(ultimateValuation);
     }
 
     @PutMapping("/ultimateValuations/{id}")
-//    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<UltimateValuation> approvalManager(@PathVariable("id") long id) {
         UltimateValuation ultimateValuation = valuationService.approvalManager(id);
         return ResponseEntity.ok(ultimateValuation);
     }
     @PutMapping("/ultimateValuations/{id}/rejected")
-//    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<UltimateValuation> unApprovalManager(@PathVariable("id") long id,@RequestBody String reason) {
         UltimateValuation ultimateValuation = valuationService.unApprovalManager(id,reason);
         return ResponseEntity.ok(ultimateValuation);
@@ -94,7 +95,7 @@ public class ValuationAPI {
     }
 
     @PutMapping("/shipment/{id}/return")
-//    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<Shipment> returnShipment(@PathVariable("id") long id) {
         return ResponseEntity.ok(valuationService.returnShipment(id));
     }

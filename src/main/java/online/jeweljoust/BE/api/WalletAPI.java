@@ -26,6 +26,7 @@ public class WalletAPI {
     WalletService walletService;
     @Autowired
     SimpMessagingTemplate messagingTemplate;
+
     @PostMapping("/wallet/createUrl")
     public ResponseEntity create(@RequestBody RechargeRequestDTO rechargeRequestDTO) throws Exception {
         String url = walletService.createUrl(rechargeRequestDTO);
