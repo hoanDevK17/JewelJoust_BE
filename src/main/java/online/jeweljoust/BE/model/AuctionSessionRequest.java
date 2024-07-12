@@ -36,5 +36,4 @@ public class AuctionSessionRequest {
     @Enumerated(EnumType.STRING)
     AuctionSessionStatus status;
 
-    List<Resources> resources;
 }

@@ -123,6 +123,7 @@ public class AuctionSessionService {
         return auctionSession;
     }
 
+    @Transactional
     public AuctionSession updateAuctionSession(long id, AuctionSessionRequest auctionSessionRequest) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
 //        auctionSession.setManagerSession(accountUtils.getAccountCurrent());
@@ -135,6 +136,20 @@ public class AuctionSessionService {
             auctionSession.setNameSession(auctionSessionRequest.getName_session());
             auctionSession.setNameJewelry(auctionSessionRequest.getName_jewelry());
             auctionSession.setDescription(auctionSessionRequest.getDescription());
+            if (auctionSessionRequest.getResourceSession() != null) {
+                resourceRepository.deleteByAuctionSessionResourceId(auctionSession.getId());
+                for (ResourceRequest resourceSession : auctionSessionRequest.getResourceSession()) {
+                    Resources resources = new Resources();
+                    resources.setResourceType(ResourceTypes.ResourceType.img);
+                    resources.setPath(resourceSession.getPath());
+                    resources.setDescription(resourceSession.getDescription());
+                    resources.setReferenceType(ResourceTypes.ReferenceType.AUCTION_SESSION);
+                    resources.setAuctionSessionResource(auctionSession);
+                    resources.setAccountResource(accountUtils.getAccountCurrent());
+                    resources.setUploadAt(new Date());
+                    resourceRepository.save(resources);
+                }
+            }
             // auctionSession.setFeeAmount(auctionSessionRequest.getFee_amount());
             // auctionSession.setCreateAt(new Date());
 //            List<Resources> resources = resourceRepository.findByAuctionSessionId(auctionSession.getId());
@@ -156,7 +171,8 @@ public class AuctionSessionService {
                 Account account = registration.getAccountRegistration();
                 EmailDetail emailDetail = new EmailDetail();
                 emailDetail.setRecipient(account.getEmail());
-                emailDetail.setSubject("Preliminary Appraisal Complete");
+                emailDetail.setSubject("Update Auction Session Notification");
+                emailDetail.setAuctionId(auctionSession.getId());
                 emailDetail.setProductName(registration.getAuctionSession().getNameJewelry());
                 emailDetail.setFullName(account.getFullname());
                 emailService.sendMailNotificationSession(emailDetail, "templateUpdateSession");

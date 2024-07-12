@@ -106,8 +106,9 @@ public class ValuationService {
                     emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
                     emailDetail.setSubject("Jewelry Auction Request Rejected");
                     emailDetail.setValuation("Ultimate Valuation");
-                    emailDetail.setProductName(auctionRequest.getJewelryname());
                     emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+                    emailDetail.setAuctionId(auctionRequest.getId());
+                    emailDetail.setProductName(auctionRequest.getJewelryname());
                 emailService.sendMailNotification(emailDetail, "templateRequestReject");
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
@@ -123,6 +124,13 @@ public class ValuationService {
             ultimateValuation.setUltimateManager(accountUtils.getAccountCurrent());
             auctionRequest.setStatus(AuctionRequestStatus.APPROVED);
             ultimateValuation.setAuctionRequestUltimate(auctionRequest);
+            EmailDetail emailDetail = new EmailDetail();
+                emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
+                emailDetail.setSubject("Confirmation Required: Proceed to Auction Process for Your Jewelry Item");
+                emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+                emailDetail.setAuctionId(auctionRequest.getId());
+                emailDetail.setProductName(auctionRequest.getJewelryname());
+            emailService.sendMailNotification(emailDetail, "templateFinalValuation");
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
         }
@@ -144,8 +152,9 @@ public class ValuationService {
                 emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
                 emailDetail.setSubject("Jewelry Auction Request Rejected");
                 emailDetail.setValuation("Ultimate Valuation");
-                emailDetail.setProductName(auctionRequest.getJewelryname());
                 emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+                emailDetail.setAuctionId(auctionRequest.getId());
+                emailDetail.setProductName(auctionRequest.getJewelryname());
             emailService.sendMailNotification(emailDetail, "templateRequestReject");
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
@@ -167,9 +176,10 @@ public class ValuationService {
             initialRepository.save(initialValuation);
             EmailDetail emailDetail = new EmailDetail();
                 emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
-                emailDetail.setSubject("Preliminary Appraisal Complete");
-                emailDetail.setProductName(auctionRequest.getJewelryname());
+                emailDetail.setSubject("Initial Valuation Complete");
                 emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+                emailDetail.setAuctionId(auctionRequest.getId());
+                emailDetail.setProductName(auctionRequest.getJewelryname());
             emailService.sendMailNotification(emailDetail, "templateInitalValuation");
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
@@ -193,8 +203,9 @@ public class ValuationService {
                 emailDetail.setRecipient(auctionRequest.getAccountRequest().getEmail());
                 emailDetail.setSubject("Jewelry Auction Request Rejected");
                 emailDetail.setValuation("Initial Valuation");
-                emailDetail.setProductName(auctionRequest.getJewelryname());
                 emailDetail.setFullName(auctionRequest.getAccountRequest().getFullname());
+                emailDetail.setAuctionId(auctionRequest.getId());
+                emailDetail.setProductName(auctionRequest.getJewelryname());
             emailService.sendMailNotification(emailDetail, "templateRequestReject");
         } else {
             throw new IllegalStateException("Invalid status to proceed!!!");
