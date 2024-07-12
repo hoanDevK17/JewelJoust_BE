@@ -40,9 +40,9 @@ public class AuctionRegistration {
     @ManyToOne
     @JoinColumn(name="member_id")
     Account accountRegistration;
-    @OneToMany(mappedBy = "auctionRegistration",cascade = CascadeType.ALL)
-    @JsonIgnore
-    Set<Transaction> transactions;
+//    @OneToMany(mappedBy = "auctionRegistration",cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    Set<Transaction> transactions;
     @OneToMany(mappedBy = "auctionRegistration",cascade = CascadeType.ALL)
     @JsonIgnore
     Set<AuctionBid> auctionBids;

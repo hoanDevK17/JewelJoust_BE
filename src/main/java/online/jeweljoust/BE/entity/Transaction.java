@@ -17,9 +17,9 @@ public class Transaction {
     Long id;
 
     double amount;
-    @ManyToOne
-    @JoinColumn(name="registration_id")
-    AuctionRegistration auctionRegistration;
+//    @ManyToOne
+//    @JoinColumn(name="registration_id")
+//    AuctionRegistration auctionRegistration;
     @ManyToOne
     @JoinColumn(name = "wallet_id")
     Wallet wallet;

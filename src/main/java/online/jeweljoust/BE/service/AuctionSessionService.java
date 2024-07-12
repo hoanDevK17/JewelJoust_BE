@@ -73,8 +73,11 @@ public class AuctionSessionService {
 
         AuctionSessionDetailResponse auctionSessionDetailResponse = auctionSessionMapper.toResponse(auctionSession);
         auctionSessionDetailResponse.setRegister(isRegistered);
-        AuctionBid highestBid = auctionBidRepository.findHighestBidBySessionId(auctionSession.getId()).orElse(new AuctionBid());
-        auctionSessionDetailResponse.setHighestPrice(highestBid.getBid_price());
+        AuctionBid highestBid = auctionBidRepository.findHighestBidBySessionId(auctionSession.getId())
+                .orElse(new AuctionBid());
+        if (highestBid.getBid_price() != null) {
+            auctionSessionDetailResponse.setHighestPrice(highestBid.getBid_price());
+        }
         return auctionSessionDetailResponse;
     }
 
@@ -125,8 +128,10 @@ public class AuctionSessionService {
 
     public AuctionSession updateAuctionSession(long id, AuctionSessionRequest auctionSessionRequest) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
-//        auctionSession.setManagerSession(accountUtils.getAccountCurrent());
-        if (auctionSession.getStatus().equals(AuctionSessionStatus.INITIALIZED) || auctionSession.getStatus().equals(AuctionSessionStatus.STOP) || auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)) {
+        // auctionSession.setManagerSession(accountUtils.getAccountCurrent());
+        if (auctionSession.getStatus().equals(AuctionSessionStatus.INITIALIZED)
+                || auctionSession.getStatus().equals(AuctionSessionStatus.STOP)
+                || auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)) {
             auctionSession.setStaffSession(authenticationRepository.findById(auctionSessionRequest.getStaff_id()));
             auctionSession.setStart_time(auctionSessionRequest.getStart_time());
             auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
@@ -137,21 +142,23 @@ public class AuctionSessionService {
             auctionSession.setDescription(auctionSessionRequest.getDescription());
             // auctionSession.setFeeAmount(auctionSessionRequest.getFee_amount());
             // auctionSession.setCreateAt(new Date());
-//            List<Resources> resources = resourceRepository.findByAuctionSessionId(auctionSession.getId());
+            // List<Resources> resources =
+            // resourceRepository.findByAuctionSessionId(auctionSession.getId());
+            auctionSession.setStatus(auctionSessionRequest.getStatus());
+//            Date now = new Date();
+//            Date start = auctionSession.getStart_time();
+//            Date end = auctionSession.getEnd_time();
+//
+//            if (now.after(start) && (now.before(end))) {
+//                auctionSession.setStatus(AuctionSessionStatus.BIDDING);
+//            } else if (now.after(end)) {
+//                auctionSession.setStatus(AuctionSessionStatus.FINISH);
+//            } else if (now.before(start)) {
+//                auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
+//            }
 
-            Date now = new Date();
-            Date start = auctionSession.getStart_time();
-            Date end = auctionSession.getEnd_time();
-
-            if (now.after(start) && (now.before(end))) {
-                auctionSession.setStatus(AuctionSessionStatus.BIDDING);
-            } else if (now.after(end)) {
-                auctionSession.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
-            } else if (now.before(start)) {
-                auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
-            }
-
-            List<AuctionRegistration> allRegister = auctionRegistrationRepository.findAuctionRegistrationByAuctionSessionId(id);
+            List<AuctionRegistration> allRegister = auctionRegistrationRepository
+                    .findAuctionRegistrationByAuctionSessionId(id);
             for (AuctionRegistration registration : allRegister) {
                 Account account = registration.getAccountRegistration();
                 EmailDetail emailDetail = new EmailDetail();
@@ -183,8 +190,9 @@ public class AuctionSessionService {
         for (AuctionSession s : endSesion) {
             if (now.equals(s.getEnd_time()) || now.after(s.getEnd_time())) {
                 executorService.submit(() -> {
-                    s.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
-                    auctionSessionRepository.save(s);
+//                    s.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
+//                    auctionSessionRepository.save(s);
+                        this.finishSession(s);
                 });
             }
         }
@@ -192,37 +200,66 @@ public class AuctionSessionService {
 
     public AuctionSession stopAuctionSession(Long id) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
+        if(auctionSession.getStaffSession().getId() != accountUtils.getAccountCurrent().getId()&& !accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)){
+            throw new IllegalStateException("You can not assigned edit this session");
+        }
         if (auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)) {
             auctionSession.setStatus(AuctionSessionStatus.STOP);
             auctionSessionRepository.save(auctionSession);
         }
+        else{
+            throw new IllegalStateException("This session is not BIDDING");
+        }
+        return auctionSession;
+    }
+    public AuctionSession continueAuctionSession(Long id) {
+
+        AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
+        if(auctionSession.getStaffSession().getId() != accountUtils.getAccountCurrent().getId()&& !accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)){
+            throw new IllegalStateException("You can not assigned edit this session");
+        }
+        if (auctionSession.getStatus().equals(AuctionSessionStatus.STOP)) {
+            auctionSession.setStatus(AuctionSessionStatus.BIDDING);
+            auctionSessionRepository.save(auctionSession);
+        }else{
+            throw new IllegalStateException("This session is not STOP");
+        }
         return auctionSession;
     }
 
-    //    public void deleteSession(Long id) {
-//         auctionSessionRepository.deleteById(id);
-//    }
+    // public void deleteSession(Long id) {
+    // auctionSessionRepository.deleteById(id);
+    // }
     @Transactional
-    public void finishSession(Long sessionId) {
-        AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(sessionId);
+    public void finishSession(AuctionSession auctionSession) {
+        Long sessionId = auctionSession.getId();
         auctionSession.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
         auctionSessionRepository.save(auctionSession);
-        AuctionBid auctionBidHighest = auctionBidRepository.findHighestBidBySessionId(sessionId).orElse(new AuctionBid());
-        auctionBidHighest.setStatus(AuctionBidStatus.PENDINGPAYMENT);
+        AuctionBid auctionBidHighest = auctionBidRepository.findHighestBidBySessionId(sessionId)
+                .orElse(new AuctionBid());
+        auctionBidHighest.setStatus(AuctionBidStatus.WON);
+        auctionBidHighest.getAuctionRegistration().setStatus(AuctionRegistrationStatus.WON);
         auctionBidRepository.save(auctionBidHighest);
-        if(auctionBidHighest == null){
-            throw new IllegalStateException("Không có lệnh chiến thắng");
+//        Thông báo người dùng đến nhận hàng
+        if (auctionBidHighest == null) {
+            auctionSession.setStatus(AuctionSessionStatus.EXPIRED);
+            auctionSessionRepository.save(auctionSession);
+            return;
         }
 
         List<AuctionBid> activeBids = auctionBidRepository.findActiveBidsBySessionId(sessionId);
         for (AuctionBid bid : activeBids) {
-            walletService.changBalance(bid.getAuctionRegistration().getAccountRegistration().getWallet().getId(), bid.getBid_price(),TransactionType.REFUND,"RefundBidding amount" + bid.getBid_price() );
+            walletService.changBalance(bid.getAuctionRegistration().getAccountRegistration().getWallet().getId(),
+                    bid.getBid_price(), TransactionType.REFUND, "RefundBidding amount" + bid.getBid_price());
             bid.setStatus(AuctionBidStatus.REFUND);
+            bid.getAuctionRegistration().setStatus(AuctionRegistrationStatus.REFUNDED);
             auctionBidRepository.save(bid);
         }
-        walletService.changBalance( auctionSession.getAuctionRequest().getAccountRequest().getWallet().getId(), auctionBidHighest.getBid_price(), TransactionType.SELLING,"Sell successfully product with id request" + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price() );
-
-        auctionSession.setStatus(AuctionSessionStatus.COMPLETED);
+        walletService.changBalance(auctionSession.getAuctionRequest().getAccountRequest().getWallet().getId(),
+                auctionBidHighest.getBid_price(), TransactionType.SELLING, "Sell successfully product with id request"
+                        + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price());
+//gửi mail cho thằng chiến thắng nữa
+        auctionSession.setStatus(AuctionSessionStatus.FINISH);
 
     }
 }
