@@ -8,6 +8,7 @@ import online.jeweljoust.BE.model.AuctionRequestReponse;
 import online.jeweljoust.BE.service.AuctionRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,35 +23,35 @@ public class AuctionRequestAPI {
     AuctionRequestService auctionRequestService;
 
     @PostMapping("/auctionRequests")
-//    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity requestSaleAuction(@RequestBody AuctionRequestReponse auctionRequestReponse) {
         AuctionRequest auctionRequest = auctionRequestService.requestSale(auctionRequestReponse);
         return ResponseEntity.ok(auctionRequest);
     }
 
     @GetMapping("/auctionRequests/accountCurrent")
-//    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<List<AuctionRequest>> getAuctionByUserid() {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequest();
         return ResponseEntity.ok(auctionRequests);
     }
 
     @PutMapping("/auctionRequests/{id}/cancel")
-//    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<AuctionRequest> cancelAuctionRequest(@PathVariable("id") long id){
         AuctionRequest auctionRequest = auctionRequestService.cancelRequest(id);
         return ResponseEntity.ok(auctionRequest);
     }
 
     @GetMapping("/auctionRequests/{status}")
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<List<AuctionRequest>> getAuctionRequestByStatus(@PathVariable("status") AuctionRequestStatus status) {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAuctionRequestByStatus(status);
         return ResponseEntity.ok(auctionRequests);
     }
 
     @GetMapping("/auctionRequests")
-//    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<List<AuctionRequest>> getAllAuctionRequest() {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequest();
         return ResponseEntity.ok(auctionRequests);

@@ -13,6 +13,7 @@ import online.jeweljoust.BE.service.WalletService;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,21 +64,21 @@ public class AuthenticationAPI {
     }
 
     @PostMapping("/account/register")
-//    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity registerHaveRole(@RequestBody RegisterRequest registerRequest) {
         Account account = authenticationService.registerHaveRole(registerRequest);
         return ResponseEntity.ok(account);
     }
 
     @GetMapping("/account")
-//    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<Account>> getAccounts() {
         List<Account> accounts = authenticationService.getAllAccount();
         return ResponseEntity.ok(accounts);
     }
 
     @PutMapping("/account/changePassword")
-//    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
         String message = authenticationService.changePassword(changePasswordRequest);
         return ResponseEntity.ok(message);
@@ -128,21 +129,21 @@ public class AuthenticationAPI {
     }
 
     @PutMapping("/account/{userid}/block")
-//    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> blockAccount(@PathVariable("userid") long userid, AccountStatus status){
         authenticationService.blockAccount(userid, status);
         return ResponseEntity.ok("Account has been changed");
     }
 
     @GetMapping("/account/{name}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
      public ResponseEntity<List<Account>> getAccountByName(@PathVariable("name") String name){
          List<Account> accounts = authenticationService.getAccountByName(name);
          return ResponseEntity.ok(accounts);
      }
 
      @DeleteMapping("/account/{id}")
-//     @PreAuthorize("hasAuthority('ADMIN')")
+     @PreAuthorize("hasAuthority('ADMIN')")
      public ResponseEntity<String> deleteAccountById(@PathVariable("id") long id){
         authenticationService.deleteAccountById(id);
         return ResponseEntity.ok("Deleted successfully!!!");

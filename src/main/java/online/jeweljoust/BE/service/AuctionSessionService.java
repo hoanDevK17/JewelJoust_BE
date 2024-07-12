@@ -18,6 +18,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -278,5 +279,14 @@ public class AuctionSessionService {
 //gửi mail cho thằng chiến thắng nữa
         auctionSession.setStatus(AuctionSessionStatus.FINISH);
 
+    }
+
+    public List<AuctionSession> getAuctionSession3days() {
+        Date now = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(now);
+        cal.add(Calendar.DAY_OF_MONTH, -3);
+        Date threeDaysAgo = cal.getTime();
+        return auctionSessionRepository.findAuctionSessions3days(AuctionSessionStatus.PENDINGPAYMENT, threeDaysAgo, now);
     }
 }
