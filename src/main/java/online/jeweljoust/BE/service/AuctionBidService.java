@@ -81,4 +81,8 @@
             }
             return auctionBidRepository.findAllBidsByUserId( accountUtils.getAccountCurrent().getId());
         }
+
+        public List<AuctionBid> getBidHistoryByAccountRegistrationId(Long registrationId) {
+            return auctionBidRepository.findBidsByAuctionRegistrationId(registrationId);
+        }
     }
