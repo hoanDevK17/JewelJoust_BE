@@ -19,10 +19,11 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
             "AND b.bid_price = (SELECT MAX(b2.bid_price) FROM AuctionBid b2 WHERE b2.auctionRegistration.auctionSession.id = :sessionId)")
     Optional<AuctionBid> findHighestBidBySessionId(@Param("sessionId") Long sessionId);
 
-    @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.accountRegistration.id = :userId " +
-            "AND b.auctionRegistration.auctionSession.id = :sessionId " +
-            "AND b.status = 'ACTIVE' " +
-            "ORDER BY b.bid_price DESC")
+    @Query("SELECT b FROM AuctionBid b " +
+            "WHERE b.bid_price = (SELECT MAX(b2.bid_price) FROM AuctionBid b2 " +
+            "WHERE b2.auctionRegistration.accountRegistration.id = :userId " +
+            "AND b2.auctionRegistration.auctionSession.id = :sessionId " +
+            "AND b2.status = 'ACTIVE')")
     Optional<AuctionBid> findHighestBidByUserAndSessionAndStatus(@Param("userId") Long userId, @Param("sessionId") Long sessionId);
     @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.auctionSession.id = :sessionId " +
             "AND b.status = 'ACTIVE'")

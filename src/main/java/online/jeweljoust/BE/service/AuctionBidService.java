@@ -47,15 +47,16 @@
 
             AuctionBid highestBid = auctionBidRepository.findHighestBidBySessionId(auctionSession.getId()).orElse(new AuctionBid());
 
-            if(auctionBidRequest.getPrice() < highestBid.getBid_price() ) {
+            if(auctionBidRequest.getPrice() <= highestBid.getBid_price() ) {
                 throw new IllegalStateException("Bid amount must be higher than the current highest bid");
-            }
+            }   
             AuctionBid highestBidOfUser = auctionBidRepository.findHighestBidByUserAndSessionAndStatus(accountUtils.getAccountCurrent().getId(),auctionSession.getId()).orElse(new AuctionBid());
 
 
 
             double price = auctionBidRequest.getPrice() - highestBidOfUser.getBid_price();
-            AuctionBid auctionBid = this.handleNewBidTransaction(auctionBidRequest.getPrice(),auctionBidRequest.getId_session());
+
+            AuctionBid auctionBid = this.handleNewBidTransaction(auctionBidRequest.getPrice(),highestBidOfUser.getAuctionRegistration().getId());
             walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(), -price,TransactionType.BIDDING,"Bidding" + price );
             highestBidOfUser.setStatus(AuctionBidStatus.NONACTIVE);
             auctionBidRepository.save(highestBidOfUser);
