@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api")
 @SecurityRequirement(name = "api")
@@ -18,11 +20,17 @@ import org.springframework.web.bind.annotation.*;
 public class AuctionBidAPI {
     @Autowired
     AuctionBidService auctionBidService;
-    @PostMapping("/auctionBid")
+    @PostMapping("/auctionBids")
 //    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<AuctionBid> addBid(@RequestBody AuctionBidRequest auctionBidRequest) {
         AuctionBid auctionBid = auctionBidService.addAuctionBid(auctionBidRequest);
         return ResponseEntity.ok(auctionBid);
+    }
+
+    @GetMapping("/auctionBids")
+    public ResponseEntity getAllBid() {
+        List<AuctionBid> auctionBids  = auctionBidService.getHistoryAuctionBid();
+        return ResponseEntity.ok(auctionBids);
     }
 //    @GetMapping
 //    //    @PreAuthorize("hasAuthority('MEMBER')")

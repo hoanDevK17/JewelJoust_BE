@@ -2,10 +2,7 @@
 
     import jakarta.transaction.Transactional;
     import online.jeweljoust.BE.entity.*;
-    import online.jeweljoust.BE.enums.AuctionBidStatus;
-    import online.jeweljoust.BE.enums.AuctionRegistrationStatus;
-    import online.jeweljoust.BE.enums.AuctionSessionStatus;
-    import online.jeweljoust.BE.enums.TransactionType;
+    import online.jeweljoust.BE.enums.*;
     import online.jeweljoust.BE.model.AuctionBidRequest;
     import online.jeweljoust.BE.model.AuctionRegistrationRequest;
     import online.jeweljoust.BE.respository.AuctionBidRepository;
@@ -82,8 +79,10 @@
             auctionBid.setStatus(AuctionBidStatus.ACTIVE);
             return auctionBid;
         }
-//        public List<AuctionBid> getAllBidding(){
-//           auctionBidRepository.findHighestBidBySessionId()
-//            return auctionBid;
-//        }
+        public List<AuctionBid> getHistoryAuctionBid() {
+            if(!accountUtils.getAccountCurrent().getRole().equals(AccountRole.MEMBER)){
+                return auctionBidRepository.findAll();
+            }
+            return auctionBidRepository.findActiveBidsByUserId( accountUtils.getAccountCurrent().getId());
+        }
     }

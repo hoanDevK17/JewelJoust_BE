@@ -231,7 +231,6 @@ public class AuctionSessionService {
         return auctionSession;
     }
     public AuctionSession continueAuctionSession(Long id) {
-
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
         if(auctionSession.getStaffSession().getId() != accountUtils.getAccountCurrent().getId()&& !accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)){
             throw new IllegalStateException("You can not assigned edit this session");

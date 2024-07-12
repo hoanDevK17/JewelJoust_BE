@@ -34,5 +34,8 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
     @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.auctionSession.id = :sessionId " +
             "AND b.status = 'ACTIVE'")
     List<AuctionBid> findActiveBidsBySessionId(Long sessionId);
+    @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.accountRegistration.id = :userId " +
+            "AND b.status = 'ACTIVE'")
+    List<AuctionBid> findActiveBidsByUserId(Long userId);
 //    List<AuctionBid> find
 }

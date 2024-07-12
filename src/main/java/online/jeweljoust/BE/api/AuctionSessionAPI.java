@@ -75,8 +75,13 @@ public class AuctionSessionAPI {
     }
 
     @PutMapping("/auctionSessions/stop")
-    public ResponseEntity<AuctionSession> stopAuctionSessions(@PathVariable Long id) {
+    public ResponseEntity<AuctionSession> stopAuctionSessions(@RequestBody Long id) {
         AuctionSession auctionSession =  auctionSessionService.stopAuctionSession(id);
+        return ResponseEntity.ok(auctionSession);
+    }
+    @PutMapping("/auctionSessions/continue")
+    public ResponseEntity<AuctionSession> continueAuctionSessions(@RequestBody Long id) {
+        AuctionSession auctionSession =  auctionSessionService.continueAuctionSession(id);
         return ResponseEntity.ok(auctionSession);
     }
 
