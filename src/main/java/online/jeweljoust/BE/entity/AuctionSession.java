@@ -58,6 +58,7 @@ public class AuctionSession {
 //        return auctionRequest != null ? auctionRequest.getId() : null;
 //    }
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "auctionSession")
+    @JsonIgnore
     Set<AuctionRegistration> auctionRegistration;
 
     @Enumerated(EnumType.STRING)

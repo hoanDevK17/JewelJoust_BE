@@ -31,7 +31,7 @@ public class AuctionRegistration {
 // Refunded,Completed(khi thanh toán thành công, và kết thúc đấu giá)
     @ManyToOne
     @JoinColumn(name="auctionSession_id")
-    @JsonIgnore
+
     AuctionSession auctionSession;
 //    @JsonProperty("auctionSession_id")
 //    public Long getAuctionSessionId() {

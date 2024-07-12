@@ -8,6 +8,7 @@ import online.jeweljoust.BE.respository.*;
 
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -38,6 +39,7 @@ public class AuctionRegistrationService {
     AuctionBidService auctionBidService;
     @Autowired
     AuctionBidRepository auctionBidRepository;
+    SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     public AuctionRegistration addAuctionRegistration(AuctionRegistrationRequest auctionRegistrationRequest) {
@@ -73,6 +75,7 @@ public class AuctionRegistrationService {
         auctionBidRepository.save(auctionBid);
         auctionRegistration.setStatus(AuctionRegistrationStatus.INITIALIZED);
 
+//        messagingTemplate.convertAndSend("/topic/JewelJoust","addRequest");
         return auctionRegistrationRepository.save(auctionRegistration);
 //walletService
     }

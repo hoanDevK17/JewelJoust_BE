@@ -4,20 +4,16 @@
     import online.jeweljoust.BE.entity.*;
     import online.jeweljoust.BE.enums.*;
     import online.jeweljoust.BE.model.AuctionBidRequest;
-    import online.jeweljoust.BE.model.AuctionRegistrationRequest;
     import online.jeweljoust.BE.respository.AuctionBidRepository;
     import online.jeweljoust.BE.respository.AuctionRegistrationRepository;
     import online.jeweljoust.BE.respository.AuctionSessionRepository;
-    import online.jeweljoust.BE.respository.WalletRepository;
     import online.jeweljoust.BE.utils.AccountUtils;
-    import org.checkerframework.checker.units.qual.A;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.messaging.simp.SimpMessagingTemplate;
     import org.springframework.stereotype.Service;
 
     import java.util.Date;
     import java.util.List;
-    import java.util.Optional;
 
     @Service
     public class AuctionBidService {
@@ -83,6 +79,6 @@
             if(!accountUtils.getAccountCurrent().getRole().equals(AccountRole.MEMBER)){
                 return auctionBidRepository.findAll();
             }
-            return auctionBidRepository.findActiveBidsByUserId( accountUtils.getAccountCurrent().getId());
+            return auctionBidRepository.findAllBidsByUserId( accountUtils.getAccountCurrent().getId());
         }
     }

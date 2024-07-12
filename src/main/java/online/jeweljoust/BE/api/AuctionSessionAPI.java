@@ -65,7 +65,6 @@ public class AuctionSessionAPI {
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/detail/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<AuctionSessionDetailResponse> getAuctionSessionByID(@PathVariable long id, @RequestParam(required = false)  long userId) {
         AuctionSessionDetailResponse auctionSession = auctionSessionService.getAuctionSessionByID(id,userId);
         return ResponseEntity.ok(auctionSession);
