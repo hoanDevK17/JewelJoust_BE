@@ -154,7 +154,7 @@ public class WalletService {
         String tmnCode = "BOKXIUP2";
         String secretKey = "XQ4J4XZWOHQE7CXBH1LTGOSAYDPEJ22C";
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        String returnUrl = "http://jeweljoust.online/";
+        String returnUrl = "http://jeweljoust.online/payment";
 
         String currCode = "VND";
         Map<String, String> vnpParams = new TreeMap<>();

@@ -11,6 +11,7 @@ import online.jeweljoust.BE.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,17 +24,18 @@ import java.util.Map;
 public class WalletAPI {
     @Autowired
     WalletService walletService;
-
+    @Autowired
+    SimpMessagingTemplate messagingTemplate;
     @PostMapping("/wallet/createUrl")
     public ResponseEntity create(@RequestBody RechargeRequestDTO rechargeRequestDTO) throws Exception {
         String url = walletService.createUrl(rechargeRequestDTO);
         return ResponseEntity.ok(url);
     }
-    @PostMapping("/wallet/deposit")
-    public ResponseEntity deposit( @RequestBody DepositRequest depositRequest)  {
-        Transaction transaction = walletService.deposit( depositRequest);
-        return ResponseEntity.ok(transaction);
-    }
+//    @PostMapping("/wallet/deposit")
+//    public ResponseEntity deposit( @RequestBody DepositRequest depositRequest)  {
+//        Transaction transaction = walletService.deposit( depositRequest);
+//        return ResponseEntity.ok(transaction);
+//    }
     @GetMapping("/wallet/transaction-history")
     public ResponseEntity getTransactionHistory()  {
         List<Transaction> transactions = walletService.getTransactionHistory();
@@ -50,6 +52,7 @@ public class WalletAPI {
         try {
             System.out.println("Received URL: " + url); // Thêm log để kiểm tra URL nhận được
             String responseMessage = walletService.handleVnpayResponse(url);
+
             return ResponseEntity.ok(responseMessage);
         } catch (Exception e) {
             e.printStackTrace();

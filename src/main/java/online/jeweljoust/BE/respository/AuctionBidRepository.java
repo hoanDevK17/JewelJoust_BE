@@ -18,12 +18,18 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
     @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.auctionSession.id = :sessionId " +
             "AND b.bid_price = (SELECT MAX(b2.bid_price) FROM AuctionBid b2 WHERE b2.auctionRegistration.auctionSession.id = :sessionId)")
     Optional<AuctionBid> findHighestBidBySessionId(@Param("sessionId") Long sessionId);
-
-    @Query("SELECT b FROM AuctionBid b " +
-            "WHERE b.bid_price = (SELECT MAX(b2.bid_price) FROM AuctionBid b2 " +
-            "WHERE b2.auctionRegistration.accountRegistration.id = :userId " +
-            "AND b2.auctionRegistration.auctionSession.id = :sessionId " +
-            "AND b2.status = 'ACTIVE')")
+//("SELECT b FROM AuctionBid b " +
+//        "WHERE b.bid_price = (SELECT MAX(b2.bid_price) FROM AuctionBid b2 " +
+//        "WHERE b2.auctionRegistration.accountRegistration.id = :userId " +
+//        "AND b2.auctionRegistration.auctionSession.id = :sessionId " +
+//        "AND b2.status = 'ACTIVE')")
+    @Query
+            (  "SELECT b FROM AuctionBid b " +
+                    "WHERE b.auctionRegistration.accountRegistration.id = :userId " +
+                    "AND b.auctionRegistration.auctionSession.id = :sessionId " +
+                    "AND b.bid_time = (SELECT MAX(b2.bid_time) FROM AuctionBid b2 " +
+                    "WHERE b2.auctionRegistration.accountRegistration.id = :userId " +
+                    "AND b2.auctionRegistration.auctionSession.id = :sessionId)")
     Optional<AuctionBid> findHighestBidByUserAndSessionAndStatus(@Param("userId") Long userId, @Param("sessionId") Long sessionId);
     @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.auctionSession.id = :sessionId " +
             "AND b.status = 'ACTIVE'")

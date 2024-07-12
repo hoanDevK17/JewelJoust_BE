@@ -55,10 +55,11 @@ public class AuctionSessionService {
     }
 
     public List<AuctionSession> getAuctionSessionsByStatus(AuctionSessionStatus status) {
-        return auctionSessionRepository.findByStatus(status);
+        return auctionSessionRepository.findAuctionSessionByStatus(status);
     }
 
-    public AuctionSessionDetailResponse getAuctionSessionByID(long id, long idUser) {
+    public AuctionSessionDetailResponse getAuctionSessionByID(long id,long idUser) {
+
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
         if (auctionSession == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found: " + id);
@@ -188,11 +189,11 @@ public class AuctionSessionService {
             }
         }
         for (AuctionSession s : endSesion) {
-            if (now.equals(s.getEnd_time()) || now.after(s.getEnd_time())) {
+            if (now.after(s.getEnd_time())) {
                 executorService.submit(() -> {
-//                    s.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
-//                    auctionSessionRepository.save(s);
-                        this.finishSession(s);
+                    s.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
+                    auctionSessionRepository.save(s);
+                        this.finishSession(s.getId());
                 });
             }
         }
@@ -231,10 +232,10 @@ public class AuctionSessionService {
     // auctionSessionRepository.deleteById(id);
     // }
     @Transactional
-    public void finishSession(AuctionSession auctionSession) {
-        Long sessionId = auctionSession.getId();
-        auctionSession.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
-        auctionSessionRepository.save(auctionSession);
+    public void finishSession(long sessionId) {
+        AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(sessionId);
+//        auctionSession.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
+//        auctionSessionRepository.save(auctionSession);
         AuctionBid auctionBidHighest = auctionBidRepository.findHighestBidBySessionId(sessionId)
                 .orElse(new AuctionBid());
         auctionBidHighest.setStatus(AuctionBidStatus.WON);
