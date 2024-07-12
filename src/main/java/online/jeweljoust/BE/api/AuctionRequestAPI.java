@@ -51,7 +51,7 @@ public class AuctionRequestAPI {
     }
 
     @GetMapping("/auctionRequests")
-    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
+//    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionRequest>> getAllAuctionRequest() {
         List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequest();
         return ResponseEntity.ok(auctionRequests);

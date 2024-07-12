@@ -31,7 +31,7 @@ public class AuctionRegistrationAPI {
         return ResponseEntity.ok(auctionRegistration);
     }
     @GetMapping("/auctionRegistrations")
-    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionRegistration>>  getAllAuctionRegistrations() {
         List<AuctionRegistration> auctionRegistrations = auctionRegistrationService.findAllAuctionRegistration();
         return ResponseEntity.ok(auctionRegistrations);

@@ -46,13 +46,13 @@ public class AuctionSessionAPI {
     }
 //    getAll
     @GetMapping("/auctionSessions")
-    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionSession>> getAllAuctionSessions() {
         List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/{status}")
-    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionSession>> getAuctionSessionsbyStatus(@PathVariable AuctionSessionStatus status) {
 
         List<AuctionSession> auctionSession = auctionSessionService.getAuctionSessionsByStatus(status);
@@ -65,7 +65,7 @@ public class AuctionSessionAPI {
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/detail/{id}")
-    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<AuctionSessionDetailResponse> getAuctionSessionByID(@PathVariable long id, @RequestParam(required = false)  long userId) {
         AuctionSessionDetailResponse auctionSession = auctionSessionService.getAuctionSessionByID(id,userId);
         return ResponseEntity.ok(auctionSession);
@@ -78,7 +78,7 @@ public class AuctionSessionAPI {
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/name/{name}")
-    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionSession>>findAuctionSessionByName(@PathVariable String name) {
         return ResponseEntity.ok(auctionSessionRepository.findByNameSessionContaining(name));
     }
