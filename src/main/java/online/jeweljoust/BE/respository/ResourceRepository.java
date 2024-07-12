@@ -10,4 +10,5 @@ import java.util.List;
 
 public interface ResourceRepository extends JpaRepository<Resources, Long> {
 //    List<Resources> findByAuctionSessionId(long id);
+    void deleteByAuctionSessionResourceId(long id);
 }
