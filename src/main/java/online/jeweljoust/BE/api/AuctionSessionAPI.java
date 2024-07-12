@@ -52,7 +52,7 @@ public class AuctionSessionAPI {
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/{status}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionSession>> getAuctionSessionsbyStatus(@PathVariable AuctionSessionStatus status) {
 
         List<AuctionSession> auctionSession = auctionSessionService.getAuctionSessionsByStatus(status);
