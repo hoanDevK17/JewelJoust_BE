@@ -38,4 +38,7 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
             "AND b.status = 'ACTIVE'")
     List<AuctionBid> findActiveBidsByUserId(Long userId);
 //    List<AuctionBid> find
+
+    @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.id = :registrationId ORDER BY b.bid_time DESC")
+    List<AuctionBid> findBidsByAuctionRegistrationId(@Param("registrationId") Long registrationId);
 }

@@ -70,6 +70,28 @@ public class WalletService {
         System.out.println(transactionRepository.save(transaction));
         return transaction;
     }
+
+    @Transactional
+    public Transaction withdrawBalance(Long id, double amount, TransactionType type,String description) {
+        Wallet wallet = walletRepository.findWalletById(id);
+
+        double newBalance = wallet.getBalance() - amount;
+        if (newBalance < 0) {
+            throw new IllegalStateException("Insufficient funds in the wallet.");
+        }
+        System.out.println(newBalance);
+        wallet.setBalance(newBalance);
+        walletRepository.save(wallet);
+        Transaction transaction = new Transaction();
+        transaction.setWallet(wallet);
+        transaction.setAmount(25.24*Math.floor(amount * 100) / 100);
+        transaction.setStatus(TransactionStatus.PENDING);
+        transaction.setTransaction_type(type);
+        transaction.setDate(new Date());
+        transaction.setDescription(description);
+        System.out.println(transactionRepository.save(transaction));
+        return transaction;
+    }
 //    @Transactional
 //    public Transaction changBalance(Long id, double amount, TransactionType type,String description,Long id_auctionRegistration) {
 //        Wallet wallet = walletRepository.findWalletById(id);

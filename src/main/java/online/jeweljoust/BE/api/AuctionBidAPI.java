@@ -34,6 +34,12 @@ public class AuctionBidAPI {
         List<AuctionBid> auctionBids  = auctionBidService.getHistoryAuctionBid();
         return ResponseEntity.ok(auctionBids);
     }
+
+    @GetMapping("/auctionBids/{registrationid}")
+    public ResponseEntity<List<AuctionBid>> getBidHistory(@PathVariable("registrationId") long registrationId) {
+        List<AuctionBid> bids = auctionBidService.getBidHistoryByAccountRegistrationId(registrationId);
+        return ResponseEntity.ok(bids);
+    }
 //    @GetMapping
 //    //    @PreAuthorize("hasAuthority('MEMBER')")
 //    public ResponseEntity getAllBid(@RequestBody AuctionBidRequest auctionBidRequest) {
