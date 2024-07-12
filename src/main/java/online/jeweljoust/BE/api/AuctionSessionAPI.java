@@ -70,8 +70,13 @@ public class AuctionSessionAPI {
 
     @PutMapping("/auctionSessions/stop")
     public ResponseEntity<AuctionSession> stopAuctionSessions(@PathVariable Long id) {
-
         AuctionSession auctionSession =  auctionSessionService.stopAuctionSession(id);
+        return ResponseEntity.ok(auctionSession);
+    }
+
+    @GetMapping("/auctionSessions/3days")
+    public ResponseEntity<List<AuctionSession>> getAuctionSession3days() {
+        List<AuctionSession> auctionSession =  auctionSessionService.getAuctionSession3days();
         return ResponseEntity.ok(auctionSession);
     }
 

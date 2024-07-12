@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 @Repository
 public interface AuctionSessionRepository extends JpaRepository<AuctionSession, Long> {
@@ -15,4 +16,6 @@ public interface AuctionSessionRepository extends JpaRepository<AuctionSession, 
     List<AuctionSession> findByNameSession(String name);
     List<AuctionSession> findByStatus(AuctionSessionStatus status);
     List<AuctionSession> findAuctionSessionByStatus(AuctionSessionStatus status);
+    @Query("SELECT a FROM AuctionSession a WHERE a.status = :status AND a.start_time >= :startTime AND a.start_time < :endTime ORDER BY a.start_time DESC")
+    List<AuctionSession> findAuctionSessions3days(@Param("status") AuctionSessionStatus status, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }
