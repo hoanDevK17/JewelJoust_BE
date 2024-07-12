@@ -78,7 +78,7 @@ public class AuthenticationAPI {
     }
 
     @PutMapping("/account/changePassword")
-    @PreAuthorize("hasAuthority('MEMBER')")
+//    @PreAuthorize("hasAuthority('ADMIN', 'MEMBER')")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
         String message = authenticationService.changePassword(changePasswordRequest);
         return ResponseEntity.ok(message);
@@ -117,6 +117,7 @@ public class AuthenticationAPI {
     }
 
     @PutMapping("/account")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
     public ResponseEntity<Account> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest){
 //        String role = accountUtils.getAccountCurrent().getRole().name();
 //            long id = accountUtils.getAccountCurrent().getId();

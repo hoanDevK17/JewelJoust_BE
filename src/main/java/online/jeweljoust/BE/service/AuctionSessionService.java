@@ -253,21 +253,21 @@ public class AuctionSessionService {
 //        auctionSession.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
 //        auctionSessionRepository.save(auctionSession);
         AuctionBid auctionBidHighest = auctionBidRepository.findHighestBidBySessionId(sessionId)
-                .orElse(new AuctionBid());
-        auctionBidHighest.setStatus(AuctionBidStatus.WON);
-        auctionBidHighest.getAuctionRegistration().setStatus(AuctionRegistrationStatus.WON);
-        auctionBidRepository.save(auctionBidHighest);
+                .orElse(null);
+
 //        Thông báo người dùng đến nhận hàng
         if (auctionBidHighest == null) {
             auctionSession.setStatus(AuctionSessionStatus.EXPIRED);
             auctionSessionRepository.save(auctionSession);
             return;
+        } else {
+            auctionBidHighest.setStatus(AuctionBidStatus.WON);
+            auctionBidHighest.getAuctionRegistration().setStatus(AuctionRegistrationStatus.WON);
+            auctionBidRepository.save(auctionBidHighest);
         }
-
         List<AuctionBid> activeBids = auctionBidRepository.findActiveBidsBySessionId(sessionId);
         for (AuctionBid bid : activeBids) {
-            walletService.changBalance(bid.getAuctionRegistration().getAccountRegistration().getWallet().getId(),
-                    bid.getBid_price(), TransactionType.REFUND, "RefundBidding amount" + bid.getBid_price());
+            walletService.changBalance(bid.getAuctionRegistration().getAccountRegistration().getWallet().getId(), bid.getBid_price(), TransactionType.REFUND, "RefundBidding amount" + bid.getBid_price());
             bid.setStatus(AuctionBidStatus.REFUND);
             bid.getAuctionRegistration().setStatus(AuctionRegistrationStatus.REFUNDED);
             auctionBidRepository.save(bid);
@@ -276,6 +276,14 @@ public class AuctionSessionService {
                 auctionBidHighest.getBid_price(), TransactionType.SELLING, "Sell successfully product with id request"
                         + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price());
 //gửi mail cho thằng chiến thắng nữa
+        Account account = auctionBidHighest.getAuctionRegistration().getAccountRegistration();
+        EmailDetail emailDetail = new EmailDetail();
+            emailDetail.setRecipient(account.getEmail());
+            emailDetail.setSubject("Congratulations! You Are the Winning Bidder");
+            emailDetail.setFullName(account.getFullname());
+            emailDetail.setAuctionId(auctionBidHighest.getAuctionRegistration().getAuctionSession().getId());
+            emailDetail.setProductName(auctionBidHighest.getAuctionRegistration().getAuctionSession().getNameJewelry());
+        emailService.sendMailNotification(emailDetail, "templateWinner");
         auctionSession.setStatus(AuctionSessionStatus.FINISH);
 
     }
