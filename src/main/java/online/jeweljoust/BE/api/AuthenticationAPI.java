@@ -76,6 +76,11 @@ public class AuthenticationAPI {
         List<Account> accounts = authenticationService.getAllAccount();
         return ResponseEntity.ok(accounts);
     }
+    @GetMapping("/account/role/{role}")
+    public ResponseEntity<List<Account>> getAccountsByRole(@PathVariable AccountRole role) {
+        List<Account> accounts = authenticationService.getAccountByRole(role);
+        return ResponseEntity.ok(accounts);
+    }
 
     @PutMapping("/account/changePassword")
 //    @PreAuthorize("hasAuthority('ADMIN', 'MEMBER')")

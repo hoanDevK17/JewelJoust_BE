@@ -169,7 +169,9 @@ public class AuthenticationService implements UserDetailsService {
     public List<Account> getAllAccount() {
         return authenticationRepository.findAll();
     }
-
+    public List<Account> getAccountByRole(AccountRole role) {
+        return authenticationRepository.findAccountByRole(role);
+    }
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         Account account = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
         if (account == null) {
