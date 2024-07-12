@@ -21,7 +21,7 @@ public class AuctionBid {
     @ManyToOne
     @JoinColumn(name="registration_id")
     AuctionRegistration auctionRegistration;
-    @Temporal(TemporalType.DATE)
+
     Date bid_time;
     @Enumerated(EnumType.STRING)
     AuctionBidStatus status;

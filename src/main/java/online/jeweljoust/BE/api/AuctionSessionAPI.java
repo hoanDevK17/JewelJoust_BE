@@ -1,5 +1,6 @@
 package online.jeweljoust.BE.api;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
@@ -46,13 +47,14 @@ public class AuctionSessionAPI {
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/{status}")
-    public ResponseEntity<List<AuctionSession>> getAuctionSessionsbyStatus(AuctionSessionStatus status) {
-        List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
+    public ResponseEntity<List<AuctionSession>> getAuctionSessionsbyStatus(@PathVariable AuctionSessionStatus status) {
+        System.out.println(status);
+        List<AuctionSession> auctionSession = auctionSessionService.getAuctionSessionsByStatus(status);
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/detail/{id}")
-    public ResponseEntity<AuctionSessionDetailResponse> getAuctionSessionByID(@PathVariable long id,@RequestParam(required = false) Long idUser) {
-        AuctionSessionDetailResponse auctionSession = auctionSessionService.getAuctionSessionByID(id,idUser);
+    public ResponseEntity<AuctionSessionDetailResponse> getAuctionSessionByID(@PathVariable long id, @RequestParam(required = false)  long userId) {
+        AuctionSessionDetailResponse auctionSession = auctionSessionService.getAuctionSessionByID(id,userId);
         return ResponseEntity.ok(auctionSession);
     }
 //    update
@@ -68,6 +70,7 @@ public class AuctionSessionAPI {
 
     @PutMapping("/auctionSessions/stop")
     public ResponseEntity<AuctionSession> stopAuctionSessions(@PathVariable Long id) {
+
         AuctionSession auctionSession =  auctionSessionService.stopAuctionSession(id);
         return ResponseEntity.ok(auctionSession);
     }
@@ -85,5 +88,6 @@ public class AuctionSessionAPI {
 //    public ResponseEntity<List<AuctionRegistration>> abc(@PathVariable long id) {
 //        return ResponseEntity.ok(auctionRegistrationRepository.findAuctionRegistrationByAuctionSessionId(id));
 //    }
+
 
 }

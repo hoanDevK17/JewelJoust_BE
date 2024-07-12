@@ -15,6 +15,7 @@
     import online.jeweljoust.BE.utils.AccountUtils;
     import org.checkerframework.checker.units.qual.A;
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.messaging.simp.SimpMessagingTemplate;
     import org.springframework.stereotype.Service;
 
     import java.util.Date;
@@ -35,6 +36,10 @@
         WalletService walletService;
         @Autowired
         AccountUtils accountUtils;
+
+        @Autowired
+        SimpMessagingTemplate messagingTemplate;
+
         @Transactional
         public AuctionBid addAuctionBid(AuctionBidRequest auctionBidRequest) {
 
@@ -60,7 +65,9 @@
             walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(), -price,TransactionType.BIDDING,"Bidding" + price );
             highestBidOfUser.setStatus(AuctionBidStatus.NONACTIVE);
             auctionBidRepository.save(highestBidOfUser);
-            return auctionBidRepository.save(auctionBid);
+            AuctionBid newauctionBid= auctionBidRepository.save(auctionBid);
+            messagingTemplate.convertAndSend("/topic/JewelJoust","addBid");
+            return newauctionBid;
 
 
 
