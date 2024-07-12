@@ -1,7 +1,6 @@
 package online.jeweljoust.BE.respository;
 
 import online.jeweljoust.BE.entity.AuctionSession;
-import online.jeweljoust.BE.enums.AccountStatus;
 import online.jeweljoust.BE.enums.AuctionSessionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +15,8 @@ public interface AuctionSessionRepository extends JpaRepository<AuctionSession, 
     List<AuctionSession> findByNameSession(String name);
     List<AuctionSession> findByStatus(AuctionSessionStatus status);
     List<AuctionSession> findAuctionSessionByStatus(AuctionSessionStatus status);
+    @Query("SELECT ar.auctionSession FROM AuctionRegistration ar WHERE ar.accountRegistration.id = :userId")
+    List<AuctionSession> findAuctionSessionRegisteredByUserId(long userId);
     @Query("SELECT a FROM AuctionSession a WHERE a.status = :status AND a.start_time >= :startTime AND a.start_time < :endTime ORDER BY a.start_time DESC")
     List<AuctionSession> findAuctionSessions3days(@Param("status") AuctionSessionStatus status, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }

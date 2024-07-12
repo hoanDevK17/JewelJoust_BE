@@ -8,13 +8,11 @@ import online.jeweljoust.BE.mapper.AuctionSessionMapper;
 import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.respository.*;
 import online.jeweljoust.BE.utils.AccountUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,8 +21,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class AuctionSessionService {
@@ -57,6 +53,10 @@ public class AuctionSessionService {
 
     public List<AuctionSession> getAuctionSessionsByStatus(AuctionSessionStatus status) {
         return auctionSessionRepository.findAuctionSessionByStatus(status);
+    }
+    public List<AuctionSession> getAuctionRegistered() {
+
+        return auctionSessionRepository.findAuctionSessionRegisteredByUserId(accountUtils.getAccountCurrent().getId());
     }
 
     public AuctionSessionDetailResponse getAuctionSessionByID(long id,long idUser) {

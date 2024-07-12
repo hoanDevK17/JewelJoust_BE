@@ -48,8 +48,14 @@ public class AuctionSessionAPI {
     }
     @GetMapping("/auctionSessions/{status}")
     public ResponseEntity<List<AuctionSession>> getAuctionSessionsbyStatus(@PathVariable AuctionSessionStatus status) {
-        System.out.println(status);
+
         List<AuctionSession> auctionSession = auctionSessionService.getAuctionSessionsByStatus(status);
+        return ResponseEntity.ok(auctionSession);
+    }
+    @GetMapping("/auctionSessions/registered")
+    public ResponseEntity<List<AuctionSession>> getAuctionRegistered() {
+
+        List<AuctionSession> auctionSession = auctionSessionService.getAuctionRegistered();
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/detail/{id}")
