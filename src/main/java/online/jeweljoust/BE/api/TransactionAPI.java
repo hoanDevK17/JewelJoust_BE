@@ -21,7 +21,7 @@ public class TransactionAPI {
     TransactionService transactionService;
 
     @GetMapping("/transactions")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity getAll()  {
         List<Transaction> transactions = transactionService.getAll();
         return ResponseEntity.ok(transactions);
