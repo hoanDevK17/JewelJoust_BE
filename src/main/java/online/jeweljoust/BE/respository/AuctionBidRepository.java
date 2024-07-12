@@ -40,4 +40,7 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
     @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.accountRegistration.id = :userId ")
     List<AuctionBid> findAllBidsByUserId(Long userId);
 //    List<AuctionBid> find
+
+    @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.id = :registrationId ORDER BY b.bid_time DESC")
+    List<AuctionBid> findBidsByAuctionRegistrationId(@Param("registrationId") Long registrationId);
 }

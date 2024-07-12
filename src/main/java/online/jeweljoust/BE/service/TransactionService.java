@@ -6,6 +6,7 @@ import online.jeweljoust.BE.entity.Transaction;
 import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.enums.TransactionStatus;
 import online.jeweljoust.BE.enums.TransactionType;
+import online.jeweljoust.BE.model.WithdrawRequest;
 import online.jeweljoust.BE.respository.TransactionRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,12 +52,12 @@ public class TransactionService {
 
 
     @Transactional
-    public Transaction withdraw(double amountWithDraw){
+    public Transaction withdraw(WithdrawRequest withdrawRequest){
         Transaction transaction = new Transaction();
 //        Double amountDeposit = auctionRegistration.getAuctionSession().getDepositAmount();
         Wallet wallet = accountUtils.getAccountCurrent().getWallet();
-        if (wallet.getBalance() >= amountWithDraw){
-            walletService.changBalance(wallet.getId(), amountWithDraw,TransactionType.WITHDRAW,amountWithDraw + " has been successfully withdrawn");
+        if (wallet.getBalance() >= withdrawRequest.getAmountWithDraw()){
+            walletService.withdrawBalance(wallet.getId(), withdrawRequest.getAmountWithDraw(),TransactionType.WITHDRAW,withdrawRequest.getAccountNumber() + " has been successfully withdrawn");
         } else {
             throw new IllegalStateException("The balance is not enough to complete the transaction");
         }

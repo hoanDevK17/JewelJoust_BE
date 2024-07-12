@@ -2,6 +2,7 @@ package online.jeweljoust.BE.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.Transaction;
+import online.jeweljoust.BE.model.WithdrawRequest;
 import online.jeweljoust.BE.service.TransactionService;
 import online.jeweljoust.BE.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +21,30 @@ public class TransactionAPI {
 
     @GetMapping("/transactions")
     @PreAuthorize("hasAnyAuthority('MEMBER')")
-    public ResponseEntity getAll()  {
+    public ResponseEntity getAll() {
         List<Transaction> transactions = transactionService.getAll();
         return ResponseEntity.ok(transactions);
     }
 
     @GetMapping("/transactions/withdraw")
     @PreAuthorize("hasAnyAuthority('STAFF')")
-    public ResponseEntity getAllWithDrawRequest()  {
+    public ResponseEntity getAllWithDrawRequest() {
         List<Transaction> transactions = transactionService.getAllWithDrawRequest();
         return ResponseEntity.ok(transactions);
     }
+
     @PutMapping("/transactions/withdraw/confirm")
     @PreAuthorize("hasAnyAuthority('STAFF')")
-    public ResponseEntity getAllWithDrawRequest(@RequestBody long id)  {
+    public ResponseEntity getAllWithDrawRequest(@RequestBody long id) {
         Transaction transactions = transactionService.confirmWithDraw(id);
         return ResponseEntity.ok(transactions);
     }
 
+    // @PostMapping("/transactions/withdraw")
+    // // @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
+    // public ResponseEntity withdrawMoney(@RequestBody WithdrawRequest
+    // withdrawRequest) {
+    // return ResponseEntity.ok(transactionService.withdraw(withdrawRequest));
+    // }
 
 }
