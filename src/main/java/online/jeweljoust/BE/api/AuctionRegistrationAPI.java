@@ -7,6 +7,7 @@ import online.jeweljoust.BE.respository.AuctionRegistrationRepository;
 import online.jeweljoust.BE.service.AuctionRegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,17 +23,21 @@ public class AuctionRegistrationAPI {
     AuctionRegistrationRepository auctionRegistrationRepository;
     @Autowired
     AuctionRegistrationService  auctionRegistrationService;
+
     @PostMapping("/auctionRegistrations")
+    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity<AuctionRegistration>  createAuctionRegistrations(@RequestBody AuctionRegistrationRequest auctionRegistrationRequest) {
     AuctionRegistration auctionRegistration = auctionRegistrationService.addAuctionRegistration(auctionRegistrationRequest);
         return ResponseEntity.ok(auctionRegistration);
     }
     @GetMapping("/auctionRegistrations")
+    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionRegistration>>  getAllAuctionRegistrations() {
         List<AuctionRegistration> auctionRegistrations = auctionRegistrationService.findAllAuctionRegistration();
         return ResponseEntity.ok(auctionRegistrations);
     }
     @PutMapping("/auctionRegistrations/{id}/cancel")
+    @PreAuthorize("hasAuthority('MEMBER')")
     public ResponseEntity cancelAuctionRegistrations(@PathVariable Long id) {
         AuctionRegistration auctionRegistration = auctionRegistrationService.cancelAuctionRegistration(id);
         return ResponseEntity.ok(auctionRegistration);

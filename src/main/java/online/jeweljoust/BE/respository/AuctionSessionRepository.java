@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface AuctionSessionRepository extends JpaRepository<AuctionSession, Long> {
     AuctionSession findAuctionSessionById(long id);
-    List<AuctionSession> findByNameSession(String name);
+    List<AuctionSession> findByNameSessionContaining(String name);
     List<AuctionSession> findByStatus(AuctionSessionStatus status);
     List<AuctionSession> findAuctionSessionByStatus(AuctionSessionStatus status);
     @Query("SELECT a FROM AuctionSession a WHERE a.status = :status AND a.start_time >= :startTime AND a.start_time < :endTime ORDER BY a.start_time DESC")

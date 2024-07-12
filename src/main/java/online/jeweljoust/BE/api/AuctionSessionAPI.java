@@ -16,6 +16,7 @@ import online.jeweljoust.BE.service.AuctionSessionService;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
 public class AuctionSessionAPI {
     @Autowired
     AuthenticationRepository authenticationRepository;
+    @Autowired
     AuctionSessionRepository auctionSessionRepository;
     @Autowired
     AuctionSessionService auctionSessionService;
@@ -33,7 +35,9 @@ public class AuctionSessionAPI {
     AccountUtils accountUtils;
     @Autowired
     AuctionRegistrationRepository auctionRegistrationRepository;
+
     @PostMapping("/auctionSessions")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<AuctionSession> createAuctionsSession(@RequestBody AuctionSessionRequest auctionSessionRequest) {
 
         AuctionSession auctionSession = auctionSessionService.addAuctionSessions(auctionSessionRequest);
@@ -42,33 +46,39 @@ public class AuctionSessionAPI {
     }
 //    getAll
     @GetMapping("/auctionSessions")
+    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionSession>> getAllAuctionSessions() {
         List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/{status}")
+    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionSession>> getAuctionSessionsbyStatus(@PathVariable AuctionSessionStatus status) {
         System.out.println(status);
         List<AuctionSession> auctionSession = auctionSessionService.getAuctionSessionsByStatus(status);
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/detail/{id}")
+    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<AuctionSessionDetailResponse> getAuctionSessionByID(@PathVariable long id, @RequestParam(required = false)  long userId) {
         AuctionSessionDetailResponse auctionSession = auctionSessionService.getAuctionSessionByID(id,userId);
         return ResponseEntity.ok(auctionSession);
     }
 //    update
     @PutMapping("/auctionSessions/{id}")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<AuctionSession> updateAuctionSessions(@PathVariable Long id,@RequestBody AuctionSessionRequest auctionSessionRequest) {
         AuctionSession auctionSession =  auctionSessionService.updateAuctionSession(id, auctionSessionRequest);
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/name/{name}")
+    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionSession>>findAuctionSessionByName(@PathVariable String name) {
-        return ResponseEntity.ok(auctionSessionRepository.findByNameSession(name));
+        return ResponseEntity.ok(auctionSessionRepository.findByNameSessionContaining(name));
     }
 
     @PutMapping("/auctionSessions/stop")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<AuctionSession> stopAuctionSessions(@PathVariable Long id) {
         AuctionSession auctionSession =  auctionSessionService.stopAuctionSession(id);
         return ResponseEntity.ok(auctionSession);

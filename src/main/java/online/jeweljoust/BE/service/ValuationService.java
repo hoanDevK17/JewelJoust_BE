@@ -242,6 +242,8 @@ public class ValuationService {
                             emailDetail.setProductName(a.getJewelryname());
                             emailDetail.setDate(a.getInitialValuations().getInitialdate());
                             emailDetail.setFullName(a.getAccountRequest().getFullname());
+                            emailDetail.setAuctionId(a.getId());
+                            emailDetail.setProductName(a.getJewelryname());
                         emailService.sendMailNotification(emailDetail, "templateOver14Days");
                     }, delay, TimeUnit.SECONDS);
 //                }
