@@ -117,7 +117,7 @@ public class AuthenticationAPI {
     }
 
     @PutMapping("/account")
-    @PreAuthorize("hasAuthority('ADMIN', 'MEMBER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
     public ResponseEntity<Account> updateProfile(@RequestBody UpdateProfileRequest updateProfileRequest){
 //        String role = accountUtils.getAccountCurrent().getRole().name();
 //            long id = accountUtils.getAccountCurrent().getId();
