@@ -273,7 +273,7 @@ public class AuctionSessionService {
             auctionBidRepository.save(bid);
         }
         walletService.changBalance(auctionSession.getAuctionRequest().getAccountRequest().getWallet().getId(),
-                auctionBidHighest.getBid_price(), TransactionType.SELLING, "Sell successfully product with id request"
+                auctionBidHighest.getBid_price()*0.98, TransactionType.SELLING, "Sell successfully product with id request"
                         + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price());
 //gửi mail cho thằng chiến thắng nữa
         Account account = auctionBidHighest.getAuctionRegistration().getAccountRegistration();
@@ -285,7 +285,7 @@ public class AuctionSessionService {
             emailDetail.setProductName(auctionBidHighest.getAuctionRegistration().getAuctionSession().getNameJewelry());
         emailService.sendMailNotification(emailDetail, "templateWinner");
         auctionSession.setStatus(AuctionSessionStatus.FINISH);
-
+        auctionSessionRepository.save(auctionSession);
     }
 
     public List<AuctionSession> getAuctionSession3days() {
