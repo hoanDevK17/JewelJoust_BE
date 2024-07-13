@@ -34,6 +34,11 @@ public class AuctionBidAPI {
         List<AuctionBid> auctionBids  = auctionBidService.getHistoryAuctionBid();
         return ResponseEntity.ok(auctionBids);
     }
+    @GetMapping("/auctionBids/session/{sessionId}")
+    public ResponseEntity getAuctionBidById(@PathVariable long sessionId) {
+        List<AuctionBid> auctionBids  = auctionBidService.getBidsBySessionId(sessionId);
+        return ResponseEntity.ok(auctionBids);
+    }
 
     @GetMapping("/auctionBids/{registrationid}")
     public ResponseEntity<List<AuctionBid>> getBidHistory(@PathVariable("registrationId") long registrationId) {

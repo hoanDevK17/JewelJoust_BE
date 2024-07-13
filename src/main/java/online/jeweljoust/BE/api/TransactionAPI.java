@@ -40,11 +40,11 @@ public class TransactionAPI {
         return ResponseEntity.ok(transactions);
     }
 
-    // @PostMapping("/transactions/withdraw")
-    // // @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
-    // public ResponseEntity withdrawMoney(@RequestBody WithdrawRequest
-    // withdrawRequest) {
-    // return ResponseEntity.ok(transactionService.withdraw(withdrawRequest));
-    // }
+     @PostMapping("/transactions/withdraw")
+     // @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
+     public ResponseEntity withdrawMoney(@RequestBody WithdrawRequest
+     withdrawRequest) {
+     return ResponseEntity.ok(transactionService.withdraw(withdrawRequest));
+     }
 
 }

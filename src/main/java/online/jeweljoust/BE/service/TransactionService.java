@@ -44,24 +44,31 @@ public class TransactionService {
     public Transaction confirmWithDraw(long id){
         Transaction transaction = transactionRepository.findTransactionById(id);
         if(transaction.getStatus().equals(TransactionStatus.PENDING)){
+            System.out.println("Oke");
             transaction.setStatus(TransactionStatus.COMPLETED);
         }
-        return transaction;
+        else{
+            throw new IllegalStateException("Not support confirm this transactions");
+        }
+        return transactionRepository.save(transaction);
 //        return transactionRepository.findAll();
     }
 
 
     @Transactional
     public Transaction withdraw(WithdrawRequest withdrawRequest){
-        Transaction transaction = new Transaction();
+
 //        Double amountDeposit = auctionRegistration.getAuctionSession().getDepositAmount();
         Wallet wallet = accountUtils.getAccountCurrent().getWallet();
         if (wallet.getBalance() >= withdrawRequest.getAmountWithDraw()){
-            walletService.withdrawBalance(wallet.getId(), withdrawRequest.getAmountWithDraw(),TransactionType.WITHDRAW,withdrawRequest.getAccountNumber() + " has been successfully withdrawn");
+            Transaction transaction =  walletService.withdrawBalance(wallet.getId(), -withdrawRequest.getAmountWithDraw(),TransactionType.WITHDRAW,
+                    withdrawRequest.getAccountNumber() + " has been successfully withdrawn"
+                    +withdrawRequest.getBankName() + withdrawRequest.getBankName());
+            return transactionRepository.save(transaction);
         } else {
             throw new IllegalStateException("The balance is not enough to complete the transaction");
         }
-        return transactionRepository.save(transaction);
+
     }
 
 }
