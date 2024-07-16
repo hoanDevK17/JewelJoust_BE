@@ -2,10 +2,7 @@ package online.jeweljoust.BE.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.AuctionBid;
-import online.jeweljoust.BE.entity.AuctionRequest;
 import online.jeweljoust.BE.model.AuctionBidRequest;
-import online.jeweljoust.BE.model.MemberConfirmRequest;
-import online.jeweljoust.BE.respository.AuctionBidRepository;
 import online.jeweljoust.BE.service.AuctionBidService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +32,14 @@ public class AuctionBidAPI {
         return ResponseEntity.ok(auctionBids);
     }
     @GetMapping("/auctionBids/session/{sessionId}")
-    public ResponseEntity getAuctionBidById(@PathVariable long sessionId) {
-        List<AuctionBid> auctionBids  = auctionBidService.getBidsBySessionId(sessionId);
+    public ResponseEntity getlistCurrentBids(@PathVariable long sessionId) {
+//        get 5 Element top
+        List<AuctionBid> auctionBids  = auctionBidService.getListCurrentBidsBySessionId(sessionId);
+        return ResponseEntity.ok(auctionBids);
+    }
+    @GetMapping("/auctionBids/session/getAll/{sessionId}")
+    public ResponseEntity getAllAuctionBidById(@PathVariable long sessionId) {
+        List<AuctionBid> auctionBids  = auctionBidService.getListCurrentBidsBySessionId(sessionId);
         return ResponseEntity.ok(auctionBids);
     }
 

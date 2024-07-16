@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,6 +30,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -108,6 +110,9 @@ public class AuthenticationService implements UserDetailsService {
             if (account == null || !securityConfig.passwordEncoder().matches(loginRequest.getPassword(), account.getPassword())) {
                 throw new BadCredentialsException("Incorrect username or password");
             }
+            if(!account.getStatus().equals(AccountStatus.ACTIVE)){
+                throw new AuthenticationServiceException("Your account locked!!!");
+            }
             AccountReponse accountReponse = new AccountReponse();
             String token = tokenService.generateToken(account);
             accountReponse.setUsername(account.getUsername());
@@ -126,7 +131,27 @@ public class AuthenticationService implements UserDetailsService {
             throw new BadCredentialsException("Incorrect username or password!");
         }
     }
-
+    public AccountReponse loginWithToken() {
+        Account account=  authenticationRepository.findAccountById(accountUtils.getAccountCurrent().getId());
+        System.out.println(account.getId());
+        if(!account.getStatus().equals(AccountStatus.ACTIVE)){
+            throw new AuthenticationServiceException("Your account locked!!!");
+        }
+        AccountReponse accountReponse = new AccountReponse();
+        String token = tokenService.generateToken(account);
+        accountReponse.setUsername(account.getUsername());
+        accountReponse.setId(account.getId());
+        accountReponse.setFullname(account.getFullname());
+        accountReponse.setAddress(account.getAddress());
+        accountReponse.setBirthday(account.getBirthday());
+        accountReponse.setEmail(account.getEmail());
+        accountReponse.setPhone(account.getPhone());
+        accountReponse.setRole(account.getRole());
+        accountReponse.setStatus(account.getStatus());
+        accountReponse.setToken(token);
+        accountReponse.setWallet(account.getWallet());
+        return accountReponse;
+    }
     public AccountReponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
         AccountReponse accountReponse = new AccountReponse();
         try {
@@ -260,9 +285,23 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public PagedAccountResponse getAllAccounts(int page, int size) {
-        System.out.println("oke roi nè "+page+size);
         Pageable pageable = PageRequest.of(page, size);
         Page<Account> accountPage = authenticationRepository.findAllAccounts(pageable);
         return new PagedAccountResponse(accountPage.getContent(), accountPage.getTotalElements());
+    }
+    public void ResetDatabase() {
+        authenticationRepository.deleteAll();
+        List<RegisterRequest> defaultAccounts = Arrays.asList(
+                new RegisterRequest("admin", "admin", "Admin User", "Admin Address", new Date(80, 0, 1), "admin@example.com", "1234567890", AccountRole.ADMIN, "ACTIVE"),
+                new RegisterRequest("staff", "staff", "Staff User", "Staff Address", new Date(85, 0, 1), "staff@example.com", "0987654321", AccountRole.STAFF, "ACTIVE"),
+                new RegisterRequest("bi", "bi", "bi User", "Staff Address", new Date(85, 0, 1), "bi@example.com", "0987652121", AccountRole.MEMBER, "ACTIVE"),
+                new RegisterRequest("hoan", "hoan", "hoan User", "Staff Address", new Date(85, 0, 1), "hoan@example.com", "01287654321", AccountRole.MEMBER, "ACTIVE"),
+                new RegisterRequest("quang", "quang", "quang User", "Staff Address", new Date(85, 0, 1), "quang@example.com", "0981654321", AccountRole.MEMBER, "ACTIVE"),
+                new RegisterRequest("manager", "manager", "Manager User", "Manager Address", new Date(90, 0, 1), "manager@example.com", "1122334455", AccountRole.MANAGER, "ACTIVE")
+        );
+        for (RegisterRequest registerRequest : defaultAccounts){
+            System.out.println(registerRequest.getEmail());
+            this.register(registerRequest);
+        }
     }
 }

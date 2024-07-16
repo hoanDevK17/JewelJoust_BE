@@ -11,6 +11,9 @@ import online.jeweljoust.BE.utils.AccountUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -52,7 +55,25 @@ public class AuctionSessionService {
     }
 
     public List<AuctionSession> getAuctionSessionsByStatus(AuctionSessionStatus status) {
-        return auctionSessionRepository.findAuctionSessionByStatus(status);
+        List<AuctionSession> auctionSessions = auctionSessionRepository.findAuctionSessionByStatus(status);
+        System.out.println(auctionSessions.size());
+
+        if(auctionSessions.size()==0){
+            throw new  IllegalStateException("No Session has your status required in database");
+        }
+
+        return auctionSessions;
+    }
+    public List<AuctionSession> findSessionByName(String name) {
+
+        List<AuctionSession> auctionSessions = auctionSessionRepository.findByNameSessionContaining(name);
+
+
+        if(auctionSessions.size()==0){
+            throw new  IllegalStateException("No Session has your require required in database");
+        }
+
+        return auctionSessions;
     }
     public List<AuctionSession> getAuctionRegistered() {
 
@@ -75,10 +96,12 @@ public class AuctionSessionService {
 
         AuctionSessionDetailResponse auctionSessionDetailResponse = auctionSessionMapper.toResponse(auctionSession);
         auctionSessionDetailResponse.setRegister(isRegistered);
+        Pageable pageable = PageRequest.of(0, 3);
+        Page<AuctionBid> three_highestBid = auctionBidRepository.findAllBidsBySessionIdOrderByBidTimeDesc(auctionSession.getId(),pageable);
         AuctionBid highestBid = auctionBidRepository.findHighestBidBySessionId(auctionSession.getId())
                 .orElse(new AuctionBid());
-        if (highestBid.getBid_price() != null) {
-            auctionSessionDetailResponse.setHighestPrice(highestBid.getBid_price());
+        if (three_highestBid.getContent() != null) {
+            auctionSessionDetailResponse.setThree_highestBid(three_highestBid.getContent());
         }
         return auctionSessionDetailResponse;
     }

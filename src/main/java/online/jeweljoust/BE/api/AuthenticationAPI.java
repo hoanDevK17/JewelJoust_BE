@@ -97,13 +97,13 @@ public class AuthenticationAPI {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
         Account account = authenticationService.login(loginRequest);
-        if (account.getStatus().equals(AccountStatus.ACTIVE)){
-            return ResponseEntity.ok(account);
-        } else {
-            throw new AuthenticationServiceException("Your account locked!!!");
-        }
+        return ResponseEntity.ok(account);
     }
-
+    @PostMapping("/loginWithToken")
+    public ResponseEntity loginWithToken() {
+        Account account = authenticationService.loginWithToken();
+        return ResponseEntity.ok(account);
+    }
     @PostMapping("/login-google")
     public ResponseEntity<AccountReponse> loginGoogle(@RequestBody LoginGoogleRequest loginGoogleRequest) {
         AccountReponse accountReponse = authenticationService.loginGoogle(loginGoogleRequest);
@@ -172,5 +172,9 @@ public class AuthenticationAPI {
     public PagedAccountResponse getAccounts(@RequestParam int page,
                                             @RequestParam int size) {
         return authenticationService.getAllAccounts(page, size);
+    }
+    @GetMapping("/reset")
+    public void resetDatabase(){
+        authenticationService.ResetDatabase();
     }
 }

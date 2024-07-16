@@ -77,8 +77,9 @@ public class AuctionSessionAPI {
         return ResponseEntity.ok(auctionSession);
     }
     @GetMapping("/auctionSessions/name/{name}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
+
     public ResponseEntity<List<AuctionSession>>findAuctionSessionByName(@PathVariable String name) {
+        List<AuctionSession> auctionSessions = auctionSessionService.findSessionByName(name);
         return ResponseEntity.ok(auctionSessionRepository.findByNameSessionContaining(name));
     }
 

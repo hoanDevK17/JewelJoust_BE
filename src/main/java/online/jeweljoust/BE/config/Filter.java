@@ -47,7 +47,8 @@ public class Filter extends OncePerRequestFilter {
             "/api/auctionSessions/{status}",
             "/api/auctionSessions/3days",
             "/api/auctionSessions/*/*",
-            "/websocket/**"
+            "/websocket/**",
+            "/api/reset"
     );
 
     private boolean isPermitted(String uri) {

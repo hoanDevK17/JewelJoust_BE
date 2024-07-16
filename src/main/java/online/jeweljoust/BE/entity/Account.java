@@ -37,10 +37,10 @@ public class Account implements UserDetails {
     @Temporal(TemporalType.DATE)
     Date birthday;
 
-    @Column(unique = true)
+//    @Column(unique = true)
     String email;
 
-    @Column(unique = true)
+
     String phone;
 
     @Enumerated(EnumType.STRING)

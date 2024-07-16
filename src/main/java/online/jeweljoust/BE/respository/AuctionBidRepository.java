@@ -1,11 +1,12 @@
 package online.jeweljoust.BE.respository;
 
 import online.jeweljoust.BE.entity.AuctionBid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,11 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
             "FROM AuctionBid b2 " +
             "WHERE b2.auctionRegistration.auctionSession.id = :sessionId)")
     Optional<AuctionBid> findHighestBidBySessionId(@Param("sessionId") Long sessionId);
+    @Query("SELECT b FROM AuctionBid b " +
+            "WHERE b.auctionRegistration.auctionSession.id = :sessionId " +
+            "ORDER BY b.bid_time DESC")
+    Page<AuctionBid> findAllBidsBySessionIdOrderByBidTimeDesc(@Param("sessionId") Long sessionId, Pageable pageable);
+
 //("SELECT b FROM AuctionBid b " +
 //        "WHERE b.bid_price = (SELECT MAX(b2.bid_price) FROM AuctionBid b2 " +
 //        "WHERE b2.auctionRegistration.accountRegistration.id = :userId " +
