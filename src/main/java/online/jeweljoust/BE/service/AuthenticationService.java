@@ -11,14 +11,12 @@ import online.jeweljoust.BE.exception.AuthException;
 import online.jeweljoust.BE.model.*;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
-import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -284,10 +282,10 @@ public class AuthenticationService implements UserDetailsService {
         }
     }
 
-    public PagedAccountResponse getAllAccounts(int page, int size) {
+    public PagedResponse getAllAccounts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Account> accountPage = authenticationRepository.findAllAccounts(pageable);
-        return new PagedAccountResponse(accountPage.getContent(), accountPage.getTotalElements());
+        return new PagedResponse(accountPage.getContent(), accountPage.getTotalElements());
     }
     public void ResetDatabase() {
         authenticationRepository.deleteAll();

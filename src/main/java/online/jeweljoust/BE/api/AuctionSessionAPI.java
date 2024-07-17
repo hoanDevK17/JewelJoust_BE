@@ -9,6 +9,7 @@ import online.jeweljoust.BE.entity.AuctionSession;
 import online.jeweljoust.BE.enums.AuctionSessionStatus;
 import online.jeweljoust.BE.model.AuctionSessionDetailResponse;
 import online.jeweljoust.BE.model.AuctionSessionRequest;
+import online.jeweljoust.BE.model.PagedResponse;
 import online.jeweljoust.BE.respository.AuctionRegistrationRepository;
 import online.jeweljoust.BE.respository.AuctionSessionRepository;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
@@ -103,6 +104,11 @@ public class AuctionSessionAPI {
         return ResponseEntity.ok(auctionSession);
     }
 
+    @GetMapping("/auctionSessions/paging")
+    public PagedResponse getSession (@RequestParam int page,
+                                     @RequestParam int size) {
+        return auctionSessionService.getSession(page, size);
+    }
 //    @DeleteMapping("/auctionSessions/{id}")
 //    public ResponseEntity<Void> delete(@PathVariable Long id) {
 //        auctionSessionService.deleteSession(id);
