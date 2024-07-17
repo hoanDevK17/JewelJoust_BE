@@ -319,4 +319,10 @@ public class AuctionSessionService {
         Date threeDaysAgo = cal.getTime();
         return auctionSessionRepository.findAuctionSessions3days(AuctionSessionStatus.PENDINGPAYMENT, threeDaysAgo, now);
     }
+
+    public PagedResponse getSession(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<AuctionSession> sessionPage = auctionSessionRepository.findAllAuctionSessions(pageable);
+        return new PagedResponse(sessionPage.getContent(), sessionPage.getTotalElements());
+    }
 }

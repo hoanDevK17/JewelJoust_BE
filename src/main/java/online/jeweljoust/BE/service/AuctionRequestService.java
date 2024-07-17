@@ -1,17 +1,22 @@
 package online.jeweljoust.BE.service;
 
+import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.AuctionRequest;
 import online.jeweljoust.BE.entity.Resources;
 import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.enums.ResourceTypes;
 import online.jeweljoust.BE.model.AuctionRequestReponse;
+import online.jeweljoust.BE.model.PagedResponse;
 import online.jeweljoust.BE.model.ResourceRequest;
 import online.jeweljoust.BE.respository.AuctionRequestRepository;
 import online.jeweljoust.BE.respository.AuthenticationRepository;
 import online.jeweljoust.BE.respository.ResourceRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -82,4 +87,9 @@ public class AuctionRequestService {
         return auctionRepository.findByAccountRequestAvailable();
     }
 
+    public PagedResponse getRequestPaging(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<AuctionRequest> requestPage = auctionRepository.findAllAuctionRequests(pageable);
+        return new PagedResponse(requestPage.getContent(), requestPage.getTotalElements());
+    }
 }
