@@ -92,14 +92,13 @@ public class AuctionSessionService {
         } else {
             isRegistered = false;
         }
-        AuctionSessionReponse auctionSessionReponse = new AuctionSessionReponse();
+
 
         AuctionSessionDetailResponse auctionSessionDetailResponse = auctionSessionMapper.toResponse(auctionSession);
         auctionSessionDetailResponse.setRegister(isRegistered);
         Pageable pageable = PageRequest.of(0, 3);
         Page<AuctionBid> three_highestBid = auctionBidRepository.findAllBidsBySessionIdOrderByBidTimeDesc(auctionSession.getId(),pageable);
-        AuctionBid highestBid = auctionBidRepository.findHighestBidBySessionId(auctionSession.getId())
-                .orElse(new AuctionBid());
+
         if (three_highestBid.getContent() != null) {
             auctionSessionDetailResponse.setThree_highestBid(three_highestBid.getContent());
         }
