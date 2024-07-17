@@ -2,8 +2,6 @@ package online.jeweljoust.BE.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.Account;
-import online.jeweljoust.BE.entity.Shipment;
-import online.jeweljoust.BE.entity.Wallet;
 import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.AccountStatus;
 import online.jeweljoust.BE.model.*;
@@ -14,7 +12,6 @@ import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -169,8 +166,8 @@ public class AuthenticationAPI {
     }
 
     @GetMapping("/accounts/paging")
-    public PagedAccountResponse getAccounts(@RequestParam int page,
-                                            @RequestParam int size) {
+    public PagedResponse getAccounts(@RequestParam int page,
+                                     @RequestParam int size) {
         return authenticationService.getAllAccounts(page, size);
     }
     @GetMapping("/reset")

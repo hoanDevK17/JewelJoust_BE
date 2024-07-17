@@ -1,9 +1,12 @@
 package online.jeweljoust.BE.respository;
 
+import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.AuctionRequest;
 import online.jeweljoust.BE.entity.InitialValuation;
 import online.jeweljoust.BE.entity.Shipment;
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +25,6 @@ public interface AuctionRequestRepository extends JpaRepository<AuctionRequest, 
      List<AuctionRequest> findByAccountRequestAvailable();
      @Query("SELECT ar FROM AuctionRequest ar LEFT JOIN ar.shipment s WHERE ar.status = 'RETURN' AND s IS NULL")
      List<AuctionRequest> findByAccountRequestShipment();
+     @Query("SELECT a FROM AuctionRequest a")
+     Page<AuctionRequest> findAllAuctionRequests(Pageable pageable);
 }

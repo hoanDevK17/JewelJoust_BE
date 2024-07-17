@@ -5,6 +5,7 @@ import online.jeweljoust.BE.entity.AuctionRequest;
 
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
 import online.jeweljoust.BE.model.AuctionRequestReponse;
+import online.jeweljoust.BE.model.PagedResponse;
 import online.jeweljoust.BE.service.AuctionRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +65,11 @@ public class AuctionRequestAPI {
         return ResponseEntity.ok(auctionRequests);
     }
 
+    @GetMapping("/auctionRequests/paging")
+    public PagedResponse getRequestPaging(@RequestParam int page,
+                                     @RequestParam int size) {
+        return auctionRequestService.getRequestPaging(page, size);
+    }
 //    @GetMapping("/auctionRequest/accountCurrent")
 ////    @PreAuthorize("hasAuthority('MEMBER')")
 //    public ResponseEntity<List<AuctionRequest>> getAllAuctionRequestById() {

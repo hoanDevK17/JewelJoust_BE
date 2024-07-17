@@ -79,12 +79,11 @@ public class WalletService {
         if (newBalance < 0) {
             throw new IllegalStateException("Insufficient funds in the wallet.");
         }
-        System.out.println(newBalance);
         wallet.setBalance(newBalance);
         walletRepository.save(wallet);
         Transaction transaction = new Transaction();
         transaction.setWallet(wallet);
-        transaction.setAmount(25.24*Math.floor(amount * 100) / 100);
+        transaction.setAmount(25240*Math.floor(amount * 100) / 100);
         transaction.setStatus(TransactionStatus.PENDING);
         transaction.setTransaction_type(type);
         transaction.setDate(new Date());
@@ -151,20 +150,9 @@ public class WalletService {
 
         String orderId = UUID.randomUUID().toString().substring(0, 6);
 
-//        Wallet wallet = walletRepository.findWalletByUser_Id(user.getId());
-//
-//        Transaction transaction = new Transaction();
-//
-//        transaction.setAmount(Float.parseFloat(rechargeRequestDTO.getAmount()));
-//        transaction.setTransactionType(TransactionEnum.PENDING);
-//        transaction.setTo(wallet);
-//        transaction.setTransactionDate(formattedCreateDate);
-//        transaction.setDescription("Recharge");
-//        Transaction transactionReturn = transactionRepository.save(transaction);
-
         Wallet wallet = walletRepository.findWallelByAccountWalletId(account.getId());
         Transaction transaction = new Transaction();
-        transaction.setAmount(Double.parseDouble(rechargeRequestDTO.getAmount()));
+        transaction.setAmount(Math.floor(Double.parseDouble(rechargeRequestDTO.getAmount()) / 25240  * 100) / 100);
         transaction.setTransaction_type(TransactionType.RECHARGE);
         transaction.setWallet(wallet);
         transaction.setDate(createDate);
@@ -188,7 +176,7 @@ public class WalletService {
         vnpParams.put("vnp_TxnRef", orderId);
         vnpParams.put("vnp_OrderInfo", "Thanh toan cho ma GD: " + orderId);
         vnpParams.put("vnp_OrderType", "other");
-        vnpParams.put("vnp_Amount", rechargeRequestDTO.getAmount() + "00");
+        vnpParams.put("vnp_Amount", rechargeRequestDTO.getAmount() +"00");
         vnpParams.put("vnp_ReturnUrl", returnUrl);
         vnpParams.put("vnp_CreateDate", formattedCreateDate);
         vnpParams.put("vnp_IpAddr", "128.199.178.23");
@@ -246,6 +234,10 @@ public class WalletService {
                 return "Transaction not found or already processed";
             }
         } else {
+            Transaction errTransaction = transactionRepository.findByTxnRef(vnp_TxnRef);
+            if (errTransaction != null && TransactionStatus.PENDING.equals(errTransaction.getStatus())){
+                errTransaction.setStatus(TransactionStatus.FAILED);
+            }
             return "VNPAY response code indicates failure";
         }
     }
