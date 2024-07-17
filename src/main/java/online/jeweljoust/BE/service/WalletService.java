@@ -79,12 +79,11 @@ public class WalletService {
         if (newBalance < 0) {
             throw new IllegalStateException("Insufficient funds in the wallet.");
         }
-        System.out.println(newBalance);
         wallet.setBalance(newBalance);
         walletRepository.save(wallet);
         Transaction transaction = new Transaction();
         transaction.setWallet(wallet);
-        transaction.setAmount(25.24*Math.floor(amount * 100) / 100);
+        transaction.setAmount(25240*Math.floor(amount * 100) / 100);
         transaction.setStatus(TransactionStatus.PENDING);
         transaction.setTransaction_type(type);
         transaction.setDate(new Date());
@@ -164,7 +163,7 @@ public class WalletService {
 
         Wallet wallet = walletRepository.findWallelByAccountWalletId(account.getId());
         Transaction transaction = new Transaction();
-        transaction.setAmount(Double.parseDouble(rechargeRequestDTO.getAmount()));
+        transaction.setAmount(25240*Math.floor(Double.parseDouble(rechargeRequestDTO.getAmount()) / 100) / 100);
         transaction.setTransaction_type(TransactionType.RECHARGE);
         transaction.setWallet(wallet);
         transaction.setDate(createDate);
@@ -246,6 +245,10 @@ public class WalletService {
                 return "Transaction not found or already processed";
             }
         } else {
+            Transaction errTransaction = transactionRepository.findByTxnRef(vnp_TxnRef);
+            if (errTransaction != null && TransactionStatus.PENDING.equals(errTransaction.getStatus())){
+                errTransaction.setStatus(TransactionStatus.FAILED);
+            }
             return "VNPAY response code indicates failure";
         }
     }
