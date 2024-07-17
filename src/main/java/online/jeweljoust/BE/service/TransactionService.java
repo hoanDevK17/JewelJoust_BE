@@ -60,7 +60,7 @@ public class TransactionService {
 
 //        Double amountDeposit = auctionRegistration.getAuctionSession().getDepositAmount();
         Wallet wallet = accountUtils.getAccountCurrent().getWallet();
-        if (wallet.getBalance() >= withdrawRequest.getAmountWithDraw()){
+        if (wallet.getBalance() >= withdrawRequest.getAmountWithDraw() && wallet.getBalance() > 0){
             Transaction transaction =  walletService.withdrawBalance(wallet.getId(), -withdrawRequest.getAmountWithDraw(),TransactionType.WITHDRAW,
                     withdrawRequest.getAccountNumber() + " has been successfully withdrawn"
                     +withdrawRequest.getBankName() + withdrawRequest.getBankName());
