@@ -46,7 +46,7 @@ public class AuctionSessionAPI {
     }
 //    getAll
     @GetMapping("/auctionSessions")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionSession>> getAllAuctionSessions() {
         List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
         return ResponseEntity.ok(auctionSession);

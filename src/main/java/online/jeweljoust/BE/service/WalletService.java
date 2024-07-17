@@ -84,7 +84,7 @@ public class WalletService {
         walletRepository.save(wallet);
         Transaction transaction = new Transaction();
         transaction.setWallet(wallet);
-        transaction.setAmount(25.24*Math.floor(amount * 100) / 100);
+        transaction.setAmount(25240*Math.floor(amount * 100) / 100);
         transaction.setStatus(TransactionStatus.PENDING);
         transaction.setTransaction_type(type);
         transaction.setDate(new Date());
@@ -246,6 +246,11 @@ public class WalletService {
                 return "Transaction not found or already processed";
             }
         } else {
+            Transaction foundTransaction = transactionRepository.findByTxnRef(vnp_TxnRef);
+            if (foundTransaction != null && TransactionStatus.PENDING.equals(foundTransaction.getStatus())){
+                foundTransaction.setStatus(TransactionStatus.FAILED);
+                transactionRepository.save(foundTransaction);
+            }
             return "VNPAY response code indicates failure";
         }
     }
