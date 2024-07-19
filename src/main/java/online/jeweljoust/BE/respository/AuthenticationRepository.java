@@ -20,4 +20,7 @@ public interface AuthenticationRepository extends JpaRepository<Account, Long>
     List<Account> findAccountByRole(AccountRole role);
     @Query("SELECT a FROM Account a")
     Page<Account> findAllAccounts(Pageable pageable);
+
+    @Query("SELECT COUNT(a) FROM Account a")
+    long countTotalAccounts();
 }

@@ -1,6 +1,7 @@
 package online.jeweljoust.BE.respository;
 
 import online.jeweljoust.BE.entity.AuctionBid;
+import online.jeweljoust.BE.enums.AuctionBidStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -50,4 +51,7 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
 List<AuctionBid> findAllBidsBySessionId(Long sessionId);
     @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.id = :registrationId ORDER BY b.bid_time DESC")
     List<AuctionBid> findBidsByAuctionRegistrationId(@Param("registrationId") Long registrationId);
+
+    @Query("SELECT COUNT(b) FROM AuctionBid b WHERE b.status = :status")
+    long countAuctionBidsByStatus(@Param("status") AuctionBidStatus status);
 }
