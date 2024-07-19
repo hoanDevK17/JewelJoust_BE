@@ -14,7 +14,12 @@ public enum AuctionRequestStatus {
         APPROVED,       //quản lý phê duyệt
         AGREED,         //member đồng ý định giá cuối
         DECLINED,        //member từ chối định giá cuối
-        RETURN          //không được chấp nhận, trả hàng
+        RETURN,          //không được chấp nhận, trả hàng
+        INITIALIZED,    //chuẩn bị đưa lên sàn đấu giá
+        BIDDING,        //đang được đấu giá
+        STOP,           //tạm ngừng phiên đấu giá
+        PENDINGPAYMENT, //đang trong quá trình xử lý tiền sau khi đấu giá
+        FINISH          //phiên đã kết thúc
 }
 
 //1.tao don + dinh gia (row)
