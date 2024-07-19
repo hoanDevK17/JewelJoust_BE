@@ -127,8 +127,20 @@ public class AuctionSessionService {
         auctionSession.setDescription(auctionSessionRequest.getDescription());
         auctionSession.setFeeAmount(0.05);
         auctionSession.setCreateAt(new Date());
-        auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
-        auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.INITIALIZED);
+
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date nowToMinute = calendar.getTime();
+        if (nowToMinute.equals(auctionSessionRequest.getStart_time()) || nowToMinute.after(auctionSessionRequest.getStart_time())){
+            auctionSession.setStatus(AuctionSessionStatus.BIDDING);
+            auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.BIDDING);
+        } else {
+            auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
+            auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.INITIALIZED);
+        }
         auctionRepository.save(auctionSession.getAuctionRequest());
         auctionSessionRepository.save(auctionSession);
         for (ResourceRequest resourceRequest : auctionSessionRequest.getResourceSession()) {
@@ -162,7 +174,6 @@ public class AuctionSessionService {
             auctionSession.setStart_time(auctionSessionRequest.getStart_time());
             auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
             auctionSession.setMinStepPrice(auctionSessionRequest.getMin_stepPrice());
-
             auctionSession.setNameSession(auctionSessionRequest.getName_session());
             auctionSession.setNameJewelry(auctionSessionRequest.getName_jewelry());
             auctionSession.setDescription(auctionSessionRequest.getDescription());
@@ -330,9 +341,14 @@ public class AuctionSessionService {
         return auctionSessionRepository.findAuctionSessions3days(AuctionSessionStatus.PENDINGPAYMENT, threeDaysAgo, now);
     }
 
-    public PagedResponse getSession(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<AuctionSession> sessionPage = auctionSessionRepository.findAllAuctionSessions(pageable);
-        return new PagedResponse(sessionPage.getContent(), sessionPage.getTotalElements());
+//    public PagedResponse getSession(int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        Page<AuctionSession> sessionPage = auctionSessionRepository.findAllAuctionSessions(pageable);
+//        return new PagedResponse(sessionPage.getContent(), sessionPage.getTotalElements());
+//    }
+
+    public Page<AuctionSession> getAllAuctionSessions(Pageable pageable) {
+        Page<AuctionSession> sessionPage = auctionSessionRepository.findAll(pageable);
+        return sessionPage;
     }
 }

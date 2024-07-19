@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
+import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.AuctionRegistration;
 import online.jeweljoust.BE.entity.AuctionSession;
 import online.jeweljoust.BE.enums.AuctionSessionStatus;
@@ -103,10 +104,15 @@ public class AuctionSessionAPI {
         return ResponseEntity.ok(auctionSession);
     }
 
+//    @GetMapping("/auctionSessions/paging")
+//    public PagedResponse getSession (@RequestParam int page,
+//                                     @RequestParam int size) {
+//        return auctionSessionService.getSession(page, size);
+//    }
+
     @GetMapping("/auctionSessions/paging")
-    public PagedResponse getSession (@RequestParam int page,
-                                     @RequestParam int size) {
-        return auctionSessionService.getSession(page, size);
+    public ResponseEntity<Page<AuctionSession>>getSessionPaging(Pageable pageable) {
+        return ResponseEntity.ok(auctionSessionService.getAllAuctionSessions(pageable));
     }
 //    @DeleteMapping("/auctionSessions/{id}")
 //    public ResponseEntity<Void> delete(@PathVariable Long id) {

@@ -282,10 +282,9 @@ public class AuthenticationService implements UserDetailsService {
         }
     }
 
-    public PagedResponse getAllAccounts(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Account> accountPage = authenticationRepository.findAllAccounts(pageable);
-        return new PagedResponse(accountPage.getContent(), accountPage.getTotalElements());
+    public Page<Account> getAllAccounts(Pageable pageable) {
+        Page<Account> accountPage = authenticationRepository.findAll(pageable);
+        return accountPage;
     }
     public void ResetDatabase() {
         authenticationRepository.deleteAll();

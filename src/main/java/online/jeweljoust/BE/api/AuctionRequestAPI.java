@@ -1,6 +1,7 @@
 package online.jeweljoust.BE.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.AuctionRequest;
 
 import online.jeweljoust.BE.enums.AuctionRequestStatus;
@@ -8,6 +9,8 @@ import online.jeweljoust.BE.model.AuctionRequestReponse;
 import online.jeweljoust.BE.model.PagedResponse;
 import online.jeweljoust.BE.service.AuctionRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -51,12 +54,12 @@ public class AuctionRequestAPI {
         return ResponseEntity.ok(auctionRequests);
     }
 
-    @GetMapping("/auctionRequests")
-//    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
-    public ResponseEntity<List<AuctionRequest>> getAllAuctionRequest() {
-        List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequest();
-        return ResponseEntity.ok(auctionRequests);
-    }
+//    @GetMapping("/auctionRequests")
+////    @PreAuthorize("hasAuthority('ADMIN', 'MANAGER', 'STAFF')")
+//    public ResponseEntity<List<AuctionRequest>> getAllAuctionRequest() {
+//        List<AuctionRequest> auctionRequests = auctionRequestService.getAllAuctionRequest();
+//        return ResponseEntity.ok(auctionRequests);
+//    }
 
     @GetMapping("/auctionRequests/available")
     @PreAuthorize("hasAuthority('MANAGER')")
@@ -66,9 +69,8 @@ public class AuctionRequestAPI {
     }
 
     @GetMapping("/auctionRequests/paging")
-    public PagedResponse getRequestPaging(@RequestParam int page,
-                                     @RequestParam int size) {
-        return auctionRequestService.getRequestPaging(page, size);
+    public ResponseEntity<Page<AuctionRequest>> getRequestPaging(Pageable pageable) {
+        return ResponseEntity.ok(auctionRequestService.getRequestPaging(pageable));
     }
 //    @GetMapping("/auctionRequest/accountCurrent")
 ////    @PreAuthorize("hasAuthority('MEMBER')")

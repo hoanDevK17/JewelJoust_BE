@@ -27,4 +27,8 @@ public interface AuctionRequestRepository extends JpaRepository<AuctionRequest, 
      List<AuctionRequest> findByAccountRequestShipment();
      @Query("SELECT a FROM AuctionRequest a")
      Page<AuctionRequest> findAllAuctionRequests(Pageable pageable);
+     Page<AuctionRequest> findAuctionRequestById(Long id, Pageable pageable);
+
+     @Query("SELECT COUNT(a) FROM AuctionRequest a")
+     long countTotalAuctionRequests();
 }

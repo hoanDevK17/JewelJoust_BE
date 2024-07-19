@@ -87,9 +87,12 @@ public class AuctionRequestService {
         return auctionRepository.findByAccountRequestAvailable();
     }
 
-    public PagedResponse getRequestPaging(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<AuctionRequest> getRequestPaging(Pageable pageable) {
+        if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.MEMBER)){
+            Page<AuctionRequest> requestPage = auctionRepository.findAuctionRequestById(accountUtils.getAccountCurrent().getId(), pageable);
+            return requestPage;
+        }
         Page<AuctionRequest> requestPage = auctionRepository.findAllAuctionRequests(pageable);
-        return new PagedResponse(requestPage.getContent(), requestPage.getTotalElements());
+        return requestPage;
     }
 }
