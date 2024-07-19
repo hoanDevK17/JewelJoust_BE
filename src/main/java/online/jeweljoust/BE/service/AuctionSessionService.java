@@ -128,6 +128,8 @@ public class AuctionSessionService {
         auctionSession.setFeeAmount(0.05);
         auctionSession.setCreateAt(new Date());
         auctionSession.setStatus(AuctionSessionStatus.INITIALIZED);
+        auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.INITIALIZED);
+        auctionRepository.save(auctionSession.getAuctionRequest());
         auctionSessionRepository.save(auctionSession);
         for (ResourceRequest resourceRequest : auctionSessionRequest.getResourceSession()) {
             Resources resources = new Resources();
@@ -222,6 +224,8 @@ public class AuctionSessionService {
             if (now.equals(s.getStart_time()) || now.after(s.getStart_time())) {
                 executorService.submit(() -> {
                     s.setStatus(AuctionSessionStatus.BIDDING);
+                    s.getAuctionRequest().setStatus(AuctionRequestStatus.BIDDING);
+                    auctionRepository.save(s.getAuctionRequest());
                     auctionSessionRepository.save(s);
                 });
             }
@@ -230,6 +234,8 @@ public class AuctionSessionService {
             if (now.after(s.getEnd_time())) {
                 executorService.submit(() -> {
                     s.setStatus(AuctionSessionStatus.PENDINGPAYMENT);
+                    s.getAuctionRequest().setStatus(AuctionRequestStatus.PENDINGPAYMENT);
+                    auctionRepository.save(s.getAuctionRequest());
                     auctionSessionRepository.save(s);
                         this.finishSession(s.getId());
                 });
@@ -244,6 +250,8 @@ public class AuctionSessionService {
         }
         if (auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)) {
             auctionSession.setStatus(AuctionSessionStatus.STOP);
+            auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.STOP);
+            auctionRepository.save(auctionSession.getAuctionRequest());
             auctionSessionRepository.save(auctionSession);
         }
         else{
@@ -258,6 +266,8 @@ public class AuctionSessionService {
         }
         if (auctionSession.getStatus().equals(AuctionSessionStatus.STOP)) {
             auctionSession.setStatus(AuctionSessionStatus.BIDDING);
+            auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.BIDDING);
+            auctionRepository.save(auctionSession.getAuctionRequest());
             auctionSessionRepository.save(auctionSession);
         }else{
             throw new IllegalStateException("This session is not STOP");
@@ -306,6 +316,8 @@ public class AuctionSessionService {
             emailDetail.setProductName(auctionBidHighest.getAuctionRegistration().getAuctionSession().getNameJewelry());
         emailService.sendMailNotification(emailDetail, "templateWinner");
         auctionSession.setStatus(AuctionSessionStatus.FINISH);
+        auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.FINISH);
+        auctionRepository.save(auctionSession.getAuctionRequest());
         auctionSessionRepository.save(auctionSession);
     }
 
