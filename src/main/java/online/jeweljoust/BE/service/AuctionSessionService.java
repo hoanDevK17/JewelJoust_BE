@@ -50,8 +50,11 @@ public class AuctionSessionService {
     WalletService walletService;
     private ExecutorService executorService = Executors.newFixedThreadPool(10); // Sử dụng 10 luồng
 
-    public List<AuctionSession> getAllAuctionSessions() {
-        return auctionSessionRepository.findAll();
+//    public List<AuctionSession> getAllAuctionSessions() {
+//        return auctionSessionRepository.findAll();
+//    }
+    public Page<AuctionSession> getAllAuctionSessionsPaging(Pageable pageable) {
+        return auctionSessionRepository.findAll(pageable);
     }
 
     public List<AuctionSession> getAuctionSessionsByStatus(AuctionSessionStatus status) {
@@ -64,16 +67,14 @@ public class AuctionSessionService {
 
         return auctionSessions;
     }
-    public List<AuctionSession> findSessionByName(String name) {
+    public Page<AuctionSession>  findSessionByName(Pageable  pageable, String name) {
 
-        List<AuctionSession> auctionSessions = auctionSessionRepository.findByNameSessionContaining(name);
+        Page<AuctionSession> auctionSessionPage = auctionSessionRepository.findByNameSessionContaining(pageable,name);
 
 
-        if(auctionSessions.size()==0){
-            throw new  IllegalStateException("No Session has your require required in database");
-        }
 
-        return auctionSessions;
+
+        return auctionSessionPage;
     }
     public List<AuctionSession> getAuctionRegistered() {
 
@@ -98,7 +99,6 @@ public class AuctionSessionService {
         auctionSessionDetailResponse.setRegister(isRegistered);
         Pageable pageable = PageRequest.of(0, 3);
         Page<AuctionBid> three_highestBid = auctionBidRepository.findAllBidsBySessionIdOrderByBidTimeDesc(auctionSession.getId(),pageable);
-
         if (three_highestBid.getContent() != null) {
             auctionSessionDetailResponse.setThree_highestBid(three_highestBid.getContent());
         }
@@ -122,7 +122,6 @@ public class AuctionSessionService {
         auctionSession.setStart_time(auctionSessionRequest.getStart_time());
         auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
         auctionSession.setMinStepPrice(auctionSessionRequest.getMin_stepPrice());
-        auctionSession.setDepositAmount(auctionSessionRequest.getDeposit_amount());
         auctionSession.setNameSession(auctionSessionRequest.getName_session());
         auctionSession.setNameJewelry(auctionSessionRequest.getName_jewelry());
         auctionSession.setDescription(auctionSessionRequest.getDescription());
@@ -161,7 +160,7 @@ public class AuctionSessionService {
             auctionSession.setStart_time(auctionSessionRequest.getStart_time());
             auctionSession.setEnd_time(auctionSessionRequest.getEnd_time());
             auctionSession.setMinStepPrice(auctionSessionRequest.getMin_stepPrice());
-            auctionSession.setDepositAmount(auctionSessionRequest.getDeposit_amount());
+
             auctionSession.setNameSession(auctionSessionRequest.getName_session());
             auctionSession.setNameJewelry(auctionSessionRequest.getName_jewelry());
             auctionSession.setDescription(auctionSessionRequest.getDescription());

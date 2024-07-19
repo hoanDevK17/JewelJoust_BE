@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface AuctionSessionRepository extends JpaRepository<AuctionSession, Long> {
     AuctionSession findAuctionSessionById(long id);
-    List<AuctionSession> findByNameSessionContaining(String name);
+    Page<AuctionSession> findByNameSessionContaining(Pageable pageable,String name);
     List<AuctionSession> findByStatus(AuctionSessionStatus status);
     List<AuctionSession> findAuctionSessionByStatus(AuctionSessionStatus status);
     @Query("SELECT ar.auctionSession FROM AuctionRegistration ar WHERE ar.accountRegistration.id = :userId")

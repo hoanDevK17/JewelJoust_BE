@@ -11,11 +11,12 @@ import online.jeweljoust.BE.model.AuctionSessionDetailResponse;
 import online.jeweljoust.BE.model.AuctionSessionRequest;
 import online.jeweljoust.BE.model.PagedResponse;
 import online.jeweljoust.BE.respository.AuctionRegistrationRepository;
-import online.jeweljoust.BE.respository.AuctionSessionRepository;
-import online.jeweljoust.BE.respository.AuthenticationRepository;
+
 import online.jeweljoust.BE.service.AuctionSessionService;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,16 +27,10 @@ import java.util.List;
 @RequestMapping("api")
 @SecurityRequirement(name = "api")
 public class AuctionSessionAPI {
-    @Autowired
-    AuthenticationRepository authenticationRepository;
-    @Autowired
-    AuctionSessionRepository auctionSessionRepository;
+
     @Autowired
     AuctionSessionService auctionSessionService;
-    @Autowired
-    AccountUtils accountUtils;
-    @Autowired
-    AuctionRegistrationRepository auctionRegistrationRepository;
+
 
     @PostMapping("/auctionSessions")
     @PreAuthorize("hasAuthority('MANAGER')")
@@ -46,12 +41,12 @@ public class AuctionSessionAPI {
         return ResponseEntity.ok(auctionSession);
     }
 //    getAll
-    @GetMapping("/auctionSessions")
-
-    public ResponseEntity<List<AuctionSession>> getAllAuctionSessions() {
-        List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
-        return ResponseEntity.ok(auctionSession);
-    }
+//    @GetMapping("/auctionSessions")
+//
+//    public ResponseEntity<List<AuctionSession>> getAllAuctionSessions() {
+//        List<AuctionSession> auctionSession = auctionSessionService.getAllAuctionSessions();
+//        return ResponseEntity.ok(auctionSession);
+//    }
     @GetMapping("/auctionSessions/{status}")
 //    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<List<AuctionSession>> getAuctionSessionsbyStatus(@PathVariable AuctionSessionStatus status) {
@@ -79,9 +74,13 @@ public class AuctionSessionAPI {
     }
     @GetMapping("/auctionSessions/name/{name}")
 
-    public ResponseEntity<List<AuctionSession>>findAuctionSessionByName(@PathVariable String name) {
-        List<AuctionSession> auctionSessions = auctionSessionService.findSessionByName(name);
-        return ResponseEntity.ok(auctionSessionRepository.findByNameSessionContaining(name));
+    public ResponseEntity<Page<AuctionSession>>findAuctionSessionByName(Pageable pageable, @PathVariable(required = false) String name) {
+        if (name == null) {
+            return ResponseEntity.ok(auctionSessionService.getAllAuctionSessionsPaging(pageable));
+        } else {
+            return ResponseEntity.ok(auctionSessionService.findSessionByName(pageable, name ));
+        }
+
     }
 
     @PutMapping("/auctionSessions/stop")

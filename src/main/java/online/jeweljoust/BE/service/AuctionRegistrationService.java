@@ -75,7 +75,7 @@ public class AuctionRegistrationService {
         auctionBidRepository.save(auctionBid);
         auctionRegistration.setStatus(AuctionRegistrationStatus.INITIALIZED);
 
-//        messagingTemplate.convertAndSend("/topic/JewelJoust","addRequest");
+        messagingTemplate.convertAndSend("/topic/JewelJoust","addBid");
         return auctionRegistrationRepository.save(auctionRegistration);
 //walletService
     }

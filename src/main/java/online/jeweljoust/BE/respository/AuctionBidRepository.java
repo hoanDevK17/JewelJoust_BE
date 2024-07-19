@@ -23,7 +23,7 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
             "WHERE b2.auctionRegistration.auctionSession.id = :sessionId)")
     Optional<AuctionBid> findHighestBidBySessionId(@Param("sessionId") Long sessionId);
     @Query("SELECT b FROM AuctionBid b " +
-            "WHERE b.auctionRegistration.auctionSession.id = :sessionId AND AND b.status = 'ACTIVE " +
+            "WHERE b.auctionRegistration.auctionSession.id = :sessionId AND b.status = 'ACTIVE' " +
             "ORDER BY b.bid_time DESC")
     Page<AuctionBid> findAllBidsBySessionIdOrderByBidTimeDesc(@Param("sessionId") Long sessionId, Pageable pageable);
 

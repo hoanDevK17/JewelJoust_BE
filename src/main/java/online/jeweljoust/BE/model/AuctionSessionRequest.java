@@ -25,7 +25,7 @@ public class AuctionSessionRequest {
     Date end_time;
 //    double initial_price;
     double min_stepPrice;
-    double deposit_amount;
+
 //    double Fee_amount;
 //    5%
     String name_session;
