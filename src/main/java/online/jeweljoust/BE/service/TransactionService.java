@@ -60,10 +60,10 @@ public class TransactionService {
 
 //        Double amountDeposit = auctionRegistration.getAuctionSession().getDepositAmount();
         Wallet wallet = accountUtils.getAccountCurrent().getWallet();
-        if (wallet.getBalance() >= withdrawRequest.getAmountWithDraw() && wallet.getBalance() > 0){
-            Transaction transaction =  walletService.withdrawBalance(wallet.getId(), -withdrawRequest.getAmountWithDraw(),TransactionType.WITHDRAW,
-                    withdrawRequest.getAccountNumber() + " has been successfully withdrawn"
-                    +withdrawRequest.getBankName() + withdrawRequest.getBankName());
+        if (wallet.getBalance() >= withdrawRequest.getUsd() && wallet.getBalance() > 0){
+            Transaction transaction =  walletService.withdrawBalance(wallet.getId(), withdrawRequest.getUsd(),TransactionType.WITHDRAW,
+                    withdrawRequest.getRecipientName() + " has been successfully withdrawn "
+                    +withdrawRequest.getBankName() +" " + withdrawRequest.getAccountNumber() +" "  + withdrawRequest.getAmountWithDraw() + "VND") ;
             return transactionRepository.save(transaction);
         } else {
             throw new IllegalStateException("The balance is not enough to complete the transaction");

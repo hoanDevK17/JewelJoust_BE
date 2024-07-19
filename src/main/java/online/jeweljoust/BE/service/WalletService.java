@@ -83,7 +83,7 @@ public class WalletService {
         walletRepository.save(wallet);
         Transaction transaction = new Transaction();
         transaction.setWallet(wallet);
-        transaction.setAmount(25240*Math.floor(amount * 100) / 100);
+        transaction.setAmount(-amount);
         transaction.setStatus(TransactionStatus.PENDING);
         transaction.setTransaction_type(type);
         transaction.setDate(new Date());
@@ -167,7 +167,7 @@ public class WalletService {
         String returnUrl = "http://jeweljoust.online/payment";
 
         String currCode = "VND";
-        Map<String, String> vnpParams = new TreeMap<>();
+            Map<String, String> vnpParams = new TreeMap<>();
         vnpParams.put("vnp_Version", "2.1.0");
         vnpParams.put("vnp_Command", "pay");
         vnpParams.put("vnp_TmnCode", tmnCode);
@@ -180,7 +180,7 @@ public class WalletService {
         vnpParams.put("vnp_ReturnUrl", returnUrl);
         vnpParams.put("vnp_CreateDate", formattedCreateDate);
         vnpParams.put("vnp_IpAddr", "128.199.178.23");
-
+        vnpParams.put("vnp_USD",rechargeRequestDTO.getUsd());
         StringBuilder signDataBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : vnpParams.entrySet()) {
             signDataBuilder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.toString()));

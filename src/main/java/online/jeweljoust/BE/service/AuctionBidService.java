@@ -87,7 +87,7 @@ public class AuctionBidService {
         return auctionBidRepository.findAllBidsBySessionId(id);
     }
 
-    public List<AuctionBid> getBidHistoryByAccountRegistrationId(Long registrationId) {
-        return auctionBidRepository.findBidsByAuctionRegistrationId(registrationId);
-    }
+//    public List<AuctionBid> getBidHistoryByAccountRegistrationId(Long registrationId) {
+//        return auctionBidRepository.findBidsByAuctionRegistrationId(registrationId);
+//    }
 }

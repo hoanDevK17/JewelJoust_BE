@@ -13,4 +13,5 @@ public class WithdrawRequest {
     private String accountNumber;
     private String recipientName;
     private double amountWithDraw;
+    private double usd;
 }

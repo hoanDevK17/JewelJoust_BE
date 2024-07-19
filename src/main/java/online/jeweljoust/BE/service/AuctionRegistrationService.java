@@ -39,6 +39,7 @@ public class AuctionRegistrationService {
     AuctionBidService auctionBidService;
     @Autowired
     AuctionBidRepository auctionBidRepository;
+    @Autowired
     SimpMessagingTemplate messagingTemplate;
 
     @Transactional
