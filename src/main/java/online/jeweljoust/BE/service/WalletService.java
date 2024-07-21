@@ -152,7 +152,7 @@ public class WalletService {
 
         Wallet wallet = walletRepository.findWallelByAccountWalletId(account.getId());
         Transaction transaction = new Transaction();
-        transaction.setAmount(Math.floor(Double.parseDouble(rechargeRequestDTO.getAmount()) / 25240  * 100) / 100);
+        transaction.setAmount(rechargeRequestDTO.getUsd());
         transaction.setTransaction_type(TransactionType.RECHARGE);
         transaction.setWallet(wallet);
         transaction.setDate(createDate);
@@ -180,7 +180,7 @@ public class WalletService {
         vnpParams.put("vnp_ReturnUrl", returnUrl);
         vnpParams.put("vnp_CreateDate", formattedCreateDate);
         vnpParams.put("vnp_IpAddr", "128.199.178.23");
-        vnpParams.put("vnp_USD",rechargeRequestDTO.getUsd());
+//        vnpParams.put("vnp_USD",rechargeRequestDTO.getUsd());
         StringBuilder signDataBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : vnpParams.entrySet()) {
             signDataBuilder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.toString()));
