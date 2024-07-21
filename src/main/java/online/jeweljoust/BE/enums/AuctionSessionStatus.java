@@ -6,8 +6,8 @@ public enum AuctionSessionStatus {
     STOP,
     PENDINGPAYMENT,
     FINISH,
-
     EXPIRED,
 
     CANCELED;
 }
+//[{lable: "LOCKED",quantity:1},{lable:"ACTIVE",quantity:"10"}

@@ -27,4 +27,14 @@ public interface AuctionSessionRepository extends JpaRepository<AuctionSession, 
 
     @Query("SELECT COUNT(a) FROM AuctionSession a")
     long countTotalAuctionSessions();
+
+    @Query("SELECT MONTH(s.start_time) AS month, COUNT(s) AS sessionCount " +
+            "FROM AuctionSession s " +
+            "WHERE YEAR(s.start_time) = :year " +
+            "GROUP BY MONTH(s.start_time) " +
+            "ORDER BY MONTH(s.start_time)")
+    List<Object[]> countSessionsByMonth(long year);
+
+    @Query(value = "SELECT status, COUNT(*) AS auction_sessions FROM auction_session GROUP BY status", nativeQuery = true)
+    List<Object[]> countAuctionSessionsByStatus();
 }

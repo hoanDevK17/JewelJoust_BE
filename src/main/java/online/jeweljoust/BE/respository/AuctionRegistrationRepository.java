@@ -19,4 +19,11 @@ public interface AuctionRegistrationRepository extends JpaRepository<AuctionRegi
             "WHERE r.accountRegistration.Id = :accountId AND r.auctionSession.Id = :sessionId  ")
     boolean existsByAccountIdAndSessionId(@Param("accountId") Long accountId, @Param("sessionId") Long sessionId);
 //    AND r.regis.status <> 'CANCEL'
+
+    @Query(value = "SELECT COUNT(DISTINCT member_id) FROM auction_registration", nativeQuery = true)
+    long countDistinctMemberId();
+
+    @Query(value = "SELECT COUNT(DISTINCT member_id) FROM auction_registration WHERE auction_session_id=:sessionId", nativeQuery = true)
+    long countRegistrationById(long sessionId);
+
 }
