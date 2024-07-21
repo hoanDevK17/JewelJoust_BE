@@ -1,7 +1,6 @@
 package online.jeweljoust.BE.enums;
 
 public enum AuctionRequestStatus {
-
         PENDING,        //chờ xác nhận
         CONFIRMED,      //đã xác nhận
         REJECTED,       //bị từ chối

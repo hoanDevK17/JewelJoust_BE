@@ -21,6 +21,14 @@ public interface AuthenticationRepository extends JpaRepository<Account, Long>
     @Query("SELECT a FROM Account a")
     Page<Account> findAllAccounts(Pageable pageable);
 
-    @Query("SELECT COUNT(a) FROM Account a")
+    @Query("SELECT COUNT(a) FROM Account a WHERE a.role = 'MEMBER'")
     long countTotalAccounts();
+
+    @Query(value = "SELECT MONTH(w.create_at) AS month, COUNT(a.id) AS memberCount " +
+            "FROM account a " +
+            "JOIN wallet w ON a.id = w.account_id " +
+            "WHERE a.role = 'MEMBER' AND YEAR(w.create_at) = :year " +
+            "GROUP BY MONTH(w.create_at) " +
+            "ORDER BY month", nativeQuery = true)
+    List<Object[]> countAccountsByMonth(long year);
 }

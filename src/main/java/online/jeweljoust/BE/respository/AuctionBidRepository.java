@@ -54,4 +54,24 @@ List<AuctionBid> findAllBidsBySessionId(Long sessionId);
 
     @Query("SELECT COUNT(b) FROM AuctionBid b WHERE b.status = :status")
     long countAuctionBidsByStatus(@Param("status") AuctionBidStatus status);
+
+    @Query("SELECT MONTH(a.bid_time) AS month, COUNT(a) AS bidCount " +
+            "FROM AuctionBid a " +
+            "WHERE YEAR(a.bid_time) = :year AND a.status = 'WON'" +
+            "GROUP BY MONTH(a.bid_time) " +
+            "ORDER BY MONTH(a.bid_time)")
+    List<Object[]> countAuctionBidsByMonth(long year);
+
+    @Query("SELECT COUNT(ab.id) " +
+            "FROM AuctionBid ab " +
+            "JOIN ab.auctionRegistration ar " +
+            "WHERE ar.auctionSession.id = :auctionSessionId")
+    Long countBidsByAuctionSessionId(Long auctionSessionId);
+
+    @Query("SELECT SUM(ab.bid_price) " +
+            "FROM AuctionBid ab " +
+            "JOIN ab.auctionRegistration ar " +
+            "WHERE ar.auctionSession.id = :auctionSessionId " +
+            "AND ab.bid_price = (SELECT MAX(ab2.bid_price) FROM AuctionBid ab2 WHERE ab2.auctionRegistration.id = ab.auctionRegistration.id) ")
+    Long sumHighestBidsByAuctionSessionId(long auctionSessionId);
 }

@@ -2,10 +2,13 @@ package online.jeweljoust.BE.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.jeweljoust.BE.entity.Account;
+import online.jeweljoust.BE.entity.AuctionRequest;
 import online.jeweljoust.BE.entity.Transaction;
+import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.model.WithdrawRequest;
 import online.jeweljoust.BE.service.TransactionService;
 import online.jeweljoust.BE.service.WalletService;
+import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +24,9 @@ import java.util.List;
 public class TransactionAPI {
     @Autowired
     TransactionService transactionService;
+
+    @Autowired
+    AccountUtils accountUtils;
 
     @GetMapping("/transactions")
     @PreAuthorize("hasAnyAuthority('MEMBER')")
@@ -53,5 +59,12 @@ public class TransactionAPI {
     @GetMapping("/transactions/paging")
     public ResponseEntity<Page<Transaction>>getTransactionPaging(Pageable pageable) {
         return ResponseEntity.ok(transactionService.getAllTransactions(pageable));
+
+//        if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.MEMBER)){
+//            Page<AuctionRequest> requestPage = auctionRepository.findAuctionRequestById(accountUtils.getAccountCurrent().getId(), pageable);
+//            return requestPage;
+//        }
+//        Page<AuctionRequest> requestPage = auctionRepository.findAllAuctionRequests(pageable);
+//        return requestPage;
     }
 }
