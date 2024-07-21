@@ -67,6 +67,9 @@ public class WalletService {
         transaction.setTransaction_type(type);
         transaction.setDate(new Date());
         transaction.setDescription(description);
+        if (type.equals(TransactionType.BIDDING)){
+            transaction.setStatus(TransactionStatus.COMPLETED);
+        }
         System.out.println(transactionRepository.save(transaction));
         return transaction;
     }

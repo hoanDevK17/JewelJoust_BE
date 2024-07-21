@@ -89,7 +89,7 @@ public class AuctionRequestService {
 
     public Page<AuctionRequest> getRequestPaging(Pageable pageable) {
         if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.MEMBER)){
-            Page<AuctionRequest> requestPage = auctionRepository.findAuctionRequestById(accountUtils.getAccountCurrent().getId(), pageable);
+            Page<AuctionRequest> requestPage = auctionRepository.findByAccountRequestId(accountUtils.getAccountCurrent().getId(), pageable);
             return requestPage;
         }
         Page<AuctionRequest> requestPage = auctionRepository.findAllAuctionRequests(pageable);
