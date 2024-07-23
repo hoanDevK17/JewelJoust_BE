@@ -98,7 +98,7 @@ public class AuctionSessionService {
         AuctionSessionDetailResponse auctionSessionDetailResponse = auctionSessionMapper.toResponse(auctionSession);
         auctionSessionDetailResponse.setRegister(isRegistered);
         Pageable pageable = PageRequest.of(0, 3);
-        Page<AuctionBid> three_highestBid = auctionBidRepository.findAllBidsBySessionIdOrderByBidTimeDesc(auctionSession.getId(),pageable);
+        Page<AuctionBid> three_highestBid = auctionBidRepository.findAllBidsBySessionIdOrderByBidPriceDesc(auctionSession.getId(),pageable);
         if (three_highestBid.getContent() != null) {
             auctionSessionDetailResponse.setThree_highestBid(three_highestBid.getContent());
         }
@@ -166,6 +166,8 @@ public class AuctionSessionService {
     @Transactional
     public AuctionSession updateAuctionSession(long id, AuctionSessionRequest auctionSessionRequest) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
+        if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.STAFF) && !auctionSession.getStaffSession().getId().equals(accountUtils.getAccountCurrent().getId()))
+        {     throw new IllegalStateException("You are not permission to edit this session");}
         // auctionSession.setManagerSession(accountUtils.getAccountCurrent());
         if (auctionSession.getStatus().equals(AuctionSessionStatus.INITIALIZED)
                 || auctionSession.getStatus().equals(AuctionSessionStatus.STOP)
@@ -275,7 +277,7 @@ public class AuctionSessionService {
         if(auctionSession.getStaffSession().getId() != accountUtils.getAccountCurrent().getId()&& !accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN)){
             throw new IllegalStateException("You can not assigned edit this session");
         }
-        if (auctionSession.getStatus().equals(AuctionSessionStatus.STOP)) {
+        if (auctionSession.getStatus().equals(AuctionSessionStatus.STOP) || auctionSession.getStatus().equals(AuctionSessionStatus.EXPIRED) ) {
             auctionSession.setStatus(AuctionSessionStatus.BIDDING);
             auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.BIDDING);
             auctionRepository.save(auctionSession.getAuctionRequest());

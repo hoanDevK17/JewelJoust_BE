@@ -212,11 +212,15 @@ public class WalletService {
     }
 
     public Transaction handleVnpayResponse(String url) throws Exception {
+
         Map<String, String> params = extractParamsFromUrl(url);
 
         String vnp_ResponseCode = params.get("vnp_ResponseCode");
         String vnp_TxnRef = params.get("vnp_TxnRef");
         Transaction transaction = transactionRepository.findByTxnRef(vnp_TxnRef);
+        if(!transaction.getWallet().getAccountWallet().getId().equals(accountUtils.getAccountCurrent().getId())){
+            throw new IllegalStateException("You can not access this transaction");
+        }
         // Kiểm tra mã phản hồi từ VNPAY
         if(transaction == null){
             throw new IllegalStateException ("Can not found this transaction");

@@ -68,7 +68,7 @@ public class AuctionSessionAPI {
     }
 //    update
     @PutMapping("/auctionSessions/{id}")
-    @PreAuthorize("hasAuthority('MANAGER')")
+    @PreAuthorize("hasAuthority('MANAGER','STAFF')")
     public ResponseEntity<AuctionSession> updateAuctionSessions(@PathVariable Long id,@RequestBody AuctionSessionRequest auctionSessionRequest) {
         AuctionSession auctionSession =  auctionSessionService.updateAuctionSession(id, auctionSessionRequest);
         return ResponseEntity.ok(auctionSession);

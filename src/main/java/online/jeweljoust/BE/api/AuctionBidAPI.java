@@ -5,6 +5,8 @@ import online.jeweljoust.BE.entity.AuctionBid;
 import online.jeweljoust.BE.model.AuctionBidRequest;
 import online.jeweljoust.BE.service.AuctionBidService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,15 +33,15 @@ public class AuctionBidAPI {
         List<AuctionBid> auctionBids  = auctionBidService.getHistoryAuctionBid();
         return ResponseEntity.ok(auctionBids);
     }
-    @GetMapping("/auctionBids/session/{sessionId}")
-    public ResponseEntity getlistCurrentBids(@PathVariable long sessionId) {
-//        get 5 Element top
-        List<AuctionBid> auctionBids  = auctionBidService.getListCurrentBidsBySessionId(sessionId);
-        return ResponseEntity.ok(auctionBids);
-    }
+//    @GetMapping("/auctionBids/session/{sessionId}")
+//    public ResponseEntity getlistCurrentBids(@PathVariable long sessionId) {
+////        get 5 Element top
+//        List<AuctionBid> auctionBids  = auctionBidService.getListCurrentBidsBySessionId(sessionId);
+//        return ResponseEntity.ok(auctionBids);
+//    }
     @GetMapping("/auctionBids/session/getAll/{sessionId}")
-    public ResponseEntity getAllAuctionBidById(@PathVariable long sessionId) {
-        List<AuctionBid> auctionBids  = auctionBidService.getListCurrentBidsBySessionId(sessionId);
+    public ResponseEntity getAllAuctionBidById(@PathVariable long sessionId, Pageable pageable) {
+        Page<AuctionBid> auctionBids  = auctionBidService.getListCurrentBidsBySessionId(sessionId,pageable);
         return ResponseEntity.ok(auctionBids);
     }
 

@@ -26,7 +26,7 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
     @Query("SELECT b FROM AuctionBid b " +
             "WHERE b.auctionRegistration.auctionSession.id = :sessionId AND b.status = 'ACTIVE' " +
             "ORDER BY b.bid_time DESC")
-    Page<AuctionBid> findAllBidsBySessionIdOrderByBidTimeDesc(@Param("sessionId") Long sessionId, Pageable pageable);
+    Page<AuctionBid> findAllBidsBySessionIdOrderByBidPriceDesc(@Param("sessionId") Long sessionId, Pageable pageable);
 
 //("SELECT b FROM AuctionBid b " +
 //        "WHERE b.bid_price = (SELECT MAX(b2.bid_price) FROM AuctionBid b2 " +
@@ -47,8 +47,7 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
     @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.accountRegistration.id = :userId ")
     List<AuctionBid> findAllBidsByUserId(Long userId);
 //    List<AuctionBid> find
-@Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.auctionSession.id = :sessionId ")
-List<AuctionBid> findAllBidsBySessionId(Long sessionId);
+
     @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.id = :registrationId ORDER BY b.bid_price DESC")
     List<AuctionBid> findBidsByAuctionRegistrationId(@Param("registrationId") Long registrationId);
 

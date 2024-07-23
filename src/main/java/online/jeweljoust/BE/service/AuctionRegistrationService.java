@@ -44,7 +44,11 @@ public class AuctionRegistrationService {
 
     @Transactional
     public AuctionRegistration addAuctionRegistration(AuctionRegistrationRequest auctionRegistrationRequest) {
+
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(auctionRegistrationRequest.getAuctionSession_id());
+        if(accountUtils.getAccountCurrent().getId().equals(auctionSession.getAuctionRequest().getAccountRequest().getId())){
+            throw new IllegalStateException("You can not register this session because you are seller");
+        }
         if (auctionRegistrationRepository.existsByAccountIdAndSessionId(accountUtils.getAccountCurrent().getId(), auctionSession.getId()) ) {
             throw new IllegalStateException("You are already registered for this auction session");
 
