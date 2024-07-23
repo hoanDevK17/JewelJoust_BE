@@ -1,14 +1,16 @@
 package online.jeweljoust.BE.service;
 
+import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
-import online.jeweljoust.BE.entity.Account;
-import online.jeweljoust.BE.entity.AuctionRegistration;
-import online.jeweljoust.BE.entity.Transaction;
-import online.jeweljoust.BE.entity.Wallet;
+import online.jeweljoust.BE.entity.*;
 import online.jeweljoust.BE.enums.AccountRole;
+import online.jeweljoust.BE.enums.ResourceTypes;
 import online.jeweljoust.BE.enums.TransactionStatus;
 import online.jeweljoust.BE.enums.TransactionType;
+import online.jeweljoust.BE.model.ResourceRequest;
+import online.jeweljoust.BE.model.WithdrawReponse;
 import online.jeweljoust.BE.model.WithdrawRequest;
+import online.jeweljoust.BE.respository.ResourceRepository;
 import online.jeweljoust.BE.respository.TransactionRepository;
 import online.jeweljoust.BE.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class TransactionService {
     WalletService walletService;
     @Autowired
     AccountUtils accountUtils;
+    @Autowired
+    ResourceRepository resourceRepository;
 
     @Transactional
     public Transaction refundRegistration(AuctionRegistration auctionRegistration){
@@ -46,10 +50,19 @@ public class TransactionService {
         return transactionRepository.findAllWithDrawRequest();
 //        return transactionRepository.findAll();
     }
-    public Transaction confirmWithDraw(long id){
-        Transaction transaction = transactionRepository.findTransactionById(id);
+    public Transaction confirmWithDraw(WithdrawReponse withdrawReponse){
+        Transaction transaction = transactionRepository.findTransactionById(withdrawReponse.getId());
         if(transaction.getStatus().equals(TransactionStatus.PENDING)){
-            System.out.println("Oke");
+            for (ResourceRequest resourceRequest : withdrawReponse.getResourceRequestList()){
+                Resources resources = new Resources();
+                resources.setResourceType(ResourceTypes.ResourceType.img);
+                resources.setPath(resourceRequest.getPath());
+                resources.setDescription(resourceRequest.getDescription());
+                resources.setReferenceType(ResourceTypes.ReferenceType.WITHDRAW);
+                resources.setAccountResource(accountUtils.getAccountCurrent());
+                resources.setUploadAt(new Date());
+                resourceRepository.save(resources);
+            }
             transaction.setStatus(TransactionStatus.COMPLETED);
         }
         else{
