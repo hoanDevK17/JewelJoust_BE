@@ -230,7 +230,7 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public Account updateProfile(UpdateProfileRequest updateProfileRequest) {
-        if (accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN) || accountUtils.getAccountCurrent().getId() == updateProfileRequest.getId()) {
+            if (accountUtils.getAccountCurrent().getRole().equals(AccountRole.ADMIN) || accountUtils.getAccountCurrent().getId() == updateProfileRequest.getId()) {
             Account account = authenticationRepository.findById(updateProfileRequest.getId());
             if (updateProfileRequest.getFullname().trim() != "") {
                 account.setFullname(updateProfileRequest.getFullname());

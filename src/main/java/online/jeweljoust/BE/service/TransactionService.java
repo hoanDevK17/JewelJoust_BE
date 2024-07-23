@@ -5,6 +5,7 @@ import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.AuctionRegistration;
 import online.jeweljoust.BE.entity.Transaction;
 import online.jeweljoust.BE.entity.Wallet;
+import online.jeweljoust.BE.enums.AccountRole;
 import online.jeweljoust.BE.enums.TransactionStatus;
 import online.jeweljoust.BE.enums.TransactionType;
 import online.jeweljoust.BE.model.WithdrawRequest;
@@ -36,8 +37,8 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    public List<Transaction> getAll(){
-        return transactionRepository.findByWalletId(accountUtils.getAccountCurrent().getWallet().getId());
+    public Page<Transaction> getAll(Pageable pageable){
+        return transactionRepository.findByWalletId(accountUtils.getAccountCurrent().getWallet().getId(),pageable);
 //        return transactionRepository.findAll();
     }
     public List<Transaction> getAllWithDrawRequest(){
@@ -75,7 +76,8 @@ public class TransactionService {
     }
 
     public Page<Transaction> getAllTransactions(Pageable pageable) {
-        Page<Transaction> tranPage = transactionRepository.findAll(pageable);
-        return tranPage;
+        if(!accountUtils.getAccountCurrent().getRole().equals(AccountRole.MEMBER))
+        return transactionRepository.findAll(pageable);
+        return transactionRepository.findByWalletId(accountUtils.getAccountCurrent().getWallet().getId(),pageable);
     }
 }

@@ -49,15 +49,14 @@ public class WalletAPI {
     }
 
     @PutMapping("/wallet/VnpayResponse")
-    public ResponseEntity<String> handleVnpayResponse(@RequestBody String url) {
+    public ResponseEntity<Transaction> handleVnpayResponse(@RequestBody String url) {
         try {
             System.out.println("Received URL: " + url); // Thêm log để kiểm tra URL nhận được
-            String responseMessage = walletService.handleVnpayResponse(url);
-
-            return ResponseEntity.ok(responseMessage);
+            Transaction transaction = walletService.handleVnpayResponse(url);
+            return ResponseEntity.ok(transaction);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing VNPAY response");
+            throw new IllegalStateException("Error processing VNPAY response");
         }
     }
 

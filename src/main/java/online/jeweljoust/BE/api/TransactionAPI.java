@@ -30,8 +30,8 @@ public class TransactionAPI {
 
     @GetMapping("/transactions")
     @PreAuthorize("hasAnyAuthority('MEMBER')")
-    public ResponseEntity getAll() {
-        List<Transaction> transactions = transactionService.getAll();
+    public ResponseEntity getAll(Pageable pageable) {
+        Page<Transaction> transactions = transactionService.getAll(pageable);
         return ResponseEntity.ok(transactions);
     }
 
@@ -56,7 +56,9 @@ public class TransactionAPI {
      return ResponseEntity.ok(transactionService.withdraw(withdrawRequest));
      }
 
+
     @GetMapping("/transactions/paging")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'STAFF','MEMBER')")
     public ResponseEntity<Page<Transaction>>getTransactionPaging(Pageable pageable) {
         return ResponseEntity.ok(transactionService.getAllTransactions(pageable));
 

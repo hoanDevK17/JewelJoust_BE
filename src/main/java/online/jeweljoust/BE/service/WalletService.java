@@ -70,8 +70,8 @@ public class WalletService {
         if (type.equals(TransactionType.BIDDING)){
             transaction.setStatus(TransactionStatus.COMPLETED);
         }
-        System.out.println(transactionRepository.save(transaction));
-        return transaction;
+
+        return transactionRepository.save(transaction);
     }
 
     @Transactional
@@ -91,8 +91,8 @@ public class WalletService {
         transaction.setTransaction_type(type);
         transaction.setDate(new Date());
         transaction.setDescription(description);
-        System.out.println(transactionRepository.save(transaction));
-        return transaction;
+
+        return transactionRepository.save(transaction);
     }
 //    @Transactional
 //    public Transaction changBalance(Long id, double amount, TransactionType type,String description,Long id_auctionRegistration) {
@@ -211,38 +211,36 @@ public class WalletService {
         return urlBuilder.toString();
     }
 
-    public String handleVnpayResponse(String url) throws Exception {
+    public Transaction handleVnpayResponse(String url) throws Exception {
         Map<String, String> params = extractParamsFromUrl(url);
 
         String vnp_ResponseCode = params.get("vnp_ResponseCode");
         String vnp_TxnRef = params.get("vnp_TxnRef");
-
+        Transaction transaction = transactionRepository.findByTxnRef(vnp_TxnRef);
         // Kiểm tra mã phản hồi từ VNPAY
+        if(transaction == null){
+            throw new IllegalStateException ("Can not found this transaction");
+        }
+        if(!transaction.getStatus().equals(TransactionStatus.PENDING)){
+            throw new IllegalStateException ("This transaction is handled");
+        }
         if ("00".equals(vnp_ResponseCode)) {
             // Tìm giao dịch bằng mã tham chiếu
-            Transaction foundTransaction = transactionRepository.findByTxnRef(vnp_TxnRef);
-            if (foundTransaction != null && TransactionStatus.PENDING.equals(foundTransaction.getStatus())) {
+//            Transaction foundTransaction = transactionRepository.findByTxnRef(vnp_TxnRef);
                 // Cập nhật số dư ví của khách hàng
-                Wallet foundWallet = foundTransaction.getWallet();
-                double amount = foundTransaction.getAmount();
-                foundWallet.setBalance(foundWallet.getBalance() + amount);
-                walletRepository.save(foundWallet);
-
+                Wallet wallet = transaction.getWallet();
+                double amount = transaction.getAmount();
+                wallet.setBalance(wallet.getBalance() + amount);
+                walletRepository.save(wallet);
                 // Cập nhật trạng thái giao dịch thành COMPLETED
-                foundTransaction.setStatus(TransactionStatus.COMPLETED);
-                transactionRepository.save(foundTransaction);
+                transaction.setStatus(TransactionStatus.COMPLETED);
 
-                return "VNPAY response processed successfully";
-            } else {
-                return "Transaction not found or already processed";
-            }
         } else {
-            Transaction errTransaction = transactionRepository.findByTxnRef(vnp_TxnRef);
-            if (errTransaction != null && TransactionStatus.PENDING.equals(errTransaction.getStatus())){
-                errTransaction.setStatus(TransactionStatus.FAILED);
-            }
-            return "VNPAY response code indicates failure";
+//            Transaction errTransaction = transactionRepository.findByTxnRef(vnp_TxnRef);
+            transaction.setStatus(TransactionStatus.FAILED);
+
         }
+        return  transactionRepository.save(transaction);
     }
 
     private Map<String, String> extractParamsFromUrl(String url) throws UnsupportedEncodingException {

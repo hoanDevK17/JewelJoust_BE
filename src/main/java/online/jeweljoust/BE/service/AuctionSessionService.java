@@ -59,11 +59,11 @@ public class AuctionSessionService {
 
     public List<AuctionSession> getAuctionSessionsByStatus(AuctionSessionStatus status) {
         List<AuctionSession> auctionSessions = auctionSessionRepository.findAuctionSessionByStatus(status);
-        System.out.println(auctionSessions.size());
+//        System.out.println(auctionSessions.size());
 
-        if(auctionSessions.size()==0){
-            throw new  IllegalStateException("No Session has your status required in database");
-        }
+//        if(auctionSessions.size()==0){
+//            throw new  IllegalStateException("No Session has your status required in database");
+//        }
 
         return auctionSessions;
     }
@@ -85,7 +85,7 @@ public class AuctionSessionService {
 
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
         if (auctionSession == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found: " + id);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found: " + id);
         }
         boolean isRegistered;
         if (idUser > 0) {
@@ -125,7 +125,7 @@ public class AuctionSessionService {
         auctionSession.setNameSession(auctionSessionRequest.getName_session());
         auctionSession.setNameJewelry(auctionSessionRequest.getName_jewelry());
         auctionSession.setDescription(auctionSessionRequest.getDescription());
-        auctionSession.setFeeAmount(0.05);
+        auctionSession.setFeeAmount(0.02);
         auctionSession.setCreateAt(new Date());
 
         Date now = new Date();
@@ -315,9 +315,9 @@ public class AuctionSessionService {
             auctionBidRepository.save(bid);
         }
         walletService.changBalance(auctionSession.getAuctionRequest().getAccountRequest().getWallet().getId(),
-                auctionBidHighest.getBid_price()*0.98, TransactionType.SELLING, "Sell successfully product with id request"
+                auctionBidHighest.getBid_price()*(1-auctionSession.getFeeAmount()), TransactionType.SELLING, "Sell successfully product with id request"
                         + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price());
-//gửi mail cho thằng chiến thắng nữa
+
         Account account = auctionBidHighest.getAuctionRegistration().getAccountRegistration();
         EmailDetail emailDetail = new EmailDetail();
             emailDetail.setRecipient(account.getEmail());
