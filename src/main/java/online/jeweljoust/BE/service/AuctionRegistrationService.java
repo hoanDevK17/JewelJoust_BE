@@ -64,7 +64,7 @@ public class AuctionRegistrationService {
         }
         AuctionRegistration auctionRegistration = new AuctionRegistration();
         auctionRegistration.setCreate_at(new Date());
-        auctionRegistration.setStatus(AuctionRegistrationStatus.PENDING);
+
         auctionRegistration.setAuctionSession(auctionSessionRepository.findAuctionSessionById(auctionRegistrationRequest.getAuctionSession_id()));
         auctionRegistration.setAccountRegistration((accountUtils.getAccountCurrent()));
 //        auctionRegistration=
@@ -72,13 +72,13 @@ public class AuctionRegistrationService {
 //         walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(),-price, TransactionType.BIDDING,
 //                "Deposit session" + auctionSession.getNameSession(),auctionRegistrationRequest.getAuctionSession_id());
         AuctionBid auctionBid = auctionBidService.handleNewBidTransaction(price,auctionRegistration.getId());
-        walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(), -price,TransactionType.BIDDING,"Bidding" + price );
+        walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(), -price,TransactionType.BIDDING,"Bidding " + price  +" for session with ID: " + auctionSession.getId(),TransactionStatus.COMPLETED  );
 //        auctionBid.setAuctionRegistration(auctionRegistration);
 //        Set<AuctionBid> auctionBids = new HashSet<AuctionBid>();
 //        auctionBids.add(auctionBidService.handleNewBidTransaction(accountUtils.getAccountCurrent().getWallet().getId(),price,auctionRegistration.getId()));
 //        auctionRegistration.setAuctionBids(auctionBids);
         auctionBidRepository.save(auctionBid);
-        auctionRegistration.setStatus(AuctionRegistrationStatus.INITIALIZED);
+        auctionRegistration.setStatus(AuctionRegistrationStatus.REGISTERED);
 
         messagingTemplate.convertAndSend("/topic/JewelJoust","addBid");
         return auctionRegistrationRepository.save(auctionRegistration);
@@ -95,7 +95,7 @@ public class AuctionRegistrationService {
     public AuctionRegistration cancelAuctionRegistration(Long id) {
         AuctionRegistration auctionRegistration = auctionRegistrationRepository.findAuctionRegistrationById(id);
         if (auctionRegistration.getStatus() != AuctionRegistrationStatus.CANCELLED) {
-            if (auctionRegistration.getStatus() != AuctionRegistrationStatus.PENDING) {
+            if (auctionRegistration.getStatus() != AuctionRegistrationStatus.REGISTERED) {
                 Transaction transaction = transactionService.refundRegistration(auctionRegistration);
 
             }

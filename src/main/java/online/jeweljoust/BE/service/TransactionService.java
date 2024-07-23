@@ -33,7 +33,8 @@ public class TransactionService {
         Transaction transaction = new Transaction();
         Double amountDeposit = auctionRegistration.getAuctionSession().getDepositAmount();
         Wallet wallet = auctionRegistration.getAccountRegistration().getWallet();
-        walletService.changBalance(wallet.getId(), amountDeposit,TransactionType.REFUND,"Refund deposit and bidding for the session" + auctionRegistration.getAuctionSession().getNameSession());
+        walletService.changBalance(wallet.getId(), amountDeposit,TransactionType.REFUND,"Refund deposit and bidding for the session with ID: " + auctionRegistration.getAuctionSession().getId(),
+                TransactionStatus.COMPLETED);
         return transactionRepository.save(transaction);
     }
 

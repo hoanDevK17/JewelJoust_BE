@@ -16,7 +16,7 @@ public interface AuctionRegistrationRepository extends JpaRepository<AuctionRegi
     List<AuctionRegistration> findAuctionRegistrationByAuctionSessionId(long id);
     @Query("SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END " +
             "FROM AuctionRegistration  r " +
-            "WHERE r.accountRegistration.Id = :accountId AND r.auctionSession.Id = :sessionId  ")
+            "WHERE r.accountRegistration.Id = :accountId AND r.auctionSession.Id = :sessionId AND r.status <> 'CANCELLED'")
     boolean existsByAccountIdAndSessionId(@Param("accountId") Long accountId, @Param("sessionId") Long sessionId);
 //    AND r.regis.status <> 'CANCEL'
 

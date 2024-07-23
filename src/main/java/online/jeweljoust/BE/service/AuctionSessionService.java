@@ -311,14 +311,14 @@ public class AuctionSessionService {
         }
         List<AuctionBid> activeBids = auctionBidRepository.findActiveBidsBySessionId(sessionId);
         for (AuctionBid bid : activeBids) {
-            walletService.changBalance(bid.getAuctionRegistration().getAccountRegistration().getWallet().getId(), bid.getBid_price(), TransactionType.REFUND, "RefundBidding amount" + bid.getBid_price());
+            walletService.changBalance(bid.getAuctionRegistration().getAccountRegistration().getWallet().getId(), bid.getBid_price(), TransactionType.REFUND, "RefundBidding amount" + bid.getBid_price() + "for session with ID: " + auctionSession.getId(),TransactionStatus.COMPLETED);
             bid.setStatus(AuctionBidStatus.REFUND);
             bid.getAuctionRegistration().setStatus(AuctionRegistrationStatus.REFUNDED);
             auctionBidRepository.save(bid);
         }
         walletService.changBalance(auctionSession.getAuctionRequest().getAccountRequest().getWallet().getId(),
                 auctionBidHighest.getBid_price()*(1-auctionSession.getFeeAmount()), TransactionType.SELLING, "Sell successfully product with id request"
-                        + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price());
+                        + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price(),TransactionStatus.COMPLETED);
 
         Account account = auctionBidHighest.getAuctionRegistration().getAccountRegistration();
         EmailDetail emailDetail = new EmailDetail();

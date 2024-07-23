@@ -51,7 +51,7 @@ public class WalletService {
 //    }
 
     @Transactional
-    public Transaction changBalance(Long id, double amount, TransactionType type,String description) {
+    public Transaction changBalance(Long id, double amount, TransactionType type,String description,TransactionStatus status) {
         Wallet wallet = walletRepository.findWalletById(id);
 
         double newBalance = wallet.getBalance() + amount;
@@ -67,10 +67,7 @@ public class WalletService {
         transaction.setTransaction_type(type);
         transaction.setDate(new Date());
         transaction.setDescription(description);
-        if (type.equals(TransactionType.BIDDING)){
-            transaction.setStatus(TransactionStatus.COMPLETED);
-        }
-
+        transaction.setStatus(status);
         return transactionRepository.save(transaction);
     }
 
@@ -115,13 +112,7 @@ public class WalletService {
 //        System.out.println(transactionRepository.save(transaction));
 //        return transaction;
 //    }
-    @Transactional
-    public Transaction deposit( DepositRequest depositRequest) {
-//        Wallet wallet = accountUtils.getAccountCurrent().getWallet();
 
-        Transaction transaction = this.changBalance(depositRequest.getWalletId(),depositRequest.getAmount(), TransactionType.DEPOSIT,depositRequest.getDescription());
-        return transaction;
-    }
 
     public double refreshBalance() {
         Wallet wallet = accountUtils.getAccountCurrent().getWallet();

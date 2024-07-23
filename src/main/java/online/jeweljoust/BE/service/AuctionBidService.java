@@ -37,6 +37,7 @@ public class AuctionBidService {
 
     @Transactional
     public AuctionBid addAuctionBid(AuctionBidRequest auctionBidRequest) {
+
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(auctionBidRequest.getId_session());
         if (!auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)) {
             throw new IllegalStateException("Cannot bid for this session. The session is not in the bidding phase.");
@@ -62,7 +63,8 @@ public class AuctionBidService {
         double price = auctionBidRequest.getPrice() - highestBidOfUser.getBid_price();
 
         AuctionBid auctionBid = this.handleNewBidTransaction(auctionBidRequest.getPrice(), highestBidOfUser.getAuctionRegistration().getId());
-        walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(), -price, TransactionType.BIDDING, "Bidding" + price);
+        walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(), -price, TransactionType.BIDDING, "Bidding " + price + " for session ID: "
+                + auctionSession.getId(),TransactionStatus.COMPLETED);
         highestBidOfUser.setStatus(AuctionBidStatus.NONACTIVE);
         auctionBidRepository.save(highestBidOfUser);
         AuctionBid newauctionBid = auctionBidRepository.save(auctionBid);
