@@ -43,7 +43,7 @@ public class Filter extends OncePerRequestFilter {
             "/api/test",
             "/api/forgot-password",
             "/api/auctionSessions",
-            "/api/auctionSessions/detail/*",
+            "/api/auctionSessions/detail/{id}",
             "/api/auctionSessions/{status}",
             "/api/auctionSessions/3days",
             "/api/auctionSessions/*/*",

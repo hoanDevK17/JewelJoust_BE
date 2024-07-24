@@ -166,6 +166,7 @@ public class AuctionSessionService {
     @Transactional
     public AuctionSession updateAuctionSession(long id, AuctionSessionRequest auctionSessionRequest) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
+        System.out.println(accountUtils.getAccountCurrent().getId());
         if(accountUtils.getAccountCurrent().getRole().equals(AccountRole.STAFF) && !auctionSession.getStaffSession().getId().equals(accountUtils.getAccountCurrent().getId()))
         {     throw new IllegalStateException("You are not permission to edit this session");}
         // auctionSession.setManagerSession(accountUtils.getAccountCurrent());
