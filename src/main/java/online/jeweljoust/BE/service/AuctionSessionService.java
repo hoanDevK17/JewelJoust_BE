@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -353,15 +354,19 @@ public class AuctionSessionService {
 
     public AuctionSession auctionSessionFinish(Long id) {
         AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
-        AuctionBid auctionBidHighest = auctionBidRepository.findHighestBidBySessionId(id)
-                .orElse(null);
-        walletService.changBalance(auctionSession.getAuctionRequest().getAccountRequest().getWallet().getId(),
-                auctionBidHighest.getBid_price()*(1-auctionSession.getFeeAmount()), TransactionType.SELLING, "Sell successfully product with id request"
-                        + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price(),TransactionStatus.COMPLETED);
-        auctionSession.setStatus(AuctionSessionStatus.FINISH);
-        auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.FINISH);
-        auctionRepository.save(auctionSession.getAuctionRequest());
-        auctionSessionRepository.save(auctionSession);
-        return auctionSession;
+        if (auctionSession.getStatus().equals(AuctionSessionStatus.PENDINGPAYMENT)){
+            AuctionBid auctionBidHighest = auctionBidRepository.findHighestBidBySessionId(id)
+                    .orElse(null);
+            walletService.changBalance(auctionSession.getAuctionRequest().getAccountRequest().getWallet().getId(),
+                    auctionBidHighest.getBid_price()*(1-auctionSession.getFeeAmount()), TransactionType.SELLING, "Sell successfully product with id request"
+                            + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price(),TransactionStatus.COMPLETED);
+            auctionSession.setStatus(AuctionSessionStatus.FINISH);
+            auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.FINISH);
+            auctionRepository.save(auctionSession.getAuctionRequest());
+            auctionSessionRepository.save(auctionSession);
+            return auctionSession;
+        } else {
+            throw new IllegalStateException("This session is not over yet");
+        }
     }
 }
