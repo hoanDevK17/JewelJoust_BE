@@ -5,6 +5,8 @@ import online.jeweljoust.BE.entity.Account;
 import online.jeweljoust.BE.entity.AuctionRequest;
 import online.jeweljoust.BE.entity.Transaction;
 import online.jeweljoust.BE.enums.AccountRole;
+import online.jeweljoust.BE.model.ResourceRequest;
+import online.jeweljoust.BE.model.WithdrawReponse;
 import online.jeweljoust.BE.model.WithdrawRequest;
 import online.jeweljoust.BE.service.TransactionService;
 import online.jeweljoust.BE.service.WalletService;
@@ -44,8 +46,8 @@ public class TransactionAPI {
 
     @PutMapping("/transactions/withdraw/confirm")
     @PreAuthorize("hasAnyAuthority('STAFF')")
-    public ResponseEntity getAllWithDrawRequest(@RequestBody long id) {
-        Transaction transactions = transactionService.confirmWithDraw(id);
+    public ResponseEntity confirmWithDraw(@RequestBody WithdrawReponse withdrawReponse) {
+        Transaction transactions = transactionService.confirmWithDraw(withdrawReponse);
         return ResponseEntity.ok(transactions);
     }
 
