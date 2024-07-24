@@ -25,7 +25,7 @@ public class DashboardAPI {
     DashboardService dashboardService;
 
     @GetMapping("/dashboard")
-    public Map<String, Long> totalDashboard() {
+    public Map<String, Object> totalDashboard() {
         return dashboardService.totalDashboard();
     }
 

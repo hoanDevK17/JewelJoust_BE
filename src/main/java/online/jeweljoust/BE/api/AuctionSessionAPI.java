@@ -115,6 +115,11 @@ public class AuctionSessionAPI {
     public ResponseEntity<Page<AuctionSession>>getSessionPaging(Pageable pageable) {
         return ResponseEntity.ok(auctionSessionService.getAllAuctionSessions(pageable));
     }
+
+    @PutMapping("/auctionSessions/finish")
+    public ResponseEntity<AuctionSession>auctionSessionFinish(@RequestBody Long id) {
+        return ResponseEntity.ok(auctionSessionService.auctionSessionFinish(id));
+    }
 //    @DeleteMapping("/auctionSessions/{id}")
 //    public ResponseEntity<Void> delete(@PathVariable Long id) {
 //        auctionSessionService.deleteSession(id);

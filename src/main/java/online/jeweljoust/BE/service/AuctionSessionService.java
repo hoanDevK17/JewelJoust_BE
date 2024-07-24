@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -322,9 +323,9 @@ public class AuctionSessionService {
             bid.getAuctionRegistration().setStatus(AuctionRegistrationStatus.REFUNDED);
             auctionBidRepository.save(bid);
         }
-        walletService.changBalance(auctionSession.getAuctionRequest().getAccountRequest().getWallet().getId(),
-                auctionBidHighest.getBid_price()*(1-auctionSession.getFeeAmount()), TransactionType.SELLING, "Sell successfully product with id request"
-                        + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price(),TransactionStatus.COMPLETED);
+//        walletService.changBalance(auctionSession.getAuctionRequest().getAccountRequest().getWallet().getId(),
+//                auctionBidHighest.getBid_price()*(1-auctionSession.getFeeAmount()), TransactionType.SELLING, "Sell successfully product with id request"
+//                        + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price(),TransactionStatus.COMPLETED);
 
         Account account = auctionBidHighest.getAuctionRegistration().getAccountRegistration();
         EmailDetail emailDetail = new EmailDetail();
@@ -334,10 +335,6 @@ public class AuctionSessionService {
             emailDetail.setAuctionId(auctionBidHighest.getAuctionRegistration().getAuctionSession().getId());
             emailDetail.setProductName(auctionBidHighest.getAuctionRegistration().getAuctionSession().getNameJewelry());
         emailService.sendMailNotification(emailDetail, "templateWinner");
-        auctionSession.setStatus(AuctionSessionStatus.FINISH);
-        auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.FINISH);
-        auctionRepository.save(auctionSession.getAuctionRequest());
-        auctionSessionRepository.save(auctionSession);
     }
 
     public List<AuctionSession> getAuctionSession3days() {
@@ -358,5 +355,23 @@ public class AuctionSessionService {
     public Page<AuctionSession> getAllAuctionSessions(Pageable pageable) {
         Page<AuctionSession> sessionPage = auctionSessionRepository.findAll(pageable);
         return sessionPage;
+    }
+
+    public AuctionSession auctionSessionFinish(Long id) {
+        AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
+        if (auctionSession.getStatus().equals(AuctionSessionStatus.PENDINGPAYMENT)){
+            AuctionBid auctionBidHighest = auctionBidRepository.findHighestBidBySessionId(id)
+                    .orElse(null);
+            walletService.changBalance(auctionSession.getAuctionRequest().getAccountRequest().getWallet().getId(),
+                    auctionBidHighest.getBid_price()*(1-auctionSession.getFeeAmount()), TransactionType.SELLING, "Sell successfully product with id request"
+                            + auctionSession.getAuctionRequest().getId() + "With Price" + auctionBidHighest.getBid_price(),TransactionStatus.COMPLETED);
+            auctionSession.setStatus(AuctionSessionStatus.FINISH);
+            auctionSession.getAuctionRequest().setStatus(AuctionRequestStatus.FINISH);
+            auctionRepository.save(auctionSession.getAuctionRequest());
+            auctionSessionRepository.save(auctionSession);
+            return auctionSession;
+        } else {
+            throw new IllegalStateException("This session is not over yet");
+        }
     }
 }
