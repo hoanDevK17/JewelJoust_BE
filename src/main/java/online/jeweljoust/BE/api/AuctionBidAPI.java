@@ -28,6 +28,13 @@ public class AuctionBidAPI {
         return ResponseEntity.ok(auctionBid);
     }
 
+    @PostMapping("/auctionBids/fast")
+    @PreAuthorize("hasAuthority('MEMBER')")
+
+    public ResponseEntity<AuctionBid> fastBid(@RequestBody AuctionBidRequest auctionBidRequest) {
+        AuctionBid auctionBid = auctionBidService.fastBid(auctionBidRequest);
+        return ResponseEntity.ok(auctionBid);
+    }
     @GetMapping("/auctionBids")
     public ResponseEntity getAllBid() {
         List<AuctionBid> auctionBids  = auctionBidService.getHistoryAuctionBid();

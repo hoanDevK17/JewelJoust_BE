@@ -102,6 +102,11 @@ public class AuctionSessionService {
         if (three_highestBid.getContent() != null) {
             auctionSessionDetailResponse.setThree_highestBid(three_highestBid.getContent());
         }
+        if(!auctionSession.getStatus().equals(AuctionSessionStatus.INITIALIZED)){
+            AuctionBid auctionBidHighest = auctionBidRepository.findHighestBidBySessionId(id)
+                    .orElse(null);
+            auctionSessionDetailResponse.setHighestBid(auctionBidHighest);
+        }
         return auctionSessionDetailResponse;
     }
 

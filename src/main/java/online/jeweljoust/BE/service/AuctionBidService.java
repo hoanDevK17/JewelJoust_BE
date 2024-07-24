@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -68,7 +69,73 @@ public class AuctionBidService {
         highestBidOfUser.setStatus(AuctionBidStatus.NONACTIVE);
         auctionBidRepository.save(highestBidOfUser);
         AuctionBid newauctionBid = auctionBidRepository.save(auctionBid);
+        if(auctionSession.getEnd_time().getTime() - (new Date()).getTime() < 60000 ){
+            Date currentDate  = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+            if(calendar.get(Calendar.SECOND)>30){
+                calendar.add(Calendar.MINUTE,2);
+            }else{
+                calendar.add(Calendar.MINUTE,1);
+            }
+            calendar.set(Calendar.SECOND,0);
+            calendar.set(Calendar.MILLISECOND,0);
+            auctionSession.setEnd_time(calendar.getTime());
+            auctionSessionRepository.save(auctionSession);
+        }
         messagingTemplate.convertAndSend("/topic/JewelJoust", "addBid");
+        return newauctionBid;
+
+
+        //walletService
+    }
+    @Transactional
+    public AuctionBid fastBid(AuctionBidRequest auctionBidRequest) {
+
+        AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(auctionBidRequest.getId_session());
+        if (!auctionSession.getStatus().equals(AuctionSessionStatus.BIDDING)) {
+            throw new IllegalStateException("Cannot bid for this session. The session is not in the bidding phase.");
+        }
+        AuctionBid highestBid = auctionBidRepository.findHighestBidBySessionId(auctionSession.getId()).orElse(new AuctionBid());
+        double min_next_price = highestBid.getBid_price()*1.5;
+        if (auctionBidRequest.getPrice() < (min_next_price)) {
+            throw new IllegalStateException("Bid amount must higher 150% highest current bids" + min_next_price);
+        }
+        AuctionBid highestBidOfUser = auctionBidRepository.findHighestBidByUserAndSessionAndStatus(accountUtils.getAccountCurrent().getId(), auctionSession.getId()).orElse(new AuctionBid());
+
+//        System.out.println(highestBidOfUser.getAuctionRegistration().getAccountRegistration().getId() +"ooo");
+//        System.out.println(accountUtils.getAccountCurrent().getId());
+//        if (highestBidOfUser.getAuctionRegistration().getAccountRegistration().getId().equals(accountUtils.getAccountCurrent().getId())){
+//            throw new IllegalStateException("You are currently the highest bidder");
+//        }
+
+
+        if (highestBid.getAuctionRegistration().getAccountRegistration().getId().equals(accountUtils.getAccountCurrent().getId())) {
+            throw new IllegalStateException("You are currently the highest bidder");
+        }
+
+        double price = auctionBidRequest.getPrice() - highestBidOfUser.getBid_price();
+
+        AuctionBid auctionBid = this.handleNewBidTransaction(auctionBidRequest.getPrice(), highestBidOfUser.getAuctionRegistration().getId());
+        walletService.changBalance(accountUtils.getAccountCurrent().getWallet().getId(), -price, TransactionType.BIDDING, "Bidding " + price + " for session ID: "
+                + auctionSession.getId(),TransactionStatus.COMPLETED);
+        highestBidOfUser.setStatus(AuctionBidStatus.NONACTIVE);
+        Date currentDate  = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        if(calendar.get(Calendar.SECOND)>30){
+            calendar.add(Calendar.MINUTE,2);
+        }else{
+            calendar.add(Calendar.MINUTE,1);
+        }
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+
+        auctionSession.setEnd_time(calendar.getTime());
+        auctionBidRepository.save(highestBidOfUser);
+        AuctionBid newauctionBid = auctionBidRepository.save(auctionBid);
+        messagingTemplate.convertAndSend("/topic/JewelJoust", "addBid");
+
         return newauctionBid;
 
 

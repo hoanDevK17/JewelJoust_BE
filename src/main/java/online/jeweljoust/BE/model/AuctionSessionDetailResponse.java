@@ -15,5 +15,6 @@ public class AuctionSessionDetailResponse extends AuctionSession {
     boolean isRegister;
 
     List<AuctionBid> three_highestBid;
+    AuctionBid highestBid;
 
 }
