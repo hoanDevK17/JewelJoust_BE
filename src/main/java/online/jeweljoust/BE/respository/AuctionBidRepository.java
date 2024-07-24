@@ -51,8 +51,11 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
     @Query("SELECT b FROM AuctionBid b WHERE b.auctionRegistration.id = :registrationId ORDER BY b.bid_price DESC")
     List<AuctionBid> findBidsByAuctionRegistrationId(@Param("registrationId") Long registrationId);
 
-    @Query("SELECT COUNT(b) FROM AuctionBid b WHERE b.status = :status")
-    long countAuctionBidsByStatus(@Param("status") AuctionBidStatus status);
+//    @Query("SELECT COUNT(b) FROM AuctionBid b WHERE b.status = :status")
+//    long countAuctionBidsByStatus(@Param("status") AuctionBidStatus status);
+
+    @Query("SELECT SUM(b.bid_price) FROM AuctionBid b WHERE b.status = :status")
+    double sumBidPriceByStatus(@Param("status") AuctionBidStatus status);
 
     @Query("SELECT MONTH(a.bid_time) AS month, COUNT(a) AS bidCount " +
             "FROM AuctionBid a " +
@@ -73,4 +76,10 @@ public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
             "WHERE ar.auctionSession.id = :auctionSessionId " +
             "AND ab.bid_price = (SELECT MAX(ab2.bid_price) FROM AuctionBid ab2 WHERE ab2.auctionRegistration.id = ab.auctionRegistration.id) ")
     Long sumHighestBidsByAuctionSessionId(long auctionSessionId);
+
+    @Query("SELECT MAX(ab.bid_price) " +
+            "FROM AuctionBid ab " +
+            "JOIN ab.auctionRegistration ar " +
+            "WHERE ar.auctionSession.id = :auctionSessionId")
+    Double findHighestBidByAuctionSessionId(@Param("auctionSessionId") long auctionSessionId);
 }

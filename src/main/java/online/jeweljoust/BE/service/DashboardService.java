@@ -1,5 +1,6 @@
 package online.jeweljoust.BE.service;
 
+import online.jeweljoust.BE.entity.AuctionSession;
 import online.jeweljoust.BE.enums.AuctionBidStatus;
 import online.jeweljoust.BE.model.DetailDashboardReponse;
 import online.jeweljoust.BE.respository.*;
@@ -28,16 +29,16 @@ public class DashboardService {
     @Autowired
     AuctionRegistrationRepository auctionRegistrationRepository;
 
-    public Map<String, Long> totalDashboard() {
-        Map<String, Long> reponse = new HashMap<>();
+    public Map<String, Object> totalDashboard() {
+        Map<String, Object> reponse = new HashMap<>();
         long totalRequest = auctionRepository.countTotalAuctionRequests();
         long totalAccount = authenticationRepository.countTotalAccounts();
         long totalSession = auctionSessionRepository.countTotalAuctionSessions();
-        long totalBid = auctionBidRepository.countAuctionBidsByStatus(AuctionBidStatus.WON);
+        double totalRevenue = auctionBidRepository.sumBidPriceByStatus(AuctionBidStatus.WON);
         reponse.put("totalRequest", totalRequest);
         reponse.put("totalAccount", totalAccount);
         reponse.put("totalSession", totalSession);
-        reponse.put("totalBid", totalBid);
+        reponse.put("totalRevenue", totalRevenue);
         return reponse;
     }
 
@@ -90,7 +91,7 @@ public class DashboardService {
         long totalAccount = authenticationRepository.countTotalAccounts();
         List<DetailDashboardReponse> accountList = new ArrayList<>();
         accountList.add(new DetailDashboardReponse("Account Registration", totalAccountRegis));
-        accountList.add(new DetailDashboardReponse("Total Account", totalAccount));
+        accountList.add(new DetailDashboardReponse("Total Account", totalAccount - totalAccountRegis));
         return accountList;
     }
 
@@ -109,9 +110,15 @@ public class DashboardService {
             long totalReg = auctionRegistrationRepository.countRegistrationById(id);
             long totalBid = auctionBidRepository.countBidsByAuctionSessionId(id);
             long totalPri = auctionBidRepository.sumHighestBidsByAuctionSessionId(id);
+            double priceHighest = auctionBidRepository.findHighestBidByAuctionSessionId(id);
+            AuctionSession auctionSession = auctionSessionRepository.findAuctionSessionById(id);
             reponseList.add(new DetailDashboardReponse("Total Registration", totalReg));
             reponseList.add(new DetailDashboardReponse("Total Bidding", totalBid));
             reponseList.add(new DetailDashboardReponse("Total Price", totalPri));
+            reponseList.add(new DetailDashboardReponse("Price Highest", priceHighest));
+            reponseList.add(new DetailDashboardReponse("Name Session", auctionSession.getNameSession()));
+            reponseList.add(new DetailDashboardReponse("Status Session", auctionSession.getStatus()));
+            reponseList.add(new DetailDashboardReponse("Description Session", auctionSession.getDescription()));
         return reponseList;
     }
 }

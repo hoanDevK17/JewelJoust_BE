@@ -10,9 +10,9 @@ import lombok.Setter;
 
 public class DetailDashboardReponse {
     private String label;
-    private long quantity;
+    private Object quantity;
 
-    public DetailDashboardReponse(String label, long quantity) {
+    public DetailDashboardReponse(String label, Object quantity) {
         this.label = label;
         this.quantity = quantity;
     }
